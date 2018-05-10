@@ -2,20 +2,20 @@
     <string name="app_name">Nostalgia Pet Game</string>
 
     //Main Login Screen
-    <string name="non_google_sign_up">Sign Up</string>
-    <string name="non_google_login">Login</string>
-    <string name="google_login">Sign in with Google</string>
+    <string name="non_google_sign_up_txt">Sign Up</string>
+    <string name="non_google_login_txt">Login</string>
+    <string name="google_login_txt">Sign in with Google</string>
 
     //Login Info Fragment Strings
-    <string name="login_email_id">Email</string>
-    <string name="login_password">Password</string>
+    <string name="login_email_id_txt">Email</string>
+    <string name="login_password_txt">Password</string>
     <string name="btn_login_txt">Login</string>
 
     //Signup Info Fragment Strings
-    <string name="register_email">Email</string>
-    <string name="register_password">Password</string>
+    <string name="register_email_txt">Email</string>
+    <string name="register_password_txt">Password</string>
     <string name="btn_register_txt">Register</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment_txt">Hello blank fragment</string>
 </resources>

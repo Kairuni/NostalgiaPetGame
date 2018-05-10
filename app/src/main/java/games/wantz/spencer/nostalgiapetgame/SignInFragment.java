@@ -32,7 +32,7 @@ public class SignInFragment extends Fragment {
     public static SignInFragment newInstance() { return null; }
 
     public interface signInListener {
-        public void loginUser (String url);
+        void loginUser (String url);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class SignInFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
-        mSIUserEmail = (EditText) v.findViewById(R.id.fillable_login_email_id);
-        mSIUserPassword = (EditText) v.findViewById(R.id.fillable_register_password);
+        mSIUserEmail = v.findViewById(R.id.fillable_login_email_id);
+        mSIUserPassword = v.findViewById(R.id.fillable_login_password);
         mLoginButton = v.findViewById(R.id.btn_user_login);
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
