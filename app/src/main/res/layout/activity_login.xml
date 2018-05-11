@@ -9,5 +9,4 @@
     android:screenOrientation="landscape"
     android:configChanges="orientation">
 
-
 </FrameLayout>

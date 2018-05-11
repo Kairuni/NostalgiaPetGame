@@ -1,3 +1,7 @@
+/**
+ * TCSS450 Mobile Applications, Spring 2018
+ * Group Project - Nostalgia Pet
+ */
 package games.wantz.spencer.nostalgiapetgame;
 
 import android.os.AsyncTask;
@@ -14,6 +18,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * LoginActivity coordinates the Login Menu, Sign In, and Register Fragments.
+ *
+ * @author Norris Spencer nisj@uw.edu
+ * @author Keegan Wantz k@uw.edu
+ *
+ * A simple {@link RegisterFragment.registerListener} subclass.
+ * A simple {@link SignInFragment.signInListener} subclass.
+ * A simple {@link LoginMenuFragment.registerButtonListener} subclass.
+ * A simple {@link LoginMenuFragment.loginButtonListener} subclass.
+ *
+ * @version 1.0, 11 May 2018
+ */
 public class LoginActivity
         extends AppCompatActivity
         implements RegisterFragment.registerListener,
@@ -21,6 +38,11 @@ public class LoginActivity
                     LoginMenuFragment.registerButtonListener,
                     LoginMenuFragment.loginButtonListener {
 
+    /**
+     * onCreate creates...
+     *
+     * @param savedInstanceState passes the saved instance state of...
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +53,11 @@ public class LoginActivity
                 .commit();
     }
 
+    /**
+     * loginUser instantiates a new LoginTask to allow the user to login to their acct.
+     *
+     * @param url passes... (the user entered information???)
+     */
     @Override
     public void loginUser(String url) {
         LoginTask task = new LoginTask();
@@ -38,6 +65,11 @@ public class LoginActivity
         getSupportFragmentManager().popBackStackImmediate();
     }
 
+    /**
+     * registerUser does...
+     *
+     * @param url passes...
+     */
     @Override
     public void registerUser(String url) {
         LoginTask task = new LoginTask();
@@ -45,6 +77,9 @@ public class LoginActivity
         getSupportFragmentManager().popBackStackImmediate();
     }
 
+    /**
+     * openRegisterFragment does...
+     */
     @Override
     public void openRegisterFragment() {
         RegisterFragment registerFragment = new RegisterFragment();
@@ -54,6 +89,9 @@ public class LoginActivity
                 .commit();
     }
 
+    /**
+     * openLoginFragment does...
+     */
     @Override
     public void openLoginFragment() {
         SignInFragment signInFragment = new SignInFragment();
@@ -63,14 +101,28 @@ public class LoginActivity
                 .commit();
     }
 
+    /**
+     * LoginTask is an inner class that
+     *
+     * A simple {@link AsyncTask} subclass.
+     */
     private class LoginTask extends AsyncTask<String, Void, String> {
 
-
+        /**
+         * onPreExecute makes a call to super in order to... (What?)
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
+        /**
+         * doInBackground does...
+         *
+         * @param urls passes...
+         *
+         * @return the created string.
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -101,7 +153,7 @@ public class LoginActivity
 
 
         /**
-         * It checks to see if there was a problem with the URL(Network) which is when an
+         * onPostExecute checks to see if there was a problem with the URL(Network) which is when an
          * exception is caught. It tries to call the parse Method and checks to see if it was successful.
          * If not, it displays the exception.
          *
@@ -118,7 +170,7 @@ public class LoginActivity
                             , Toast.LENGTH_LONG)
                             .show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Email and/or Password incorrect"
+                    Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
                                     + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
                             .show();

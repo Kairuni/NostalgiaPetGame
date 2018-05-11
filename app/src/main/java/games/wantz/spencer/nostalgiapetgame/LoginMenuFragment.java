@@ -1,3 +1,7 @@
+/**
+ * TCSS450 Mobile Applications, Spring 2018
+ * Group Project - Nostalgia Pet
+ */
 package games.wantz.spencer.nostalgiapetgame;
 
 import android.content.Context;
@@ -9,30 +13,50 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 /**
+ * LoginMenuFragment supports the Sign in and Register Fragments by directing the user to the
+ * desired action.
+ *
+ * @author Norris Spencer nisj@uw.edu
+ * @author Keegan Wantz k@uw.edu
+ *
+ * @version 1.0, 11 May 2018
+ *
  * A simple {@link Fragment} subclass.
  */
 public class LoginMenuFragment extends Fragment {
 
+    /** mRListener is a member var that listens for the selection of the "Create Acct" button.*/
     private registerButtonListener mRListener;
+
+    /** mSListener is a member var that listens for the selection of the "SignIn" button.*/
     private loginButtonListener mSListener;
+
+    /**mRButton is a member var that...*/
     private Button mRButton;
+    /**mSButton is a member var that...*/
     private Button mSButton;
 
 
-    public LoginMenuFragment() {
-        // Required empty public constructor
-    }
+    /** LoginMenuFragment is an empty, required constructor*/
+    public LoginMenuFragment() {    }
 
+    /** registerButtonListener is an interface to execute openRegisterFragment*/
     public interface registerButtonListener {
         void openRegisterFragment ();
     }
 
 
+    /** loginButtonListener is an interface to execute openLoginFragment*/
     public interface loginButtonListener {
         void openLoginFragment ();
     }
 
 
+    /**
+     * onAttach does...
+     *
+     * @param context passes the current...
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -50,6 +74,15 @@ public class LoginMenuFragment extends Fragment {
         }
     }
 
+    /**
+     * onCreateView does...
+     *
+     * @param inflater passes the...
+     * @param container passes the...
+     * @param savedInstanceState passes the...
+     *
+     * @return the created view.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,5 +104,4 @@ public class LoginMenuFragment extends Fragment {
         });
         return v;
     }
-
 }

@@ -1,7 +1,10 @@
+/**
+ * TCSS450 Mobile Applications, Spring 2018
+ * Group Project - Nostalgia Pet
+ */
 package games.wantz.spencer.nostalgiapetgame;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,30 +17,67 @@ import android.widget.Toast;
 
 import java.net.URLEncoder;
 
+/**
+ * SignInFragment allows the user to login to their account
+ * which will allow the user to access their game status.
+ *
+ * @author Norris Spencer nisj@uw.edu
+ * @author Keegan Wantz k@uw.edu
+ *
+ * @version 1.0, 11 May 2018
+ *
+ * A simple {@link Fragment} subclass.
+ */
 public class SignInFragment extends Fragment {
 
+    /** TAG is a constant used to identify log events into the Logcat.*/
     private static final String TAG = "SignInFragment";
-    private static final String COURSE_ADD_URL =
-            "http://www.kairuni.com/NostalgiaPet/login.php?";
 
+    /** SIGN_IN_URL is a constant to store the url for the database that stores the login info.*/
+    private static final String SIGN_IN_URL = "http://www.kairuni.com/NostalgiaPet/login.php?";
+
+    /** mListener is a var that...*/
     private signInListener mListener;
+
+    /** mSIUserEmail is a var that...*/
     private EditText mSIUserEmail;
+
+    /** mSIUserPassword is a var that...*/
     private EditText mSIUserPassword;
-    private Button mLoginButton;
 
-    public SignInFragment() {
+    /** mSignInButton is a var that...*/
+    private Button mSignInButton;
 
-    }
+    /** SignInFragment is an empty, required constructor*/
+    public SignInFragment() {    }
 
+    /**
+     * newInstance does...
+     *
+     * @return null.
+     */
     public static SignInFragment newInstance() { return null; }
 
-    public interface signInListener {
-        void loginUser (String url);
-    }
+    /** signInListener is an interface to execute loginUser*/
+    public interface signInListener { void loginUser (String url); }
 
+    /**
+     * onCreate does...
+     *
+     * @param savedInstanceState passes the saved instance state of...
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
+    /**
+     * onCreateView does...
+     *
+     * @param inflater passes the...
+     * @param container passes the...
+     * @param savedInstanceState passes the...
+     *
+     * @return the created view.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,19 +85,26 @@ public class SignInFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
         mSIUserEmail = v.findViewById(R.id.fillable_login_email_id);
         mSIUserPassword = v.findViewById(R.id.fillable_login_password);
-        mLoginButton = v.findViewById(R.id.btn_user_login);
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
+        mSignInButton = v.findViewById(R.id.btn_user_login);
+        mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = buildCourseURL(v);
+                String url = buildSignInURL(v);
                 mListener.loginUser(url);
             }
         });
         return v;
     }
 
-    private String buildCourseURL(View v) {
-        StringBuilder sb = new StringBuilder(COURSE_ADD_URL);
+    /**
+     * buildSignInURL builds a string to return the url to locate the entered email and password.
+     *
+     * @param v passes the current view.
+     *
+     * @return the built string to the method call.
+     */
+    private String buildSignInURL(View v) {
+        StringBuilder sb = new StringBuilder(SIGN_IN_URL);
         try {
             String courseId = mSIUserEmail.getText().toString();
             sb.append("email=");
@@ -74,6 +121,11 @@ public class SignInFragment extends Fragment {
         return sb.toString();
     }
 
+    /**
+     * onAttach does...
+     *
+     * @param context passes the...
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -85,6 +137,7 @@ public class SignInFragment extends Fragment {
         }
     }
 
+    /** onDetach does...*/
     @Override
     public void onDetach() {
         super.onDetach();
