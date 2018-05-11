@@ -54,12 +54,12 @@ public class LoginActivity
     }
 
     /**
-     * loginUser instantiates a new LoginTask to allow the user to login to their acct.
+     * signInUser instantiates a new LoginTask to allow the user to login to their acct.
      *
      * @param url passes... (the user entered information???)
      */
     @Override
-    public void loginUser(String url) {
+    public void signInUser(String url) {
         LoginTask task = new LoginTask();
         task.execute(new String[]{url.toString()});
         getSupportFragmentManager().popBackStackImmediate();
