@@ -6,9 +6,18 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class SpriteSheet {
-    private int mWidth, mHeight;
-    private int mFrameWidth, mFrameHeight;
-    private int mFramesPerRow;
+    private final int mWidth, mHeight;
+    private final int mFrameWidth, mFrameHeight;
+    private final int mFramesPerRow;
+
+    public float getScale() {
+        return mScale;
+    }
+
+    public void setScale(float scale) {
+        mScale = scale;
+    }
+
     private float mScale;
 
     private Bitmap mBitmap;

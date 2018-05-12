@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class LoginActivity
                     SignInFragment.signInListener,
                     LoginMenuFragment.registerButtonListener,
                     LoginMenuFragment.loginButtonListener {
+    private static String DEBUG_TAG = "L_ACT";
 
     /**
      * onCreate creates...
@@ -65,7 +67,7 @@ public class LoginActivity
     @Override
     public void signInUser(String url) {
         LoginTask task = new LoginTask();
-        task.execute(url);
+        task.execute(new String[]{url.toString()});
         getSupportFragmentManager().popBackStackImmediate();
     }
 
@@ -77,7 +79,7 @@ public class LoginActivity
     @Override
     public void registerUser(String url) {
         RegisterTask task = new RegisterTask();
-        task.execute(url);
+        task.execute(new String[]{url.toString()});
         getSupportFragmentManager().popBackStackImmediate();
     }
 
@@ -144,7 +146,7 @@ public class LoginActivity
                     }
 
                 } catch (Exception e) {
-                    response = "Unable to add course, Reason: "
+                    response = "Unable to register account. Reason: "
                             + e.getMessage();
                 } finally {
                     if (urlConnection != null)
@@ -166,6 +168,7 @@ public class LoginActivity
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.
             try {
+                Log.d(DEBUG_TAG, "ON POST EXECUTE");
                 JSONObject jsonObject = new JSONObject(result);
                 String status = (String) jsonObject.get("result");
                 if (status.equals("success")) {
@@ -174,13 +177,15 @@ public class LoginActivity
                             .show();
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
+                    Log.d(DEBUG_TAG, "Fail");
+                    /*Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
                                     + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
-                            .show();
+                            .show();*/
 
                 }
             } catch (JSONException e) {
+                Log.d(DEBUG_TAG, "JSON exception");
                 Toast.makeText(getApplicationContext(), "Something wrong with the data" +
                         e.getMessage(), Toast.LENGTH_LONG).show();
             }
@@ -203,6 +208,7 @@ public class LoginActivity
         protected void onPostExecute(String result) {
             // Something wrong with the network or the URL.
             try {
+                Log.d(DEBUG_TAG, "ON POST EXECUTE 2");
                 JSONObject jsonObject = new JSONObject(result);
                 String status = (String) jsonObject.get("result");
                 if (status.equals("success")) {
@@ -228,6 +234,7 @@ public class LoginActivity
                     finish();
 
                 } else {
+                    Log.d(DEBUG_TAG, "Fail 2");
                     Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
                                     + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
@@ -235,6 +242,7 @@ public class LoginActivity
 
                 }
             } catch (JSONException e) {
+                Log.d(DEBUG_TAG, "Fail 4");
                 Toast.makeText(getApplicationContext(), "Something wrong with the data" +
                         e.getMessage(), Toast.LENGTH_LONG).show();
             }

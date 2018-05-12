@@ -106,12 +106,12 @@ public class SignInFragment extends Fragment {
     private String buildSignInURL(View v) {
         StringBuilder sb = new StringBuilder(SIGN_IN_URL);
         try {
-            String courseId = mSIUserEmail.getText().toString();
+            String email = mSIUserEmail.getText().toString();
             sb.append("email=");
-            sb.append(URLEncoder.encode(courseId, "UTF-8"));
-            String courseShortDesc = mSIUserPassword.getText().toString();
+            sb.append(URLEncoder.encode(email, "UTF-8"));
+            String password = mSIUserPassword.getText().toString();
             sb.append("&password=");
-            sb.append(URLEncoder.encode(courseShortDesc, "UTF-8"));
+            sb.append(URLEncoder.encode(password, "UTF-8"));
             Log.i(TAG, sb.toString());
         }
         catch(Exception e) {
@@ -135,12 +135,5 @@ public class SignInFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-    }
-
-    /** onDetach does...*/
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 }
