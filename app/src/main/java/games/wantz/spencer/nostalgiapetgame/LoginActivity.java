@@ -25,14 +25,14 @@ import java.net.URL;
  * LoginActivity coordinates the Login Menu, Sign In, and Register Fragments.
  *
  * @author Norris Spencer nisj@uw.edu
- * @author Keegan Wantz k@uw.edu
+ * @author Keegan Wantz wantzkt@uw.edu
  *
  * A simple {@link RegisterFragment.registerListener} subclass.
  * A simple {@link SignInFragment.signInListener} subclass.
  * A simple {@link LoginMenuFragment.registerButtonListener} subclass.
  * A simple {@link LoginMenuFragment.loginButtonListener} subclass.
  *
- * @version 1.0, 11 May 2018
+ * @version 0.1, 11 May 2018
  */
 public class LoginActivity
         extends AppCompatActivity
@@ -40,20 +40,42 @@ public class LoginActivity
                     SignInFragment.signInListener,
                     LoginMenuFragment.registerButtonListener,
                     LoginMenuFragment.loginButtonListener {
+    /**
+     * Debug tag for Logging.
+     */
     private static String DEBUG_TAG = "L_ACT";
 
     /**
-     * onCreate creates...
+     * Async Task for logging in.
+     */
+    private LoginTask mLoginTask;
+    /**
+     * Async Task for registering.
+     */
+    private RegisterTask mRegisterTask;
+
+    /**
+     * Constructor that initializes fields.
+     */
+    public LoginActivity() {
+        mLoginTask = null;
+        mRegisterTask = null;
+    }
+
+    /**
+     * onCreate creates the LoginActivity
      *
      * @param savedInstanceState passes the saved instance state of...
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_login);
         LoginMenuFragment loginMenuFragment = new LoginMenuFragment();
+
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.login_fragment_container, loginMenuFragment)
                 .commit();
@@ -66,25 +88,30 @@ public class LoginActivity
      */
     @Override
     public void signInUser(String url) {
-        LoginTask task = new LoginTask();
-        task.execute(new String[]{url.toString()});
+        if (mLoginTask == null) {
+            mLoginTask = new LoginTask();
+            mLoginTask.execute(new String[]{url.toString()});
+        }
         getSupportFragmentManager().popBackStackImmediate();
     }
 
     /**
-     * registerUser does...
+     * registerUser creates a new RegisterTask and uses that to register a new user.
      *
-     * @param url passes...
+     * @param url passes the url provided by the user.
      */
     @Override
     public void registerUser(String url) {
-        RegisterTask task = new RegisterTask();
-        task.execute(new String[]{url.toString()});
+        if (mRegisterTask == null) {
+            mRegisterTask = new RegisterTask();
+            mRegisterTask.execute(new String[]{url.toString()});
+        }
         getSupportFragmentManager().popBackStackImmediate();
     }
 
     /**
-     * openRegisterFragment does...
+     * openRegisterFragment creates a new RegisterFragment and swaps to that, allowing
+     * a user to register for the game.
      */
     @Override
     public void openRegisterFragment() {
@@ -96,7 +123,8 @@ public class LoginActivity
     }
 
     /**
-     * openLoginFragment does...
+     * openLoginFragment creates a new LoginFragment and swaps to that, allowing
+     * a user to log in to the game.
      */
     @Override
     public void openLoginFragment() {
@@ -108,7 +136,7 @@ public class LoginActivity
     }
 
     /**
-     * LoginTask is an inner class that
+     * RegisterTask is an inner class that handles http requests for registering new users.
      *
      * A simple {@link AsyncTask} subclass.
      */
@@ -122,11 +150,11 @@ public class LoginActivity
         }
 
         /**
-         * doInBackground does...
+         * doInBackground retrieves data from the HTTP socket, and then closes it.
          *
-         * @param urls passes...
+         * @param urls passes the website url.
          *
-         * @return the created string.
+         * @return the JSON string returned from the website.
          */
         @Override
         protected String doInBackground(String... urls) {
@@ -153,6 +181,7 @@ public class LoginActivity
                         urlConnection.disconnect();
                 }
             }
+            Log.d(DEBUG_TAG, "Background completed with: " + response);
             return response;
         }
 
@@ -166,6 +195,7 @@ public class LoginActivity
          */
         @Override
         protected void onPostExecute(String result) {
+            mRegisterTask = null;
             // Something wrong with the network or the URL.
             try {
                 Log.d(DEBUG_TAG, "ON POST EXECUTE");
@@ -178,10 +208,10 @@ public class LoginActivity
 
                 } else {
                     Log.d(DEBUG_TAG, "Fail");
-                    /*Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
+                    Toast.makeText(getApplicationContext(), "Email and/or Password incorrect: "
                                     + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
-                            .show();*/
+                            .show();
 
                 }
             } catch (JSONException e) {
@@ -191,10 +221,11 @@ public class LoginActivity
             }
         }
     }
+
     /**
-     * LoginTask is an inner class that
+     * LoginTask is an inner class that handles login attempts.
      *
-     * A simple {@link AsyncTask} subclass.
+     * A {@link RegisterTask} subclass that only changes onPostExecute.
      */
     private class LoginTask extends RegisterTask {
         /**
@@ -206,7 +237,7 @@ public class LoginActivity
          */
         @Override
         protected void onPostExecute(String result) {
-            // Something wrong with the network or the URL.
+            mLoginTask = null;
             try {
                 Log.d(DEBUG_TAG, "ON POST EXECUTE 2");
                 JSONObject jsonObject = new JSONObject(result);
@@ -216,7 +247,7 @@ public class LoginActivity
                             , Toast.LENGTH_LONG)
                             .show();
 
-
+                    // Push all the retrieved pet's data to the GameActivity.
                     Intent intent = new Intent(getBaseContext(), GameActivity.class);
                     intent.putExtra(GameActivity.UID, (String)jsonObject.get(GameActivity.UID));
                     intent.putExtra(GameActivity.BREED, Integer.valueOf((String)jsonObject.get(GameActivity.BREED)));

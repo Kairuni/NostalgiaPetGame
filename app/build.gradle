@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/home/keegan/KeeganKey.jks')
+            keyPassword 'ninjaskills'
+            storePassword 'ninjaskills'
+            keyAlias 'NostalgiaKey'
+        }
+    }
     compileSdkVersion 27
     defaultConfig {
         applicationId "games.wantz.spencer.nostalgiapetgame"
@@ -14,12 +22,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.release
         }
     }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'

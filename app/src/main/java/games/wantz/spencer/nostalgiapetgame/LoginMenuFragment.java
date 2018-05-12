@@ -17,9 +17,9 @@ import android.widget.Button;
  * desired action.
  *
  * @author Norris Spencer nisj@uw.edu
- * @author Keegan Wantz k@uw.edu
+ * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version 1.0, 11 May 2018
+ * @version 0.1, 11 May 2018
  *
  * A simple {@link Fragment} subclass.
  */
@@ -31,31 +31,41 @@ public class LoginMenuFragment extends Fragment {
     /** mSListener is a member var that listens for the selection of the "SignIn" button.*/
     private loginButtonListener mSListener;
 
-    /**mRButton is a member var that...*/
+    /**
+     * mRButton is a member var that opens the register fragment.
+     */
     private Button mRButton;
-    /**mSButton is a member var that...*/
+    /**
+     * mSButton is a member var that opens the sign in fragment.
+     */
     private Button mSButton;
 
 
-    /** LoginMenuFragment is an empty, required constructor*/
-    public LoginMenuFragment() {    }
+    /**
+     * LoginMenuFragment is an empty, required constructor.
+     */
+    public LoginMenuFragment() {
+    }
 
-    /** registerButtonListener is an interface to execute openRegisterFragment*/
+    /**
+     * registerButtonListener is an interface to execute openRegisterFragment.
+     */
     public interface registerButtonListener {
-        void openRegisterFragment ();
+        void openRegisterFragment();
     }
 
 
-    /** loginButtonListener is an interface to execute openLoginFragment*/
+    /** loginButtonListener is an interface to execute openLoginFragment. */
     public interface loginButtonListener {
-        void openLoginFragment ();
+        void openLoginFragment();
     }
 
 
     /**
-     * onAttach does...
+     * onAttach ensures that the parent implemented the required registerButtonListener
+     *  and loginButtonListener interfaces.
      *
-     * @param context passes the current...
+     * @param context the current context.
      */
     @Override
     public void onAttach(Context context) {
@@ -75,11 +85,11 @@ public class LoginMenuFragment extends Fragment {
     }
 
     /**
-     * onCreateView does...
+     * onCreateView retrieves the button views and sets callbacks to open the register or sign in fragments.
      *
-     * @param inflater passes the...
-     * @param container passes the...
-     * @param savedInstanceState passes the...
+     * @param inflater The inflater for this view.
+     * @param container The container for this view.
+     * @param savedInstanceState Previously saved instance state.
      *
      * @return the created view.
      */

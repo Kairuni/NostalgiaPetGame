@@ -22,9 +22,9 @@ import java.net.URLEncoder;
  * which will allow the user to access their game status.
  *
  * @author Norris Spencer nisj@uw.edu
- * @author Keegan Wantz k@uw.edu
+ * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version 1.0, 11 May 2018
+ * @version 0.1, 11 May 2018
  *
  * A simple {@link Fragment} subclass.
  */
@@ -36,45 +36,57 @@ public class SignInFragment extends Fragment {
     /** SIGN_IN_URL is a constant to store the url for the database that stores the login info.*/
     private static final String SIGN_IN_URL = "http://www.kairuni.com/NostalgiaPet/login.php?";
 
-    /** mListener is a var that...*/
+    /**
+     * mListener is a var that allows us to use the activity for callbacks.
+     */
     private signInListener mListener;
 
-    /** mSIUserEmail is a var that...*/
+    /**
+     * mSIUserEmail is a var that stores a reference to the EditText for getting the email.
+     */
     private EditText mSIUserEmail;
 
-    /** mSIUserPassword is a var that...*/
+    /**
+     * mSIUserPassword is a var that stores a reference to the EditText for getting the password.
+     */
     private EditText mSIUserPassword;
 
-    /** mSignInButton is a var that...*/
+    /** mSignInButton is a var that stores a reference to the button for callbacks. */
     private Button mSignInButton;
 
     /** SignInFragment is an empty, required constructor*/
-    public SignInFragment() {    }
+    public SignInFragment() {
+    }
 
     /**
-     * newInstance does...
+     * newInstance does nothing. Unused.
      *
      * @return null.
      */
     public static SignInFragment newInstance() { return null; }
 
     /** signInListener is an interface to execute signInUser*/
-    public interface signInListener { void signInUser(String url); }
+    public interface signInListener {
+        void signInUser(String url);
+    }
 
     /**
-     * onCreate does...
+     * onCreate passes the state to the parent.
      *
      * @param savedInstanceState passes the saved instance state of...
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     /**
-     * onCreateView does...
+     * onCreateView retrieves references for the fragment's EditTexts, and sets up a callback via the
+     * SignInListener interface.
      *
-     * @param inflater passes the...
-     * @param container passes the...
-     * @param savedInstanceState passes the...
+     * @param inflater The inflater for this view.
+     * @param container The container for this view.
+     * @param savedInstanceState Previously saved instance state.
      *
      * @return the created view.
      */
@@ -122,9 +134,9 @@ public class SignInFragment extends Fragment {
     }
 
     /**
-     * onAttach does...
+     * onAttach ensures that the parent implemented the required signInListener interface.
      *
-     * @param context passes the...
+     * @param context the current context.
      */
     @Override
     public void onAttach(Context context) {

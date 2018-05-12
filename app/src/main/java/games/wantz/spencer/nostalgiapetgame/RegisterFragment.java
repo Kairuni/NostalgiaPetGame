@@ -1,7 +1,3 @@
-/**
- * TCSS450 Mobile Applications, Spring 2018
- * Group Project - Nostalgia Pet
- */
 package games.wantz.spencer.nostalgiapetgame;
 
 import android.content.Context;
@@ -22,59 +18,77 @@ import java.net.URLEncoder;
  * that will allow the user to later access their game status.
  *
  * @author Norris Spencer nisj@uw.edu
- * @author Keegan Wantz k@uw.edu
+ * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version 1.0, 11 May 2018
+ * @version 0.1, 11 May 2018
  *
  * A simple {@link Fragment} subclass.
  */
 public class RegisterFragment extends Fragment {
 
-    /** TAG is a constant used to identify log events into the Logcat.*/
+    /**
+     * TAG is a constant used to identify log events into the Logcat.
+     */
     private static final String TAG = "RegisterFragment";
 
-    /** REGISTER_URL is a constant to store the url for the database that stores the login info.*/
+    /**
+     * REGISTER_URL is a constant to store the url for the database that stores the login info.
+     */
     private static final String REGISTER_URL = "http://www.kairuni.com/NostalgiaPet/addUser.php?";
 
-    /**mListener*/
+    /**
+     * Allows the fragment to use the Activity when the button is pushed.
+     */
     private registerListener mListener;
 
-    /**mRUserEmail*/
+    /** EditText for retrieving the user's email. */
     private EditText mRUserEmail;
 
-    /**mRUserPassword*/
+    /** EditText for retrieving the user's password. */
     private EditText mRUserPassword;
 
-    /**mRegisterButton*/
+    /** Button used for registration. */
     private Button mRegisterButton;
 
-    /** RegisterFragment is an empty, required constructor*/
-    public RegisterFragment() {    }
+    /**
+     * RegisterFragment is an empty, required constructor.
+     */
+    public RegisterFragment() {
+    }
 
     /**
-     * newInstance does...
+     * newInstance does nothing. Unused.
      *
      * @return null.
      */
-    public static RegisterFragment newInstance() { return null; }
-
-    /** registerListener is an interface to execute registerUser*/
-    public interface registerListener { void registerUser (String url); }
+    public static RegisterFragment newInstance() {
+        return null;
+    }
 
     /**
-     * onCreate creates...
+     * registerListener is an interface to execute registerUser.
+     */
+    public interface registerListener {
+        void registerUser(String url);
+    }
+
+    /**
+     * onCreate passes the state to the parent.
      *
-     * @param savedInstanceState passes the saved instance state of...
+     * @param savedInstanceState passes the saved instance state.
      */
     @Override
-    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     /**
-     * onCreateView does...
+     * onCreateView retrieves references for the fragment's EditTexts, and sets up a callback via the
+     * registerListener interface.
      *
-     * @param inflater passes the...
-     * @param container passes the...
-     * @param savedInstanceState passes the...
+     * @param inflater The inflater for this view.
+     * @param container The container for this view.
+     * @param savedInstanceState Previously saved instance state.
      *
      * @return the created view.
      */
@@ -125,9 +139,9 @@ public class RegisterFragment extends Fragment {
     }
 
     /**
-     * onAttach does...
+     * onAttach ensures that the parent implemented the required registerListener interface.
      *
-     * @param context passes the...
+     * @param context the current context.
      */
     @Override
     public void onAttach(Context context) {
