@@ -4,9 +4,11 @@
  */
 package games.wantz.spencer.nostalgiapetgame;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -46,6 +48,8 @@ public class LoginActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_login);
         LoginMenuFragment loginMenuFragment = new LoginMenuFragment();
         getSupportFragmentManager().beginTransaction()
@@ -169,11 +173,30 @@ public class LoginActivity
                     Toast.makeText(getApplicationContext(), "Login Accepted!"
                             , Toast.LENGTH_LONG)
                             .show();
+
+
+                    Intent intent = new Intent(getBaseContext(), GameActivity.class);
+                    intent.putExtra(GameActivity.UID, (String)jsonObject.get(GameActivity.UID));
+                    intent.putExtra(GameActivity.BREED, Integer.valueOf((String)jsonObject.get(GameActivity.BREED)));
+                    intent.putExtra(GameActivity.MAX_HEALTH, Float.valueOf((String)jsonObject.get(GameActivity.MAX_HEALTH)));
+                    intent.putExtra(GameActivity.HEALTH, Float.valueOf((String)jsonObject.get(GameActivity.HEALTH)));
+                    intent.putExtra(GameActivity.MAX_STAMINA, Float.valueOf((String)jsonObject.get(GameActivity.MAX_STAMINA)));
+                    intent.putExtra(GameActivity.STAMINA, Float.valueOf((String)jsonObject.get(GameActivity.STAMINA)));
+                    intent.putExtra(GameActivity.MAX_HUNGER, Float.valueOf((String)jsonObject.get(GameActivity.MAX_HUNGER)));
+                    intent.putExtra(GameActivity.HUNGER, Float.valueOf((String)jsonObject.get(GameActivity.HUNGER)));
+                    intent.putExtra(GameActivity.MAX_BLADDER, Float.valueOf((String)jsonObject.get(GameActivity.MAX_BLADDER)));
+                    intent.putExtra(GameActivity.BLADDER, Float.valueOf((String)jsonObject.get(GameActivity.BLADDER)));
+
+
+                    startActivity(intent);
+                    finish();
+
                 } else {
                     Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
                                     + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
                             .show();
+
                 }
             } catch (JSONException e) {
                 Toast.makeText(getApplicationContext(), "Something wrong with the data" +
