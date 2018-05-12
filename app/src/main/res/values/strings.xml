@@ -4,7 +4,6 @@
     //Main Login Screen
     <string name="non_google_sign_up_txt">Create Acct</string>
     <string name="non_google_login_txt">Login</string>
-    <string name="google_login_txt">Sign in with Google</string>
 
     //SignIn Info Fragment Strings
     <string name="login_email_id_txt">Email</string>
@@ -15,5 +14,14 @@
     <string name="register_email_txt">Email</string>
     <string name="register_password_txt">Password (at least 6 characters)</string>
     <string name="btn_register_txt">Register</string>
+
+    //Test Strings
+    <string name="test_login_email">a@a.a</string>
+    <string name="test_login_password">123456</string>
+    <string name="btn_shower">Shower</string>
+    <string name="btn_bathroom">Bathroom</string>
+    <string name="btn_play">Play</string>
+    <string name="btn_misc">Misc</string>
+    <string name="btn_feed">Feed</string>
 
 </resources>

@@ -1,14 +1,12 @@
 package games.wantz.spencer.nostalgiapetgame;
 
-import android.graphics.BitmapFactory;
-
 import java.util.Random;
 
 import games.wantz.spencer.nostalgiapetgame.drawing.SpriteSheet;
 
 public class Monster {
     // Change direction every 4 seconds.
-    private int WANDER_RESET = 120;
+    private final int WANDER_RESET = 120;
 
     private String mUID;
     private int mBreed;
@@ -17,7 +15,7 @@ public class Monster {
     private float mMaxHunger, mHunger;
     private float mMaxBladder, mBladder;
 
-    private int mX, mY;
+    private final int mX, mY;
     public int getX() {return mX;}
     public int getY() {return mY;}
 

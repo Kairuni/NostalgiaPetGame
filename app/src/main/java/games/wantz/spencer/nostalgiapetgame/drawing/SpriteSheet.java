@@ -6,12 +6,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 public class SpriteSheet {
-    private int mWidth, mHeight;
-    private int mFrameWidth, mFrameHeight;
-    private int mFramesPerRow;
-    private float mScale;
+    private final int mWidth, mHeight;
+    private final int mFrameWidth, mFrameHeight;
+    private final int mFramesPerRow;
+    private final float mScale;
 
-    private Bitmap mBitmap;
+    private final Bitmap mBitmap;
 
     public SpriteSheet(Bitmap theBmp, int frameWidth, int frameHeight, float scale) {
         mBitmap = theBmp;

@@ -1,4 +1,4 @@
-/**
+/*
  * TCSS450 Mobile Applications, Spring 2018
  * Group Project - Nostalgia Pet
  */
@@ -83,8 +83,8 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_register, container, false);
-        mRUserEmail = (EditText) v.findViewById(R.id.fillable_register_email_id);
-        mRUserPassword = (EditText) v.findViewById(R.id.fillable_register_password);
+        mRUserEmail = v.findViewById(R.id.fillable_register_email_id);
+        mRUserPassword = v.findViewById(R.id.fillable_register_password);
         mRegisterButton = v.findViewById(R.id.btn_user_register);
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
