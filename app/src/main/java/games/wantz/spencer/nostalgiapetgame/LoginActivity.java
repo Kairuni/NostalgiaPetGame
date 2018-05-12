@@ -1,4 +1,4 @@
-/**
+/*
  * TCSS450 Mobile Applications, Spring 2018
  * Group Project - Nostalgia Pet
  */

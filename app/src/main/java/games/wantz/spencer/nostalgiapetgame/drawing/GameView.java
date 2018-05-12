@@ -2,20 +2,13 @@ package games.wantz.spencer.nostalgiapetgame.drawing;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import games.wantz.spencer.nostalgiapetgame.GameActivity;
 import games.wantz.spencer.nostalgiapetgame.GameThread;
@@ -28,14 +21,14 @@ import games.wantz.spencer.nostalgiapetgame.R;
  * Mostly just used as a blank slate for the game objects, may be expanded later.
  */
 public class GameView extends SurfaceView {
-    private SpriteSheet mUnits;
-    private SpriteSheet mBackground;
+    private final SpriteSheet mUnits;
+    private final SpriteSheet mBackground;
+    private final GameThread mGameThread;
     private Monster mMonster;
-    private GameThread mGameThread;
 
-    private float mScalar;
+    private final float mScalar;
 
-    private int mDeviceWidth, mDeviceHeight;
+    private final int mDeviceWidth, mDeviceHeight;
 
     private int mMonsterFrame;
 

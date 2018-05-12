@@ -11,8 +11,8 @@ import games.wantz.spencer.nostalgiapetgame.drawing.GameView;
  */
 public class GameThread extends Thread {
     /** The number of animation/logic frames to do every second. */
-    static final int FPS = 30;
-    private GameView mGameView;
+    private static final int FPS = 30;
+    private final GameView mGameView;
     private boolean mActive;
 
     public void setActive(boolean active) {mActive = active;}
