@@ -58,8 +58,8 @@ public class SignInFragment extends Fragment {
      */
     public static SignInFragment newInstance() { return null; }
 
-    /** signInListener is an interface to execute loginUser*/
-    public interface signInListener { void loginUser (String url); }
+    /** signInListener is an interface to execute signInUser*/
+    public interface signInListener { void signInUser(String url); }
 
     /**
      * onCreate does...
@@ -90,7 +90,7 @@ public class SignInFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String url = buildSignInURL(v);
-                mListener.loginUser(url);
+                mListener.signInUser(url);
             }
         });
         return v;
