@@ -65,7 +65,7 @@ public class LoginActivity
     @Override
     public void signInUser(String url) {
         LoginTask task = new LoginTask();
-        task.execute(new String[]{url.toString()});
+        task.execute(url);
         getSupportFragmentManager().popBackStackImmediate();
     }
 
@@ -76,8 +76,8 @@ public class LoginActivity
      */
     @Override
     public void registerUser(String url) {
-        LoginTask task = new LoginTask();
-        task.execute(new String[]{url.toString()});
+        RegisterTask task = new RegisterTask();
+        task.execute(url);
         getSupportFragmentManager().popBackStackImmediate();
     }
 
@@ -110,8 +110,7 @@ public class LoginActivity
      *
      * A simple {@link AsyncTask} subclass.
      */
-    private class LoginTask extends AsyncTask<String, Void, String> {
-
+    private class RegisterTask extends AsyncTask<String, Void, String> {
         /**
          * onPreExecute makes a call to super in order to... (What?)
          */
@@ -156,6 +155,43 @@ public class LoginActivity
         }
 
 
+        /**
+         * onPostExecute checks to see if there was a problem with the URL(Network) which is when an
+         * exception is caught. It tries to call the parse Method and checks to see if it was successful.
+         * If not, it displays the exception.
+         *
+         * @param result passes the result.
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            // Something wrong with the network or the URL.
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                String status = (String) jsonObject.get("result");
+                if (status.equals("success")) {
+                    Toast.makeText(getApplicationContext(), "Registration Completed!"
+                            , Toast.LENGTH_LONG)
+                            .show();
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
+                                    + jsonObject.get("error")
+                            , Toast.LENGTH_LONG)
+                            .show();
+
+                }
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), "Something wrong with the data" +
+                        e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    /**
+     * LoginTask is an inner class that
+     *
+     * A simple {@link AsyncTask} subclass.
+     */
+    private class LoginTask extends RegisterTask {
         /**
          * onPostExecute checks to see if there was a problem with the URL(Network) which is when an
          * exception is caught. It tries to call the parse Method and checks to see if it was successful.
