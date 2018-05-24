@@ -76,15 +76,12 @@ public class GameActivity extends AppCompatActivity {
                 intent.getFloatExtra(BLADDER, 0.0f));
         Log.d("Game", "Created monster.");
         //View v = getLayoutInflater().inflate(R.layout.activity_game, null, false);
-        View gvp = findViewById(R.id.button_shower);
-        GameView gvr = findViewById(R.id.game_play_view_zzzzz);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        View vp = getLayoutInflater().inflate(R.layout.activity_game, null, false);
-        GameView gvp = vp.findViewById(R.id.game_play_view_zzzzz);
+        GameView gvp = findViewById(R.id.game_play_view);
         if (gvp != null) {
             gvp.gameViewPause();
         }
@@ -93,8 +90,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        View vr = getLayoutInflater().inflate(R.layout.activity_game, null, false);
-        GameView gvr = vr.findViewById(R.id.game_play_view_zzzzz);
+        GameView gvr = findViewById(R.id.game_play_view);
         if (gvr != null) {
             gvr.gameViewResume();
         }
