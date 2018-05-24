@@ -52,8 +52,16 @@ public class GameView extends SurfaceView {
      * @param context The context in which this View is made.
      */
     public GameView(Context context) {
-        super(context, null);
+        this(context, null);
 
+
+    }
+
+    /**
+     * Necessary constructor, calls the other constructor.
+     */
+    public GameView(Context context, AttributeSet set) {
+        super(context, set);
         // This is a bit convoluted, but it retrieves the device width/height.
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -105,11 +113,6 @@ public class GameView extends SurfaceView {
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
         });
-    }
-
-    /** Necessary constructor, calls the other constructor. */
-    public GameView(Context context, AttributeSet set) {
-        this(context);
     }
 
     /**
