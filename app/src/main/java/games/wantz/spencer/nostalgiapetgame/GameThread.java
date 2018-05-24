@@ -15,7 +15,7 @@ import games.wantz.spencer.nostalgiapetgame.drawing.GameView;
  */
 public class GameThread extends Thread {
     /** The number of animation/logic frames to do every second. */
-    private static final int FPS = 30;
+    private static final int FPS = 600;
     /**
      * The GameView that we're tied to.
      */
@@ -65,7 +65,9 @@ public class GameThread extends Thread {
             try {
                 // Super naive sleep, as the previous actions took some time, but that's fine for now.
                 sleep(1000 / FPS);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+
+            }
         }
 
     }

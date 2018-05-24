@@ -34,7 +34,7 @@ public class GameView extends SurfaceView {
     /**
      * Our game thread.
      */
-    private final GameThread mGameThread;
+    private GameThread mGameThread;
     /** The player's monster. */
     private Monster mMonster;
     /** The value to scale our sprite sheets by to fit the device screen. */
@@ -54,14 +54,6 @@ public class GameView extends SurfaceView {
     public GameView(Context context) {
         this(context, null);
 
-
-    }
-
-    /**
-     * Necessary constructor, calls the other constructor.
-     */
-    public GameView(Context context, AttributeSet set) {
-        super(context, set);
         // This is a bit convoluted, but it retrieves the device width/height.
         DisplayMetrics displayMetrics = new DisplayMetrics();
         ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -77,8 +69,10 @@ public class GameView extends SurfaceView {
         mMonsterFrame = 29;
 
         // Make our spritesheets.
-        mBackground = new SpriteSheet(BitmapFactory.decodeResource(getResources(), R.drawable.main_background), 160, 90, mScalar);
-        mUnits = new SpriteSheet(BitmapFactory.decodeResource(getResources(), R.drawable.pets_and_icons), 32, 32, mScalar);
+        mBackground = new SpriteSheet(BitmapFactory.decodeResource(getResources(),
+                R.drawable.main_background), 160, 90, mScalar);
+        mUnits = new SpriteSheet(BitmapFactory.decodeResource(getResources(),
+                R.drawable.pets_and_icons), 32, 32, mScalar);
 
         // Makes our thread.
         mGameThread = new GameThread(this);
@@ -105,6 +99,7 @@ public class GameView extends SurfaceView {
                         mGameThread.join();
                         retry = false;
                     } catch (InterruptedException e) {
+
                     }
                 }
             }
@@ -113,6 +108,25 @@ public class GameView extends SurfaceView {
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
         });
+    }
+
+    /** Necessary constructor, calls the other constructor. */
+    public GameView(Context context, AttributeSet set) {
+        super(context, set);
+    }
+
+
+
+    public void gameViewPause() {
+        mGameThread.setActive(false);
+        mGameThread = null;
+    }
+
+    public void gameViewResume() {
+        if (mGameThread == null) {
+            mGameThread = new GameThread(this);
+            mGameThread.setActive(true);
+        }
     }
 
     /**
