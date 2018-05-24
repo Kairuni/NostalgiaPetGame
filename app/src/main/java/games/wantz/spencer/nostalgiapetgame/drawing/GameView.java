@@ -26,11 +26,11 @@ public class GameView extends SurfaceView {
     /**
      * The sprite sheet for pets and icons.
      */
-    private final SpriteSheet mUnits;
+    private SpriteSheet mUnits;
     /**
      * The sprite sheet for background images.
      */
-    private final SpriteSheet mBackground;
+    private SpriteSheet mBackground;
     /**
      * Our game thread.
      */
@@ -38,21 +38,26 @@ public class GameView extends SurfaceView {
     /** The player's monster. */
     private Monster mMonster;
     /** The value to scale our sprite sheets by to fit the device screen. */
-    private final float mScalar;
+    private float mScalar;
     /** The device's width and height. */
-    private final int mDeviceWidth, mDeviceHeight;
+    private int mDeviceWidth, mDeviceHeight;
     /** What frame to use on the pet sprite sheet. */
     private int mMonsterFrame;
     /** A frame counter used for changing the pet sprite sheet. */
     private int mCounter;
+
+    /** Necessary constructor, calls the other constructor. */
+    public GameView(Context context) {
+        this(context, null);
+    }
 
     /**
      * Creates the GameView, calculates scaling, the device's dimensions, prepares the sprite sheets,
      *  and creates callback methods for the SurfaceHolder for asynchronous updates.
      * @param context The context in which this View is made.
      */
-    public GameView(Context context) {
-        this(context, null);
+    public GameView(Context context, AttributeSet set) {
+        super(context, set);
 
         // This is a bit convoluted, but it retrieves the device width/height.
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -108,11 +113,6 @@ public class GameView extends SurfaceView {
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
         });
-    }
-
-    /** Necessary constructor, calls the other constructor. */
-    public GameView(Context context, AttributeSet set) {
-        super(context, set);
     }
 
 
