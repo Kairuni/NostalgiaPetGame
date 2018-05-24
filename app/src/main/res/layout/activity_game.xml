@@ -8,7 +8,7 @@
     tools:context=".GameActivity" >
 
     <games.wantz.spencer.nostalgiapetgame.drawing.GameView
-        android:id="@+id/game_play_view_zzzzz"
+        android:id="@+id/game_play_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
