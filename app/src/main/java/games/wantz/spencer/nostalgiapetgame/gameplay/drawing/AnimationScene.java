@@ -7,15 +7,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AnimationScene {
-    List<Animation> mAnimations;
-    List<List<Point>> mLocations;
+    private List<Animation> mAnimations;
+    private List<List<Point>> mLocations;
     // In milliseconds
-    List<List<Long>> mTimeToLocations;
-    List<Integer> mFrames;
+    private List<List<Long>> mTimeToLocations;
+    private List<Integer> mFrames;
     // In milliseconds
-    List<Long> mFrameTimers;
+    private List<Long> mFrameTimers;
+    // Is a given set complete?
+    private List<Boolean> mIsComplete;
 
-    long mCurrentTime;
+    // has the entire scene completed its animation?
+    private boolean mSceneAnimationComplete;
+
+    public boolean GetIsComplete() {
+        return mSceneAnimationComplete;
+    }
 
     public AnimationScene(List<Animation> animations, List<List<Point>> animationPoints, List<List<Long>> timeToLocations) {
         if (animations.size() != animationPoints.size() || animations.size() != timeToLocations.size()) {
@@ -30,12 +37,11 @@ public class AnimationScene {
         for (int i = 0; i < mAnimations.size(); i++) {
             mFrames.add(1);
             mFrameTimers.add(0L);
+            mIsComplete.add(false);
         }
-
-        mCurrentTime = 0;
     }
 
-    public void Draw(Canvas canvas, long timeUpdateInMillis) {
+    public void Update(long timeUpdateInMillis) {
         for (int i = 0; i < mAnimations.size(); i++) {
             int frame = mFrames.get(i);
             List<Point> locations = mLocations.get(i);
@@ -51,11 +57,29 @@ public class AnimationScene {
                     frame++;
                     mFrames.set(i, frame);
                 } else {
+                    mIsComplete.set(i, true);
                     // Otherwise, freeze at the final frame
                     currentTimer = times.get(frame);
                 }
             }
+            mFrameTimers.set(i, currentTimer);
+        }
+    }
 
+    public void Draw(Canvas canvas) {
+        boolean done = true;
+        for (int i = 0; i < mAnimations.size(); i++) {
+            if (mIsComplete.get(i)) {
+                continue;
+            } else {
+                done = false;
+            }
+
+            int frame = mFrames.get(i);
+            List<Point> locations = mLocations.get(i);
+            List<Long> times = mTimeToLocations.get(i);
+
+            long currentTimer = mFrameTimers.get(i);
 
             // Frame 0 is initial, and frame is always at least 1.
             Point previousPoint = locations.get(frame - 1);
@@ -72,5 +96,9 @@ public class AnimationScene {
             Animation curAnim = mAnimations.get(i);
             curAnim.Draw(canvas, drawPoint.x, drawPoint.y);
         }
+
+        if (done)
+            mSceneAnimationComplete = true;
     }
+
 }

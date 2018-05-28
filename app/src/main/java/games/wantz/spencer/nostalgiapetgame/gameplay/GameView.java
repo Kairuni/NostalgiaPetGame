@@ -37,6 +37,7 @@ public class GameView extends SurfaceView {
     private SpriteSheet mUnits;
     /** The sprite sheet for background images. Loaded asynchronously. */
     private SpriteSheet mBackground;
+    private SpriteSheet mFixtures;
     /** The thread that handles all game logic. */
     private GameThread mGameThread;
 
@@ -169,7 +170,6 @@ public class GameView extends SurfaceView {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-
         if (mAssetLoader.mDone.get()) {
 
             // Draw the background and the monster.
@@ -182,6 +182,9 @@ public class GameView extends SurfaceView {
             if (mMonster != null) {
                 // Draws the monster, offset from the middle of the screen.
                 mUnits.Draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonsterFrame);
+
+                // SOON:
+                mMonster.Draw(canvas);
             }
         }
     }
@@ -200,6 +203,7 @@ public class GameView extends SurfaceView {
             mLoadedBmps = new ArrayList<Bitmap>();
             mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.main_background));
             mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pets_and_icons));
+            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.fixtures));
 
 
             Log.d(GAME_VIEW_LOG, "Returning null!");
@@ -208,10 +212,10 @@ public class GameView extends SurfaceView {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-
             Log.d(GAME_VIEW_LOG, "Asset loader on post execute.");
             mBackground = new SpriteSheet(mLoadedBmps.get(0), 160, 90, mScalar);
             mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
+            mFixtures = new SpriteSheet(mLoadedBmps.get(2), 64, 64, mScalar);
             mDone.set(true);
             Log.d(GAME_VIEW_LOG, "mDone set to " + mDone.toString());
         }

@@ -14,10 +14,11 @@ public class Animation {
 
     private boolean mLoop;
 
-    public Animation (SpriteSheet theSprtSht, List<Integer> theFrame, List<Float> theFrameTime) {
+    public Animation(SpriteSheet theSprtSht, List<Integer> theFrame, List<Float> theFrameTime, boolean loop) {
         mSprtSht = theSprtSht;
         mFrames = theFrame;
         mFrameTime = theFrameTime;
+        mLoop = loop;
     }
 
     public void Draw (Canvas c, int dX, int dY) {
