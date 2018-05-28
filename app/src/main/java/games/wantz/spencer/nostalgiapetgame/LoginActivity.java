@@ -21,6 +21,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import games.wantz.spencer.nostalgiapetgame.actors.Monster;
+
 /**
  * LoginActivity coordinates the Login Menu, Sign In, and Register Fragments.
  *
@@ -43,7 +45,7 @@ public class LoginActivity
     /**
      * Debug tag for Logging.
      */
-    private static String DEBUG_TAG = "L_ACT";
+    private static String DEBUG_TAG = "LOGIN_ACTIVITY";
 
     /**
      * Async Task for logging in.
@@ -53,6 +55,56 @@ public class LoginActivity
      * Async Task for registering.
      */
     private RegisterTask mRegisterTask;
+
+
+    /**
+     * Value of the JSON return for UID.
+     */
+    public final static String UID = "UID";
+    /**
+     * Value of the JSON return for Breed.
+     */
+    public final static String BREED = "Breed";
+    /**
+     * Value of the JSON return for MaxHealth.
+     */
+    public final static String MAX_HEALTH = "MaxHealth";
+    /**
+     * Value of the JSON return for Health.
+     */
+    public final static String HEALTH = "Health";
+    /**
+     * Value of the JSON return for MaxStamina.
+     */
+    public final static String MAX_STAMINA = "MaxStamina";
+    /**
+     * Value of the JSON return for Stamina.
+     */
+    public final static String STAMINA = "Stamina";
+    /**
+     * Value of the JSON return for MaxHunger.
+     */
+    public final static String MAX_HUNGER = "MaxHunger";
+    /**
+     * Value of the JSON return for Hunger.
+     */
+    public final static String HUNGER = "Hunger";
+    /**
+     * Value of the JSON return for MaxBladder.
+     */
+    public final static String MAX_BLADDER = "MaxBladder";
+    /**
+     * Value of the JSON return for Bladder.
+     */
+    public final static String BLADDER = "Bladder";
+    /**
+     * Value of the JSON return for Fun.
+     */
+    public final static String FUN = "Fun";
+    /**
+     * Value of the JSON return for Dirty.
+     */
+    public final static String DIRTY = "Dirty";
 
     /**
      * Constructor that initializes fields.
@@ -153,7 +205,6 @@ public class LoginActivity
          * doInBackground retrieves data from the HTTP socket, and then closes it.
          *
          * @param urls passes the website url.
-         *
          * @return the JSON string returned from the website.
          */
         @Override
@@ -247,19 +298,23 @@ public class LoginActivity
                             , Toast.LENGTH_LONG)
                             .show();
 
-                    // Push all the retrieved pet's data to the GameActivity.
+                    // Push all the retrieved pet's data to the 
                     Intent intent = new Intent(getBaseContext(), GameActivity.class);
-                    intent.putExtra(GameActivity.UID, (String)jsonObject.get(GameActivity.UID));
-                    intent.putExtra(GameActivity.BREED, Integer.valueOf((String)jsonObject.get(GameActivity.BREED)));
-                    intent.putExtra(GameActivity.MAX_HEALTH, Float.valueOf((String)jsonObject.get(GameActivity.MAX_HEALTH)));
-                    intent.putExtra(GameActivity.HEALTH, Float.valueOf((String)jsonObject.get(GameActivity.HEALTH)));
-                    intent.putExtra(GameActivity.MAX_STAMINA, Float.valueOf((String)jsonObject.get(GameActivity.MAX_STAMINA)));
-                    intent.putExtra(GameActivity.STAMINA, Float.valueOf((String)jsonObject.get(GameActivity.STAMINA)));
-                    intent.putExtra(GameActivity.MAX_HUNGER, Float.valueOf((String)jsonObject.get(GameActivity.MAX_HUNGER)));
-                    intent.putExtra(GameActivity.HUNGER, Float.valueOf((String)jsonObject.get(GameActivity.HUNGER)));
-                    intent.putExtra(GameActivity.MAX_BLADDER, Float.valueOf((String)jsonObject.get(GameActivity.MAX_BLADDER)));
-                    intent.putExtra(GameActivity.BLADDER, Float.valueOf((String)jsonObject.get(GameActivity.BLADDER)));
-
+                    Monster loadMonster = new Monster(
+                            (String) jsonObject.get(UID),
+                            Integer.valueOf((String) jsonObject.get(BREED)),
+                            Float.valueOf((String) jsonObject.get(MAX_HEALTH)),
+                            Float.valueOf((String) jsonObject.get(HEALTH)),
+                            Float.valueOf((String) jsonObject.get(MAX_STAMINA)),
+                            Float.valueOf((String) jsonObject.get(STAMINA)),
+                            Float.valueOf((String) jsonObject.get(MAX_HUNGER)),
+                            Float.valueOf((String) jsonObject.get(HUNGER)),
+                            Float.valueOf((String) jsonObject.get(MAX_BLADDER)),
+                            Float.valueOf((String) jsonObject.get(BLADDER)),
+                            Float.valueOf((String) jsonObject.get(FUN)),
+                            Float.valueOf((String)jsonObject.get(DIRTY))
+                    );
+                    intent.putExtra(GameActivity.MONSTER_EXTRA, loadMonster);
 
                     startActivity(intent);
                     finish();

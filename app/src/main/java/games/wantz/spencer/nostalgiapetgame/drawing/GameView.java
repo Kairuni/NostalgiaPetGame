@@ -14,12 +14,11 @@ import android.view.SurfaceView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import games.wantz.spencer.nostalgiapetgame.GameActivity;
 import games.wantz.spencer.nostalgiapetgame.GameThread;
-import games.wantz.spencer.nostalgiapetgame.Monster;
+import games.wantz.spencer.nostalgiapetgame.actors.Monster;
 import games.wantz.spencer.nostalgiapetgame.R;
 
 /**
@@ -67,6 +66,8 @@ public class GameView extends SurfaceView {
      */
     public GameView(Context context, AttributeSet set) {
         super(context, set);
+
+        Log.d(GAME_VIEW_LOG, "Created game view.");
 
         // This is a bit convoluted, but it retrieves the device width/height.
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -117,22 +118,30 @@ public class GameView extends SurfaceView {
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
         });
 
+        Log.d(GAME_VIEW_LOG, "Creating asset loader.");
         mAssetLoader = new AssetLoader();
         mAssetLoader.execute();
+        Log.d(GAME_VIEW_LOG, "Asset loader running.");
     }
 
 
 
     public void gameViewPause() {
+        Log.d(GAME_VIEW_LOG, "Pausing and killing thread.");
         mGameThread.setActive(false);
         mGameThread = null;
     }
 
     public void gameViewResume() {
         if (mGameThread == null) {
+            Log.d(GAME_VIEW_LOG, "Resumed, recreating thread.");
             mGameThread = new GameThread(this);
             mGameThread.setActive(true);
         }
+    }
+
+    public void setMonster(Monster monster) {
+        mMonster = monster;
     }
 
     /**
@@ -140,22 +149,14 @@ public class GameView extends SurfaceView {
      */
     public void Update() {
         if (mMonster != null) {
-            mMonster.Update();
+            mMonster.Update(32);
 
             mCounter++;
-            mMonsterFrame = 37;
+            mMonsterFrame = mMonster.getBreed() * 16;
             if (mCounter > 30) {
-                mMonsterFrame = 29;
+                mMonsterFrame = mMonster.getBreed() * 16 + 1;
                 if (mCounter > 45)
                     mCounter = 0;
-            }
-
-        } else {
-            Log.d("GameView", "Trying to get monster from parent.");
-            GameActivity parentActivity = (GameActivity) getContext();
-            mMonster = parentActivity.getMonster();
-            if (mMonster == null) {
-                Log.d("GameView", "Monster was null?");
             }
         }
     }
@@ -186,7 +187,7 @@ public class GameView extends SurfaceView {
     }
 
     private class AssetLoader extends AsyncTask<Void, Void, Void> {
-        List<Bitmap> loadedBmps;
+        List<Bitmap> mLoadedBmps;
         final AtomicBoolean mDone;
 
         public AssetLoader() {
@@ -195,48 +196,24 @@ public class GameView extends SurfaceView {
 
         @Override
         protected Void doInBackground(Void... params) {
-            // Start a bitmap loader, then wait for it to finish.
-            BitmapLoader bmpLoader = new BitmapLoader();
 
-            bmpLoader.execute(R.drawable.main_background, R.drawable.pets_and_icons);
+            mLoadedBmps = new ArrayList<Bitmap>();
+            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.main_background));
+            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pets_and_icons));
 
-            try {
-                bmpLoader.get();
-            } catch (InterruptedException e) {
-                Log.e(GAME_VIEW_LOG, "Asset loading interrupted.");
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                Log.e(GAME_VIEW_LOG, "Exception during asset loading.");
-                e.printStackTrace();
-            }
-            /*            // Make our spritesheets.
-             */
+
+            Log.d(GAME_VIEW_LOG, "Returning null!");
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            mBackground = new SpriteSheet(loadedBmps.get(0), 160, 90, mScalar);
-            mUnits = new SpriteSheet(loadedBmps.get(1), 32, 32, mScalar);
+
+            Log.d(GAME_VIEW_LOG, "Asset loader on post execute.");
+            mBackground = new SpriteSheet(mLoadedBmps.get(0), 160, 90, mScalar);
+            mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
             mDone.set(true);
-        }
-    }
-
-    private class BitmapLoader extends AsyncTask<Integer, Void, List<Bitmap>> {
-        @Override
-        protected List<Bitmap> doInBackground(Integer... integers) {
-            List<Bitmap> bitmapList = new ArrayList<Bitmap>();
-
-            for (Integer k : integers) {
-                bitmapList.add(BitmapFactory.decodeResource(getResources(), k));
-            }
-
-            return bitmapList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Bitmap> bmpList) {
-            mAssetLoader.loadedBmps = bmpList;
+            Log.d(GAME_VIEW_LOG, "mDone set to " + mDone.toString());
         }
     }
 }
