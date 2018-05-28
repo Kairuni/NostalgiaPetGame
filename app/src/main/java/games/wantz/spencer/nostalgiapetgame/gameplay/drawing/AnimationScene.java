@@ -32,13 +32,17 @@ public class AnimationScene {
         mAnimations = animations;
         mLocations = animationPoints;
         mTimeToLocations = timeToLocations;
-        mFrames = new ArrayList<>(animations.size());
-        mFrameTimers = new ArrayList<>(animations.size());
+        mFrames = new ArrayList<>();
+        mFrameTimers = new ArrayList<>();
+        mIsComplete = new ArrayList<>();
+
         for (int i = 0; i < mAnimations.size(); i++) {
             mFrames.add(1);
             mFrameTimers.add(0L);
             mIsComplete.add(false);
         }
+
+        mSceneAnimationComplete = false;
     }
 
     public void update(long timeUpdateInMillis) {
@@ -52,7 +56,7 @@ public class AnimationScene {
             // Now, if we have passed the current time, increment the current frame.
             if (currentTimer > times.get(frame)) {
                 // If we still have frames to execute, move on to the next one
-                if (frame < times.size()) {
+                if (frame < times.size() - 1) {
                     currentTimer -= times.get(frame);
                     frame++;
                     mFrames.set(i, frame);
@@ -72,14 +76,13 @@ public class AnimationScene {
             mFrameTimers.set(i, 0L);
             mIsComplete.set(i, false);
         }
+        mSceneAnimationComplete = false;
     }
 
     public void draw(Canvas canvas) {
         boolean done = true;
         for (int i = 0; i < mAnimations.size(); i++) {
-            if (mIsComplete.get(i)) {
-                continue;
-            } else {
+            if (!mIsComplete.get(i)) {
                 done = false;
             }
 

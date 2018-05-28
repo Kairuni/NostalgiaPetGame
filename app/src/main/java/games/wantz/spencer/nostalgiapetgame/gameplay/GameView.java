@@ -81,8 +81,8 @@ public class GameView extends SurfaceView {
         // the actual width divided by 160, we're less concerned about height.
         mScalar = mDeviceWidth / 160.0f;
 
-        // Temporary, set it to the small blobby one.
-        mMonsterFrame = 0;
+        // Set to -1 until loaded.
+        mMonsterFrame = -1;
 
         // Makes our thread.
         mGameThread = new GameThread(this);
@@ -179,12 +179,12 @@ public class GameView extends SurfaceView {
             // Offset so we can draw from the middle, as we are using positioning relative to the center of the game.
             int offset = (int) (16 * mScalar);
 
-            if (mMonster != null) {
+            if (mMonster != null && mMonsterFrame != -1) {
                 // Draws the monster, offset from the middle of the screen.
                 mUnits.Draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonsterFrame);
 
                 // SOON:
-                mMonster.Draw(canvas);
+                mMonster.draw(canvas);
             }
         }
     }
@@ -216,6 +216,8 @@ public class GameView extends SurfaceView {
             mBackground = new SpriteSheet(mLoadedBmps.get(0), 160, 90, mScalar);
             mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
             mFixtures = new SpriteSheet(mLoadedBmps.get(2), 64, 64, mScalar);
+
+            mMonster.buildAnimations(mUnits, mFixtures, mDeviceWidth, mDeviceHeight);
             mDone.set(true);
             Log.d(GAME_VIEW_LOG, "mDone set to " + mDone.toString());
         }

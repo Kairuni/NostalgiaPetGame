@@ -202,10 +202,16 @@ public class Monster implements Serializable {
 
     }
 
-    public void Draw(Canvas canvas) {
+    public void draw(Canvas canvas) {
         if (mActiveScene != -1 && mSceneList.size() > mActiveScene) {
             mSceneList.get(mActiveScene).draw(canvas);
-        } else if (mIdleAnimation != null) {
+            if (mSceneList.get(mActiveScene).getIsComplete()) {
+                mSceneList.get(mActiveScene).reset();
+                mActiveScene = -1;
+            }
+        }
+        // Not an else if because we may have just stopped the scene above ^
+        if (mActiveScene == -1 && mIdleAnimation != null) {
             mIdleAnimation.draw(canvas, mX, mY);
         }
     }
