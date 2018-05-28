@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import games.wantz.spencer.nostalgiapetgame.actors.Monster;
+import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
 
 /**
  * LoginActivity coordinates the Login Menu, Sign In, and Register Fragments.

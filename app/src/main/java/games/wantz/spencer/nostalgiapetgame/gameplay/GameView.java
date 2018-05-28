@@ -1,4 +1,4 @@
-package games.wantz.spencer.nostalgiapetgame.drawing;
+package games.wantz.spencer.nostalgiapetgame.gameplay;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import games.wantz.spencer.nostalgiapetgame.GameActivity;
-import games.wantz.spencer.nostalgiapetgame.GameThread;
-import games.wantz.spencer.nostalgiapetgame.actors.Monster;
+import games.wantz.spencer.nostalgiapetgame.gameplay.GameThread;
+import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
 import games.wantz.spencer.nostalgiapetgame.R;
+import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
 
 /**
  * A view used for handling all game updates and rendering.
@@ -81,7 +81,7 @@ public class GameView extends SurfaceView {
         mScalar = mDeviceWidth / 160.0f;
 
         // Temporary, set it to the small blobby one.
-        mMonsterFrame = 29;
+        mMonsterFrame = 0;
 
         // Makes our thread.
         mGameThread = new GameThread(this);

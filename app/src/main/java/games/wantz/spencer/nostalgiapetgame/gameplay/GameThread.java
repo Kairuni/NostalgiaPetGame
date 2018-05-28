@@ -1,8 +1,6 @@
-package games.wantz.spencer.nostalgiapetgame;
+package games.wantz.spencer.nostalgiapetgame.gameplay;
 
 import android.graphics.Canvas;
-
-import games.wantz.spencer.nostalgiapetgame.drawing.GameView;
 
 /**
  * A thread for running the game. I attempted to use an Async Task for the same purpose, but

@@ -1,11 +1,15 @@
-package games.wantz.spencer.nostalgiapetgame.actors;
+package games.wantz.spencer.nostalgiapetgame.gameplay.actors;
 
 import android.graphics.Canvas;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-import games.wantz.spencer.nostalgiapetgame.drawing.SpriteSheet;
+import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.Animation;
+import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
 
 /**
  * A class that represents the player's pet monster.
@@ -78,6 +82,10 @@ public class Monster implements Serializable {
         return mY;
     }
 
+    Animation mIdleAnimation;
+    Animation mFeedAnimation;
+    Animation mActiveAnimation;
+
     public int getBreed() {
         return mBreed;
     }
@@ -95,11 +103,6 @@ public class Monster implements Serializable {
      * Random for random movement.
      */
     private Random mRandom;
-
-    /**
-     * Static sprite sheet for all monster sprites, currently unused.
-     */
-    static SpriteSheet sMonsterSheet = null;
 
     /**
      * The epoch time we paused the monster at.
@@ -147,6 +150,10 @@ public class Monster implements Serializable {
 
         mWanderFlag = mRandom.nextInt(3);
         mWanderTimer = 0;
+
+        mIdleAnimation = null;
+        mFeedAnimation = null;
+        mActiveAnimation = null;
     }
 
     /**
@@ -175,10 +182,27 @@ public class Monster implements Serializable {
             mWanderFlag = 1;
         }
 
+        //mActiveAnimation.Update(tickMillis);
+    }
+
+    public void buildAnimations(SpriteSheet sheet, int phoneWidth, int phoneHeight) {
+        /* First, build the needed animations. */
+        int startIdx = getBreed() * 16;
+        Integer idleFrames[] = {startIdx, startIdx + 1};
+        Integer feedFrames[] = {startIdx + 2, startIdx + 3};
+        Float idleTimes[] = {0.8f, 0.2f};
+        Float feedTimes[] = {0.2f, 0.2f};
+        mIdleAnimation = new Animation(sheet, new ArrayList<>(Arrays.asList(idleFrames)), new ArrayList<>(Arrays.asList(idleTimes)));
+        mFeedAnimation = new Animation(sheet, new ArrayList<>(Arrays.asList(feedFrames)), new ArrayList<>(Arrays.asList(feedTimes)));
+        mActiveAnimation = mIdleAnimation;
+
+        /* Next, feed them into the scenes. */
     }
 
     public void Draw(Canvas canvas) {
-
+        if (mActiveAnimation != null) {
+            mActiveAnimation.Draw(canvas, mX, mY);
+        }
     }
 
     public void onPause() {

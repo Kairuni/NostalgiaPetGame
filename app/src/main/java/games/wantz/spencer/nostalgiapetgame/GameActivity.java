@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
-import games.wantz.spencer.nostalgiapetgame.actors.Monster;
-import games.wantz.spencer.nostalgiapetgame.drawing.GameView;
+import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
+import games.wantz.spencer.nostalgiapetgame.gameplay.GameView;
 
 /**
  * The activity used for actually playing the game.
@@ -62,5 +62,21 @@ public class GameActivity extends AppCompatActivity {
         if (gameView != null) {
             gameView.gameViewResume();
         }
+    }
+
+    protected void onFeed() {
+
+    }
+
+    protected void onShower() {
+
+    }
+
+    protected void onBathroom() {
+
+    }
+
+    protected void onStats() {
+
     }
 }

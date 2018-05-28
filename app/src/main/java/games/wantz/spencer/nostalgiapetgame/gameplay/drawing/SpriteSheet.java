@@ -1,4 +1,4 @@
-package games.wantz.spencer.nostalgiapetgame.drawing;
+package games.wantz.spencer.nostalgiapetgame.gameplay.drawing;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -55,7 +55,7 @@ public class SpriteSheet {
      * @param frameHeight The height of any given frame.
      * @param scale       The scale to multiply by when drawing this sheet.
      */
-    SpriteSheet(Bitmap theBmp, int frameWidth, int frameHeight, float scale) {
+    public SpriteSheet(Bitmap theBmp, int frameWidth, int frameHeight, float scale) {
         mBitmap = theBmp;
         mWidth = theBmp.getWidth();
         mHeight = theBmp.getHeight();

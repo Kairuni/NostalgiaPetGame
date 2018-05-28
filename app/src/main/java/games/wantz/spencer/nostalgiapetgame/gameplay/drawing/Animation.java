@@ -1,4 +1,4 @@
-package games.wantz.spencer.nostalgiapetgame.drawing;
+package games.wantz.spencer.nostalgiapetgame.gameplay.drawing;
 
 import android.graphics.Canvas;
 
