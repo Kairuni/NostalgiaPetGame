@@ -17,7 +17,9 @@ import games.wantz.spencer.nostalgiapetgame.drawing.GameView;
  */
 public class GameActivity extends AppCompatActivity {
 
-    /** Value of the JSON return for UID. */
+    /**
+     * Value of the JSON return for UID.
+     */
     public final static String UID = "UID";
     /** Value of the JSON return for Breed. */
     public final static String BREED = "Breed";

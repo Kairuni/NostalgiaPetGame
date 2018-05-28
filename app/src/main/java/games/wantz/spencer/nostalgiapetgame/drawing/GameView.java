@@ -2,13 +2,20 @@ package games.wantz.spencer.nostalgiapetgame.drawing;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import games.wantz.spencer.nostalgiapetgame.GameActivity;
 import games.wantz.spencer.nostalgiapetgame.GameThread;
@@ -23,18 +30,17 @@ import games.wantz.spencer.nostalgiapetgame.R;
  * @version 0.1, 11 May 2018
  */
 public class GameView extends SurfaceView {
+    private static final String GAME_VIEW_LOG = "GAME_VIEW";
+
     /**
-     * The sprite sheet for pets and icons.
+     * The sprite sheet for pets and icons. Loaded asynchronously.
      */
     private SpriteSheet mUnits;
-    /**
-     * The sprite sheet for background images.
-     */
+    /** The sprite sheet for background images. Loaded asynchronously. */
     private SpriteSheet mBackground;
-    /**
-     * Our game thread.
-     */
+    /** The thread that handles all game logic. */
     private GameThread mGameThread;
+
     /** The player's monster. */
     private Monster mMonster;
     /** The value to scale our sprite sheets by to fit the device screen. */
@@ -45,6 +51,9 @@ public class GameView extends SurfaceView {
     private int mMonsterFrame;
     /** A frame counter used for changing the pet sprite sheet. */
     private int mCounter;
+
+    /* An async task used to load assets. */
+    private AssetLoader mAssetLoader;
 
     /** Necessary constructor, calls the other constructor. */
     public GameView(Context context) {
@@ -72,12 +81,6 @@ public class GameView extends SurfaceView {
 
         // Temporary, set it to the small blobby one.
         mMonsterFrame = 29;
-
-        // Make our spritesheets.
-        mBackground = new SpriteSheet(BitmapFactory.decodeResource(getResources(),
-                R.drawable.main_background), 160, 90, mScalar);
-        mUnits = new SpriteSheet(BitmapFactory.decodeResource(getResources(),
-                R.drawable.pets_and_icons), 32, 32, mScalar);
 
         // Makes our thread.
         mGameThread = new GameThread(this);
@@ -113,6 +116,9 @@ public class GameView extends SurfaceView {
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
         });
+
+        mAssetLoader = new AssetLoader();
+        mAssetLoader.execute();
     }
 
 
@@ -163,16 +169,74 @@ public class GameView extends SurfaceView {
     public void draw(Canvas canvas) {
         super.draw(canvas);
 
-        // Draw the background and the monster.
-        mBackground.Draw(canvas, 0, 0, 0);
+        if (mAssetLoader.mDone.get()) {
 
-        // And draw the monster in (roughly) the center of the screen, biased towards the top a bit.
-        // Offset so we can draw from the middle, as we are using positioning relative to the center of the game.
-        int offset = (int)(16 * mScalar);
+            // Draw the background and the monster.
+            mBackground.Draw(canvas, 0, 0, 0);
 
-        if (mMonster != null) {
-            // Draws the monster, offset from the middle of the screen.
-            mUnits.Draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonsterFrame);
+            // And draw the monster in (roughly) the center of the screen, biased towards the top a bit.
+            // Offset so we can draw from the middle, as we are using positioning relative to the center of the game.
+            int offset = (int) (16 * mScalar);
+
+            if (mMonster != null) {
+                // Draws the monster, offset from the middle of the screen.
+                mUnits.Draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonsterFrame);
+            }
+        }
+    }
+
+    private class AssetLoader extends AsyncTask<Void, Void, Void> {
+        List<Bitmap> loadedBmps;
+        final AtomicBoolean mDone;
+
+        public AssetLoader() {
+            mDone = new AtomicBoolean(false);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // Start a bitmap loader, then wait for it to finish.
+            BitmapLoader bmpLoader = new BitmapLoader();
+
+            bmpLoader.execute(R.drawable.main_background, R.drawable.pets_and_icons);
+
+            try {
+                bmpLoader.get();
+            } catch (InterruptedException e) {
+                Log.e(GAME_VIEW_LOG, "Asset loading interrupted.");
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                Log.e(GAME_VIEW_LOG, "Exception during asset loading.");
+                e.printStackTrace();
+            }
+            /*            // Make our spritesheets.
+             */
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mBackground = new SpriteSheet(loadedBmps.get(0), 160, 90, mScalar);
+            mUnits = new SpriteSheet(loadedBmps.get(1), 32, 32, mScalar);
+            mDone.set(true);
+        }
+    }
+
+    private class BitmapLoader extends AsyncTask<Integer, Void, List<Bitmap>> {
+        @Override
+        protected List<Bitmap> doInBackground(Integer... integers) {
+            List<Bitmap> bitmapList = new ArrayList<Bitmap>();
+
+            for (Integer k : integers) {
+                bitmapList.add(BitmapFactory.decodeResource(getResources(), k));
+            }
+
+            return bitmapList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Bitmap> bmpList) {
+            mAssetLoader.loadedBmps = bmpList;
         }
     }
 }
