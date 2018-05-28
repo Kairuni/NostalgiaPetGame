@@ -164,7 +164,7 @@ public class Monster implements Serializable {
      * Currently only makes the monster move. In the future updates will include
      * changes to hunger, stamina, bladder, and health.
      */
-    public void Update(long tickMillis) {
+    public void update(long tickMillis) {
         // Currently ticks at a FIXED RATE
         if (mWanderFlag == 0) {
             mX += 2;
@@ -186,7 +186,7 @@ public class Monster implements Serializable {
         }
 
         for (AnimationScene scene : mSceneList) {
-            scene.Update(tickMillis);
+            scene.update(tickMillis);
         }
 
     }
@@ -204,9 +204,9 @@ public class Monster implements Serializable {
 
     public void Draw(Canvas canvas) {
         if (mActiveScene != -1 && mSceneList.size() > mActiveScene) {
-            mSceneList.get(mActiveScene).Draw(canvas);
+            mSceneList.get(mActiveScene).draw(canvas);
         } else if (mIdleAnimation != null) {
-            mIdleAnimation.Draw(canvas, mX, mY);
+            mIdleAnimation.draw(canvas, mX, mY);
         }
     }
 
@@ -216,7 +216,7 @@ public class Monster implements Serializable {
 
     public void onResume() {
         long unpauseTime = System.currentTimeMillis();
-        Update(unpauseTime - pauseTime);
+        update(unpauseTime - pauseTime);
         pauseTime = unpauseTime;
     }
 

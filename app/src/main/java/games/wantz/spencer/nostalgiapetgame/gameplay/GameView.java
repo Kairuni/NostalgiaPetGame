@@ -148,9 +148,9 @@ public class GameView extends SurfaceView {
     /**
      * Updates the monster, allowing it to walk back and forth and in the future become hungry.
      */
-    public void Update() {
+    public void update() {
         if (mMonster != null) {
-            mMonster.Update(32);
+            mMonster.update(32);
 
             mCounter++;
             mMonsterFrame = mMonster.getBreed() * 16;

@@ -59,7 +59,8 @@ public class GameThread extends Thread {
                 }
             }
             // Have the GameView update its contents, including the monster..
-            mGameView.Update();
+            // TODO: Do the update logic here, instead of in the game view?
+            mGameView.update();
             try {
                 // Super naive sleep, as the previous actions took some time, but that's fine for now.
                 sleep(1000 / FPS);

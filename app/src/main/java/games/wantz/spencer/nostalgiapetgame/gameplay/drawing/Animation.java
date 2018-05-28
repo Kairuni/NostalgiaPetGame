@@ -21,7 +21,7 @@ public class Animation {
         mLoop = loop;
     }
 
-    public void Draw (Canvas c, int dX, int dY) {
+    public void draw(Canvas c, int dX, int dY) {
         // mSprtSht.Draw();
     }
 }

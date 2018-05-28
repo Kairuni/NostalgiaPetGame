@@ -20,7 +20,7 @@ public class AnimationScene {
     // has the entire scene completed its animation?
     private boolean mSceneAnimationComplete;
 
-    public boolean GetIsComplete() {
+    public boolean getIsComplete() {
         return mSceneAnimationComplete;
     }
 
@@ -41,7 +41,7 @@ public class AnimationScene {
         }
     }
 
-    public void Update(long timeUpdateInMillis) {
+    public void update(long timeUpdateInMillis) {
         for (int i = 0; i < mAnimations.size(); i++) {
             int frame = mFrames.get(i);
             List<Point> locations = mLocations.get(i);
@@ -66,7 +66,15 @@ public class AnimationScene {
         }
     }
 
-    public void Draw(Canvas canvas) {
+    public void reset() {
+        for (int i = 0; i < mFrames.size(); i++) {
+            mFrames.set(i, 1);
+            mFrameTimers.set(i, 0L);
+            mIsComplete.set(i, false);
+        }
+    }
+
+    public void draw(Canvas canvas) {
         boolean done = true;
         for (int i = 0; i < mAnimations.size(); i++) {
             if (mIsComplete.get(i)) {
@@ -94,7 +102,7 @@ public class AnimationScene {
             Point drawPoint = new Point(previousPoint.x + (int) (diff.x * mult), previousPoint.y + (int) (diff.y * mult));
 
             Animation curAnim = mAnimations.get(i);
-            curAnim.Draw(canvas, drawPoint.x, drawPoint.y);
+            curAnim.draw(canvas, drawPoint.x, drawPoint.y);
         }
 
         if (done)
