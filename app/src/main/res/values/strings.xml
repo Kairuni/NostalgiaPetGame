@@ -24,6 +24,10 @@
     <string name="btn_misc">Misc</string>
     <string name="btn_feed">Feed</string>
 
+    <string name="LOGIN_PREFS">games.wantz.spencer.nostalgiapetgame.PREFS</string>
+    <string name="LOGGEDIN">loggedin</string>
+    <string name="action_logout">LOGOUT</string>
+
     //SMS Strings
     <string name="sms_permission_granted">Permission Granted</string>
     <string name="sms_permission_denied">Permission Denied</string>

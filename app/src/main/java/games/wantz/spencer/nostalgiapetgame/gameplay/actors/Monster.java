@@ -30,9 +30,7 @@ public class Monster implements Serializable {
      * The breed of this monster.
      */
     private int mBreed;
-    /**
-     * Has this monster been hatched?
-     */
+    /** Has this monster been hatched? */
     private boolean mIsHatched;
     /** Health statistics for this monster. */
     private float mMaxHealth, mHealth;
@@ -81,11 +79,12 @@ public class Monster implements Serializable {
      * @param Fun        Current 'fun' value - how entertained the creature is.
      * @param Dirty      Current 'dirty' value - how much the creature needs a bath.
      */
-    public Monster(String UID, int Breed, float maxHealth, float Health, float maxStamina,
+    public Monster(String UID, int Breed, boolean hatched, float maxHealth, float Health, float maxStamina,
                    float Stamina, float maxHunger, float Hunger, float maxBladder, float Bladder,
-                   float Fun, float Dirty) {
+                   float Fun, float Dirty, long lastAccess) {
         mUID = UID;
         mBreed = Breed;
+        mIsHatched = hatched;
         mMaxHealth = maxHealth;
         mHealth = Health;
         mMaxStamina = maxStamina;
@@ -107,7 +106,12 @@ public class Monster implements Serializable {
         mWanderFlag = mRandom.nextInt(3);
         mWanderTimer = 0;
 
+        pauseTime = lastAccess;
+
         mPoops = new ArrayList<>();
+
+        // Let the monster catch up.
+        onResume();
     }
 
     /**
@@ -116,27 +120,27 @@ public class Monster implements Serializable {
      * changes to hunger, stamina, bladder, and health.
      */
     public void update(long tickMillis) {
+        if (mIsHatched) {
+            // Currently ticks at a FIXED RATE
+            if (mWanderFlag == 0) {
+                mX += 2;
+            } else if (mWanderFlag == 1) {
+                mX -= 2;
+            }
+            mWanderTimer++;
 
-        // Currently ticks at a FIXED RATE
-        if (mWanderFlag == 0) {
-            mX += 2;
-        } else if (mWanderFlag == 1) {
-            mX -= 2;
+            if (mWanderTimer > WANDER_RESET) {
+                mWanderFlag = mRandom.nextInt(3);
+                mWanderTimer = 0;
+            }
+
+            // If we're too far left or right, walk back towards the center of the screen.
+            if (mX < -500) {
+                mWanderFlag = 0;
+            } else if (mX > 500) {
+                mWanderFlag = 1;
+            }
         }
-        mWanderTimer++;
-
-        if (mWanderTimer > WANDER_RESET) {
-            mWanderFlag = mRandom.nextInt(3);
-            mWanderTimer = 0;
-        }
-
-        // If we're too far left or right, walk back towards the center of the screen.
-        if (mX < -500) {
-            mWanderFlag = 0;
-        } else if (mX > 500) {
-            mWanderFlag = 1;
-        }
-
 
     }
 
@@ -218,6 +222,11 @@ public class Monster implements Serializable {
         return mBreed;
     }
 
+    public boolean getHatched() {
+        return mIsHatched; }
+
+
+
     public List<Poop> getPoops() {
         return new ArrayList<Poop>(mPoops);
     }
@@ -262,6 +271,10 @@ public class Monster implements Serializable {
             mFun = mMaxFun;
     }
 
+    public void setHatched() {
+        mIsHatched = true;
+    }
+
     public void setDirty(float dirty) {
         mDirty = dirty;
         if (mDirty < 0)
@@ -276,6 +289,42 @@ public class Monster implements Serializable {
 
     public void setY(int mY) {
         this.mY = mY;
+    }
+
+    public float getHealthPercent() {
+        return 100 * mHealth / mMaxHealth;
+    }
+
+    public float getStaminaPercent() {
+        return 100 * mStamina / mMaxStamina;
+    }
+
+    public float getHungerPercent() {
+        return 100 * mHunger / mMaxHunger;
+    }
+
+    public String getUID() {
+        return mUID;
+    }
+
+    public float getMaxHealth() {
+        return mMaxHealth;
+    }
+
+    public float getMaxStamina() {
+        return mMaxStamina;
+    }
+
+    public float getMaxHunger() {
+        return mMaxHunger;
+    }
+
+    public float getMaxBladder() {
+        return mMaxBladder;
+    }
+
+    public float getBladderPercent() {
+        return 100 * mBladder / mMaxBladder;
     }
 
     public class Poop {

@@ -128,23 +128,27 @@ public class GameView extends SurfaceView {
             /** When we create a surface, we want the thread to run. */
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-                mGameThread.setActive(true);
-                mGameThread.start();
+                if (mGameThread != null) {
+                    mGameThread.setActive(true);
+                    mGameThread.start();
+                }
             }
 
             /** When the surface is destroyed, we want to STOP the thread via join. */
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                mGameThread.setActive(false);
-                boolean retry = true;
-                // Attempts to stop the thread, can be interrupted.
-                while (retry) {
-                    try {
-                        // Stops the thread.
-                        mGameThread.join();
-                        retry = false;
-                    } catch (InterruptedException e) {
+                if (mGameThread != null) {
+                    mGameThread.setActive(false);
+                    boolean retry = true;
+                    // Attempts to stop the thread, can be interrupted.
+                    while (retry) {
+                        try {
+                            // Stops the thread.
+                            mGameThread.join();
+                            retry = false;
+                        } catch (InterruptedException e) {
 
+                        }
                     }
                 }
             }
@@ -177,6 +181,12 @@ public class GameView extends SurfaceView {
     public void gameViewPause() {
         Log.d(GAME_VIEW_LOG, "Pausing and killing thread.");
         mGameThread.setActive(false);
+        try {
+            // Stops the thread.
+            mGameThread.join();
+        } catch (InterruptedException e) {
+
+        }
         mGameThread = null;
     }
 
@@ -247,23 +257,28 @@ public class GameView extends SurfaceView {
             // Offset so we can draw from the middle, as we are using positioning relative to the center of the game.
             int offset = (int) (16 * mScalar);
 
-            // TODO: MOVE SCENES HERE, MAKE THIS HANDLE DRAWING MONSTER EXCEPT FOR POOPS OR JUST GET A POOPS LIST
+            // TODO: POOPS
             if (mMonster != null && mMonsterFrame != -1) {
                 // TODO: DRAW HUNGRY/ETC BUBBLES VIA MONSTER SPRITE SHEET
+                if (!mMonster.getHatched()) {
+                    mUnits.draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonster.getBreed() * 16 + 4);
+                } else {
 
-                if (mCurScene != -1 && mSceneList.size() > mCurScene) {
-                    mSceneList.get(mCurScene).draw(canvas);
-                    if (mSceneList.get(mCurScene).getIsComplete()) {
-                        mSceneList.get(mCurScene).reset();
-                        mCurScene = -1;
+                    if (mCurScene != -1 && mSceneList.size() > mCurScene) {
+                        mSceneList.get(mCurScene).draw(canvas);
+                        if (mSceneList.get(mCurScene).getIsComplete()) {
+                            // TODO: HANDLE SCENE COMPLETION
+
+                            mSceneList.get(mCurScene).reset();
+                            mCurScene = -1;
+                        }
                     }
-                }
-                // Not an else if because we may have just stopped the scene above ^
-                // Draw the monster idling:
-                if (mCurScene == -1) {
-                    // Draws the monster, offset from the middle of the screen.
-                    // TODO: CHANGE THIS TO AN ANIMATION
-                    mUnits.draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonsterFrame);
+                    // Not an else if because we may have just stopped the scene above ^
+                    // Draw the monster idling:
+                    if (mCurScene == -1) {
+                        // Draws the monster, offset from the middle of the screen.
+                        mAnimations.get(0).draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset);
+                    }
                 }
             }
         }

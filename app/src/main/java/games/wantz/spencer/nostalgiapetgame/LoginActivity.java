@@ -4,7 +4,9 @@
  */
 package games.wantz.spencer.nostalgiapetgame;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
+import games.wantz.spencer.nostalgiapetgame.gameplay.data.MonsterDB;
 
 /**
  * LoginActivity coordinates the Login Menu, Sign In, and Register Fragments.
@@ -46,17 +49,6 @@ public class LoginActivity
      * Debug tag for Logging.
      */
     private static String DEBUG_TAG = "LOGIN_ACTIVITY";
-
-    /**
-     * Async Task for logging in.
-     */
-    private LoginTask mLoginTask;
-    /**
-     * Async Task for registering.
-     */
-    private RegisterTask mRegisterTask;
-
-
     /**
      * Value of the JSON return for UID.
      */
@@ -65,6 +57,10 @@ public class LoginActivity
      * Value of the JSON return for Breed.
      */
     public final static String BREED = "Breed";
+    /**
+     * Value of the JSON return for Breed.
+     */
+    public final static String HATCHED = "Hatched";
     /**
      * Value of the JSON return for MaxHealth.
      */
@@ -97,14 +93,32 @@ public class LoginActivity
      * Value of the JSON return for Bladder.
      */
     public final static String BLADDER = "Bladder";
-    /**
-     * Value of the JSON return for Fun.
-     */
+    /** Value of the JSON return for Fun. */
     public final static String FUN = "Fun";
-    /**
-     * Value of the JSON return for Dirty.
-     */
+    /** Value of the JSON return for Dirty. */
     public final static String DIRTY = "Dirty";
+    /**
+     * Value of the JSON return for last access.
+     */
+    public final static String LAST_ACCESS = "LAST_ACCESS";
+
+
+    /**
+     * Shared preferences for saving logged in state.
+     */
+    private SharedPreferences mSharedPreferences;
+
+    /**
+     * Async Task for logging in.
+     */
+    private LoginTask mLoginTask;
+    /**
+     * Async Task for registering.
+     */
+    private RegisterTask mRegisterTask;
+
+
+    private MonsterDB mMonsterDB;
 
     /**
      * Constructor that initializes fields.
@@ -128,9 +142,26 @@ public class LoginActivity
 
         LoginMenuFragment loginMenuFragment = new LoginMenuFragment();
 
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.login_fragment_container, loginMenuFragment)
-                .commit();
+
+        mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
+                , Context.MODE_PRIVATE);
+        if (!mSharedPreferences.getBoolean(getString(R.string.LOGGEDIN), false)) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.login_fragment_container, loginMenuFragment)
+                    .commit();
+        } else {
+            // Start the game, loading monster from database.
+            Intent intent = new Intent(this, GameActivity.class);
+            if (mMonsterDB == null) {
+                mMonsterDB = new MonsterDB(getApplicationContext());
+            }
+
+            Monster loadMonster = mMonsterDB.getMonster();
+
+            intent.putExtra(GameActivity.MONSTER_EXTRA, loadMonster);
+            startActivity(intent);
+            finish();
+        }
     }
 
     /**
@@ -142,7 +173,7 @@ public class LoginActivity
     public void signInUser(String url) {
         if (mLoginTask == null) {
             mLoginTask = new LoginTask();
-            mLoginTask.execute(new String[]{url.toString()});
+            mLoginTask.execute(url);
         }
         getSupportFragmentManager().popBackStackImmediate();
     }
@@ -156,7 +187,7 @@ public class LoginActivity
     public void registerUser(String url) {
         if (mRegisterTask == null) {
             mRegisterTask = new RegisterTask();
-            mRegisterTask.execute(new String[]{url.toString()});
+            mRegisterTask.execute(url);
         }
         getSupportFragmentManager().popBackStackImmediate();
     }
@@ -300,9 +331,12 @@ public class LoginActivity
 
                     // Push all the retrieved pet's data to the 
                     Intent intent = new Intent(getBaseContext(), GameActivity.class);
+
+                    // Grab all the monster's stats
                     Monster loadMonster = new Monster(
                             (String) jsonObject.get(UID),
                             Integer.valueOf((String) jsonObject.get(BREED)),
+                            Boolean.valueOf((String) jsonObject.get(HATCHED)),
                             Float.valueOf((String) jsonObject.get(MAX_HEALTH)),
                             Float.valueOf((String) jsonObject.get(HEALTH)),
                             Float.valueOf((String) jsonObject.get(MAX_STAMINA)),
@@ -312,9 +346,20 @@ public class LoginActivity
                             Float.valueOf((String) jsonObject.get(MAX_BLADDER)),
                             Float.valueOf((String) jsonObject.get(BLADDER)),
                             Float.valueOf((String) jsonObject.get(FUN)),
-                            Float.valueOf((String)jsonObject.get(DIRTY))
+                            Float.valueOf((String) jsonObject.get(DIRTY)),
+                            Long.valueOf((String) jsonObject.get(LAST_ACCESS))
                     );
                     intent.putExtra(GameActivity.MONSTER_EXTRA, loadMonster);
+
+                    // Save the monster into our local db as well
+                    if (mMonsterDB == null) {
+                        mMonsterDB = new MonsterDB(getApplicationContext());
+                        mMonsterDB.insertMonster(loadMonster);
+                    }
+
+                    mSharedPreferences.edit()
+                            .putBoolean(getString(R.string.LOGGEDIN), true)
+                            .apply();
 
                     startActivity(intent);
                     finish();

@@ -22,7 +22,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".8" />
+        app:layout_constraintGuide_percent="0.84" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
 
     <ImageButton
         android:id="@+id/button_shower"
@@ -30,7 +37,6 @@
         android:layout_height="0dp"
         android:scaleType="fitCenter"
         android:src="@drawable/shower_button"
-        android:text="@string/btn_shower"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_bathroom"
         app:layout_constraintHorizontal_bias="0.5"
@@ -43,7 +49,6 @@
         android:layout_height="0dp"
         android:scaleType="fitCenter"
         android:src="@drawable/poop_button"
-        android:text="@string/btn_bathroom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_play"
         app:layout_constraintHorizontal_bias="0.5"
@@ -56,7 +61,6 @@
         android:layout_height="0dp"
         android:scaleType="fitCenter"
         android:src="@drawable/play_ball"
-        android:text="@string/btn_play"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_misc"
         app:layout_constraintHorizontal_bias="0.5"
@@ -68,7 +72,6 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="1dp"
-        android:text="@string/btn_misc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -81,11 +84,32 @@
         android:layout_height="0dp"
         android:scaleType="fitCenter"
         android:src="@drawable/meat_button"
-        android:text="@string/btn_feed"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_shower"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+    <ImageButton
+        android:id="@+id/button_share"
+        android:layout_width="41dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@android:drawable/ic_menu_share"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline7" />
+
+    <Button
+        android:id="@+id/button_logout"
+        android:layout_width="81dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/action_logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline7" />
 
 </android.support.constraint.ConstraintLayout>
