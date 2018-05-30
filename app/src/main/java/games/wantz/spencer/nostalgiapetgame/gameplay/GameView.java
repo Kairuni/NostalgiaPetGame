@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
 import games.wantz.spencer.nostalgiapetgame.R;
+import games.wantz.spencer.nostalgiapetgame.gameplay.data.MonsterDB;
 import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.Animation;
 import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.AnimationScene;
 import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SceneBuilder;
@@ -50,10 +51,6 @@ public class GameView extends SurfaceView {
     private float mScalar;
     /** The device's width and height. */
     private int mDeviceWidth, mDeviceHeight;
-    /** What frame to use on the pet sprite sheet. */
-    private int mMonsterFrame;
-    /** A frame counter used for changing the pet sprite sheet. */
-    private int mCounter;
 
     /**
      * AtomicInteger value used to control what the next scene should be.
@@ -64,11 +61,6 @@ public class GameView extends SurfaceView {
      * The currently playing scene.
      */
     private int mCurScene;
-
-    /**
-     * An async task used to load assets.
-     */
-    private AssetLoader mAssetLoader;
 
     /**
      * AtomicBoolean value used to determine when assets have finished loading.
@@ -89,6 +81,9 @@ public class GameView extends SurfaceView {
      * List of pregenerated animations for fixtures.
      */
     List<Animation> mFixtureAnimations;
+
+    private MonsterDB mMonsterDB;
+
 
     /** Necessary constructor, calls the other constructor. */
     public GameView(Context context) {
@@ -115,9 +110,6 @@ public class GameView extends SurfaceView {
         // Target is 16 by 9, and our base resolution is 160 x 90, so our scalar should be
         // the actual width divided by 160, we're less concerned about height.
         mScalar = mDeviceWidth / 160.0f;
-
-        // Set to -1 until loaded.
-        mMonsterFrame = -1;
 
         // Makes our thread.
         mGameThread = new GameThread(this);
@@ -169,9 +161,10 @@ public class GameView extends SurfaceView {
         mNextScene.set(-1);
         mCurScene = -1;
 
+        AssetLoader assetLoader;
         Log.d(GAME_VIEW_LOG, "Creating asset loader.");
-        mAssetLoader = new AssetLoader();
-        mAssetLoader.execute();
+        assetLoader = new AssetLoader();
+        assetLoader.execute();
         Log.d(GAME_VIEW_LOG, "Asset loader running.");
 
     }
@@ -187,6 +180,13 @@ public class GameView extends SurfaceView {
         } catch (InterruptedException e) {
 
         }
+
+        // Save the monster into our local db as well
+        if (mMonsterDB == null) {
+            mMonsterDB = new MonsterDB(getContext().getApplicationContext());
+            mMonsterDB.insertMonster(mMonster);
+        }
+
         mGameThread = null;
     }
 
@@ -210,6 +210,13 @@ public class GameView extends SurfaceView {
         mNextScene.set(2);
     }
 
+    public void doHatch() {
+        if (mMonster != null && mMonster.getHatched() == false) {
+            Log.d(GAME_VIEW_LOG, "Hatching!");
+            mMonster.setHatched();
+        }
+    }
+
     public void setMonster(Monster monster) {
         mMonster = monster;
     }
@@ -221,22 +228,14 @@ public class GameView extends SurfaceView {
         if (mMonster != null) {
             mMonster.update(16);
 
-            mCounter++;
-            mMonsterFrame = mMonster.getBreed() * 16;
-            if (mCounter > 30) {
-                mMonsterFrame = mMonster.getBreed() * 16 + 1;
-                if (mCounter > 45)
-                    mCounter = 0;
+            if (mCurScene == -1) {
+                mCurScene = mNextScene.getAndSet(-1);
+                if (mCurScene != -1) {
+                    mSceneList.get(mCurScene).reset();
+                }
+            } else if (mMonster.getHatched()) {
+                mSceneList.get(mCurScene).update(16);
             }
-        }
-
-        if (mCurScene == -1) {
-            mCurScene = mNextScene.getAndSet(-1);
-            if (mCurScene != -1) {
-                mSceneList.get(mCurScene).reset();
-            }
-        } else {
-            mSceneList.get(mCurScene).update(16);
         }
     }
 
@@ -258,9 +257,10 @@ public class GameView extends SurfaceView {
             int offset = (int) (16 * mScalar);
 
             // TODO: POOPS
-            if (mMonster != null && mMonsterFrame != -1) {
+            if (mMonster != null) {
                 // TODO: DRAW HUNGRY/ETC BUBBLES VIA MONSTER SPRITE SHEET
                 if (!mMonster.getHatched()) {
+                    Log.d(GAME_VIEW_LOG, "Monster not hatched yet?");
                     mUnits.draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonster.getBreed() * 16 + 4);
                 } else {
 
@@ -292,7 +292,7 @@ public class GameView extends SurfaceView {
         mSceneList.add(SceneBuilder.buildFeedScene(mAnimations.get(1), mAnimations.get(2), phoneWidth, phoneHeight));
         mSceneList.add(SceneBuilder.buildShowerScene(mAnimations.get(0), mFixtureAnimations.get(0), phoneWidth, phoneHeight));
         // TODO: REMOVE THIS AFTER TESTING THAT FEED SCENE PLAYS
-        mCurScene = 1;
+        mCurScene = -1;
     }
 
     private class AssetLoader extends AsyncTask<Void, Void, Void> {
@@ -311,9 +311,12 @@ public class GameView extends SurfaceView {
             mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
             mFixtures = new SpriteSheet(mLoadedBmps.get(2), 64, 64, mScalar);
 
+            Log.d(GAME_VIEW_LOG, "Waiting for monster");
             while (mMonster == null) {
                 // Wait.
             }
+
+            Log.d(GAME_VIEW_LOG, "Monster received.");
             buildAnimations(mUnits, mFixtures, mDeviceWidth, mDeviceHeight);
 
             return null;
@@ -321,6 +324,7 @@ public class GameView extends SurfaceView {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            Log.d(GAME_VIEW_LOG, "Asset loader done");
             mAssetsDone.set(true);
         }
     }

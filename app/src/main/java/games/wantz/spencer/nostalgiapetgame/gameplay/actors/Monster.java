@@ -26,9 +26,7 @@ public class Monster implements Serializable {
 
     /** The Unique ID for this monster. */
     private String mUID;
-    /**
-     * The breed of this monster.
-     */
+    /** The breed of this monster. */
     private int mBreed;
     /** Has this monster been hatched? */
     private boolean mIsHatched;

@@ -95,6 +95,13 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+        gameView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameView.doHatch();
+            }
+        });
+
 
         // Pass the monster to our GameView, as we don't actually care about it.
         gameView.setMonster(monster);
