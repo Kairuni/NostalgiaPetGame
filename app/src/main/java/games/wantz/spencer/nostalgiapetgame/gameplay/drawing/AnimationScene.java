@@ -6,6 +6,10 @@ import android.graphics.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Keegan Wantz wantzkt@uw.edu
+ * @version B.1, 28 May 2018
+ */
 public class AnimationScene {
     private List<Animation> mAnimations;
     private List<List<Point>> mLocations;
@@ -47,6 +51,8 @@ public class AnimationScene {
 
     public void update(long timeUpdateInMillis) {
         for (int i = 0; i < mAnimations.size(); i++) {
+            mAnimations.get(i).update(timeUpdateInMillis);
+
             int frame = mFrames.get(i);
             List<Point> locations = mLocations.get(i);
             List<Long> times = mTimeToLocations.get(i);
@@ -71,6 +77,10 @@ public class AnimationScene {
     }
 
     public void reset() {
+        for (Animation anim : mAnimations) {
+            anim.reset();
+        }
+
         for (int i = 0; i < mFrames.size(); i++) {
             mFrames.set(i, 1);
             mFrameTimers.set(i, 0L);

@@ -15,10 +15,13 @@ import android.view.SurfaceView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import games.wantz.spencer.nostalgiapetgame.gameplay.GameThread;
 import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
 import games.wantz.spencer.nostalgiapetgame.R;
+import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.Animation;
+import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.AnimationScene;
+import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SceneBuilder;
 import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
 
 /**
@@ -26,7 +29,7 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
  *
  * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version 0.1, 11 May 2018
+ * @version B.1, 28 May 2018
  */
 public class GameView extends SurfaceView {
     private static final String GAME_VIEW_LOG = "GAME_VIEW";
@@ -52,8 +55,40 @@ public class GameView extends SurfaceView {
     /** A frame counter used for changing the pet sprite sheet. */
     private int mCounter;
 
-    /* An async task used to load assets. */
+    /**
+     * AtomicInteger value used to control what the next scene should be.
+     */
+    private AtomicInteger mNextScene;
+
+    /**
+     * The currently playing scene.
+     */
+    private int mCurScene;
+
+    /**
+     * An async task used to load assets.
+     */
     private AssetLoader mAssetLoader;
+
+    /**
+     * AtomicBoolean value used to determine when assets have finished loading.
+     */
+    private AtomicBoolean mAssetsDone;
+
+    /**
+     * Scenes
+     */
+    List<AnimationScene> mSceneList;
+
+    /**
+     * List of pregenerated animations.
+     */
+    List<Animation> mAnimations;
+
+    /**
+     * List of pregenerated animations for fixtures.
+     */
+    List<Animation> mFixtureAnimations;
 
     /** Necessary constructor, calls the other constructor. */
     public GameView(Context context) {
@@ -116,13 +151,25 @@ public class GameView extends SurfaceView {
 
             /** Unused. */
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            }
         });
+
+        mSceneList = new ArrayList<AnimationScene>();
+        mAssetsDone = new AtomicBoolean();
+        mAssetsDone.set(false);
+        mAnimations = null;
+        mFixtureAnimations = null;
+
+        mNextScene = new AtomicInteger();
+        mNextScene.set(-1);
+        mCurScene = -1;
 
         Log.d(GAME_VIEW_LOG, "Creating asset loader.");
         mAssetLoader = new AssetLoader();
         mAssetLoader.execute();
         Log.d(GAME_VIEW_LOG, "Asset loader running.");
+
     }
 
 
@@ -141,6 +188,18 @@ public class GameView extends SurfaceView {
         }
     }
 
+    public void doFeed() {
+        mNextScene.set(0);
+    }
+
+    public void doToilet() {
+        mNextScene.set(1);
+    }
+
+    public void doShower() {
+        mNextScene.set(2);
+    }
+
     public void setMonster(Monster monster) {
         mMonster = monster;
     }
@@ -150,7 +209,7 @@ public class GameView extends SurfaceView {
      */
     public void update() {
         if (mMonster != null) {
-            mMonster.update(32);
+            mMonster.update(16);
 
             mCounter++;
             mMonsterFrame = mMonster.getBreed() * 16;
@@ -159,6 +218,15 @@ public class GameView extends SurfaceView {
                 if (mCounter > 45)
                     mCounter = 0;
             }
+        }
+
+        if (mCurScene == -1) {
+            mCurScene = mNextScene.getAndSet(-1);
+            if (mCurScene != -1) {
+                mSceneList.get(mCurScene).reset();
+            }
+        } else {
+            mSceneList.get(mCurScene).update(16);
         }
     }
 
@@ -170,32 +238,50 @@ public class GameView extends SurfaceView {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (mAssetLoader.mDone.get()) {
+        if (mAssetsDone.get()) {
 
             // Draw the background and the monster.
-            mBackground.Draw(canvas, 0, 0, 0);
+            mBackground.draw(canvas, 0, 0, 0);
 
             // And draw the monster in (roughly) the center of the screen, biased towards the top a bit.
             // Offset so we can draw from the middle, as we are using positioning relative to the center of the game.
             int offset = (int) (16 * mScalar);
 
+            // TODO: MOVE SCENES HERE, MAKE THIS HANDLE DRAWING MONSTER EXCEPT FOR POOPS OR JUST GET A POOPS LIST
             if (mMonster != null && mMonsterFrame != -1) {
-                // Draws the monster, offset from the middle of the screen.
-                mUnits.Draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonsterFrame);
+                // TODO: DRAW HUNGRY/ETC BUBBLES VIA MONSTER SPRITE SHEET
 
-                // SOON:
-                mMonster.draw(canvas);
+                if (mCurScene != -1 && mSceneList.size() > mCurScene) {
+                    mSceneList.get(mCurScene).draw(canvas);
+                    if (mSceneList.get(mCurScene).getIsComplete()) {
+                        mSceneList.get(mCurScene).reset();
+                        mCurScene = -1;
+                    }
+                }
+                // Not an else if because we may have just stopped the scene above ^
+                // Draw the monster idling:
+                if (mCurScene == -1) {
+                    // Draws the monster, offset from the middle of the screen.
+                    // TODO: CHANGE THIS TO AN ANIMATION
+                    mUnits.draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonsterFrame);
+                }
             }
         }
     }
 
+    public void buildAnimations(SpriteSheet monsterSheet, SpriteSheet fixturesSheet, int phoneWidth, int phoneHeight) {
+        mAnimations = SceneBuilder.buildMonsterAnimations(monsterSheet, mMonster.getBreed());
+        mFixtureAnimations = SceneBuilder.buildFixtureAnimations(fixturesSheet);
+
+        /* Next, build the scenes. */
+        mSceneList.add(SceneBuilder.buildFeedScene(mAnimations.get(1), mAnimations.get(2), phoneWidth, phoneHeight));
+        mSceneList.add(SceneBuilder.buildShowerScene(mAnimations.get(0), mFixtureAnimations.get(0), phoneWidth, phoneHeight));
+        // TODO: REMOVE THIS AFTER TESTING THAT FEED SCENE PLAYS
+        mCurScene = 1;
+    }
+
     private class AssetLoader extends AsyncTask<Void, Void, Void> {
         List<Bitmap> mLoadedBmps;
-        final AtomicBoolean mDone;
-
-        public AssetLoader() {
-            mDone = new AtomicBoolean(false);
-        }
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -206,20 +292,21 @@ public class GameView extends SurfaceView {
             mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.fixtures));
 
 
-            Log.d(GAME_VIEW_LOG, "Returning null!");
+            mBackground = new SpriteSheet(mLoadedBmps.get(0), 160, 90, mScalar);
+            mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
+            mFixtures = new SpriteSheet(mLoadedBmps.get(2), 64, 64, mScalar);
+
+            while (mMonster == null) {
+                // Wait.
+            }
+            buildAnimations(mUnits, mFixtures, mDeviceWidth, mDeviceHeight);
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            Log.d(GAME_VIEW_LOG, "Asset loader on post execute.");
-            mBackground = new SpriteSheet(mLoadedBmps.get(0), 160, 90, mScalar);
-            mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
-            mFixtures = new SpriteSheet(mLoadedBmps.get(2), 64, 64, mScalar);
-
-            mMonster.buildAnimations(mUnits, mFixtures, mDeviceWidth, mDeviceHeight);
-            mDone.set(true);
-            Log.d(GAME_VIEW_LOG, "mDone set to " + mDone.toString());
+            mAssetsDone.set(true);
         }
     }
 }

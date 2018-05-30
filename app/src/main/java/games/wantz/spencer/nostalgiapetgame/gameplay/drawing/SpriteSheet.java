@@ -73,7 +73,20 @@ public class SpriteSheet {
      * @param dY The top left of the destination rect, y value.
      * @param frame The frame to draw.
      */
-    public void Draw(Canvas canvas, int dX, int dY, int frame) {
+    public void draw(Canvas canvas, int dX, int dY, int frame) {
+        draw(canvas, dX, dY, frame, mScale);
+    }
+
+
+    /**
+     * Draws a requested frame of this sprite sheet to a canvas.
+     *
+     * @param canvas The canvas to draw to.
+     * @param dX     The top left of the destination rect, x value.
+     * @param dY     The top left of the destination rect, y value.
+     * @param frame  The frame to draw.
+     */
+    public void draw(Canvas canvas, int dX, int dY, int frame, float scale) {
         int frameX = frame % mFramesPerRow;
         int frameY = frame / mFramesPerRow;
 
@@ -84,7 +97,7 @@ public class SpriteSheet {
         Rect source = new Rect(sourceX, sourceY, sourceX + mFrameWidth, sourceY + mFrameHeight);
         // Destination
         // Casting back to int for scale reasons.
-        Rect destination = new Rect(dX, dY, dX + (int)(mFrameWidth * mScale), dY + (int)(mFrameHeight * mScale));
+        Rect destination = new Rect(dX, dY, dX + (int) (mFrameWidth * scale), dY + (int) (mFrameHeight * scale));
 
         // Disable filtering of scaled bitmaps. We want the blocky pixels.
         canvas.drawBitmap(mBitmap, source, destination, new Paint(0));
