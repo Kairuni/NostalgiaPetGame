@@ -19,99 +19,49 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
  * A class that represents the player's pet monster.
  *
  * @author Keegan Wantz wantzkt@uw.edu
+ * @author Norris Spencer nisj@uw.edu
  * @version 0.1, 11 May 2018
  */
 public class Monster implements Serializable {
     private static final long serialVersionUID = 0xe05c26dfe03e72b9L;
 
     // Change direction every 4 seconds.
-    /**
-     * How often to change wander state (in frames).
-     */
+    /** How often to change wander state (in frames). */
     private final int WANDER_RESET = 120;
-    /**
-     * Statistic change per millisecond.
-     */
+    /** Statistic change per millisecond. */
     private final float CHANGE_PER_MILLI = 1 / 1000;
-
-    /**
-     * The Unique ID for this monster.
-     */
+    /** The Unique ID for this monster. */
     private String mUID;
-    /**
-     * The breed of this monster.
-     */
+    /** The breed of this monster. */
     private int mBreed;
-    /**
-     * Health statistics for this monster.
-     */
+    /** Health statistics for this monster. */
     private float mMaxHealth, mHealth;
-    /**
-     * Stamina statistics for this monster.
-     */
+    /** Stamina statistics for this monster. */
     private float mMaxStamina, mStamina;
-    /**
-     * Hunger statistics for this monster.
-     */
+    /** Hunger statistics for this monster. */
     private float mMaxHunger, mHunger;
-    /**
-     * Bladder statistics for this monster.
-     */
+    /** Bladder statistics for this monster. */
     private float mMaxBladder, mBladder;
-    /**
-     * Fun statistics for this monster.
-     */
+    /** Fun statistics for this monster. */
     private float mMaxFun, mFun;
-    /**
-     * Dirty statistics for this monster.
-     */
+    /** Dirty statistics for this monster. */
     private float mMaxDirty, mDirty;
-
-    /**
-     * The current X and Y coordinates for this montster.
-     */
+    /** The current X and Y coordinates for this monster. */
     private int mX, mY;
-
-    /**
-     * Get the X coordinate.
-     */
-    public int getX() {
-        return mX;
-    }
-
-    /**
-     * Get the Y coordinate.
-     */
-    public int getY() {
-        return mY;
-    }
-
-    Animation mIdleAnimation;
-    List<AnimationScene> mSceneList;
-    int mActiveScene;
-
-    public int getBreed() {
-        return mBreed;
-    }
-
-    /**
-     * What direction is the pet currently wandering? 0 right, 1 left, other values are standing still.
-     */
+    /** What direction is the pet currently wandering? 0 right, 1 left, other values are standing still. */
     private int mWanderFlag;
-    /**
-     * The current timer for wandering, in frames.
-     */
+    /** The current timer for wandering, in frames. */
     private int mWanderTimer;
-
-    /**
-     * Random for random movement.
-     */
+    /** Random for random movement. */
     private Random mRandom;
-
-    /**
-     * The epoch time we paused the monster at.
-     */
+    /** The epoch time we paused the monster at. */
     private long pauseTime;
+    /**  */
+    Animation mIdleAnimation;
+    /**  */
+    List<AnimationScene> mSceneList;
+    /**  */
+    int mActiveScene;
 
     /**
      * Construct a monster with the given parameters.
@@ -226,5 +176,30 @@ public class Monster implements Serializable {
         pauseTime = unpauseTime;
     }
 
+    /** Get the X coordinate. */
+    public int getX() { return mX; }
 
+    /** Get the Y coordinate. */
+    public int getY() { return mY; }
+
+    /** Get the breed.*/
+    public int getBreed() { return mBreed; }
+
+    /** Get the current health percentage.*/
+    public float getHealthPerc() { return (mHealth/mMaxHealth) * 100; }
+
+    /** Get the current stamina percentage.*/
+    public float getStaminaPerc() { return (mStamina/mMaxStamina) * 100; }
+
+    /** Get the current hunger percentage.*/
+    public float getHungerPerc() { return (mHunger/mMaxHunger) * 100; }
+
+    /** Get the current bladder percentage.*/
+    public float getBladderPerc() { return (mBladder/mMaxBladder) * 100; }
+
+    /** Get the current fun percentage.*/
+    public float getFunPerc() { return (mFun/mMaxFun) * 100; }
+
+    /** Get the current dirty percentage.*/
+    public float getDirtyPerc() { return (mDirty/mMaxDirty) * 100; }
 }

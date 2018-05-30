@@ -24,4 +24,9 @@
     <string name="btn_misc">Misc</string>
     <string name="btn_feed">Feed</string>
 
+    //SMS Strings
+    <string name="sms_permission_granted">Permission Granted</string>
+    <string name="sms_permission_denied">Permission Denied</string>
+    <string name="sms_layout_phone_number">Phone Number</string>
+
 </resources>

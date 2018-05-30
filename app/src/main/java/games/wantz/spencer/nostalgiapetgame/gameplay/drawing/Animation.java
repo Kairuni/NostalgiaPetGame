@@ -22,6 +22,6 @@ public class Animation {
     }
 
     public void draw(Canvas c, int dX, int dY) {
-        // mSprtSht.Draw();
+        mSprtSht.Draw(c, dX, dY, mFrames.get(1));
     }
 }

@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
 import games.wantz.spencer.nostalgiapetgame.gameplay.GameView;
@@ -19,6 +21,10 @@ public class GameActivity extends AppCompatActivity {
     private static final String GAME_ACTIVITY_LOG = "GAME_ACTIVITY";
 
     public static final String MONSTER_EXTRA = "MONSTER_EXTRA";
+
+    public Button button_misc;
+
+    public Monster mMon;
 
     /**
      * Makes a new monster using the provided intent.
@@ -38,10 +44,34 @@ public class GameActivity extends AppCompatActivity {
         /* public Monster(String mUID, int mBreed, float mMaxHealth, float mHealth, float mMaxStamina,
                 float mStamina, float mMaxHunger, float mHunger, float mMaxBladder, float mBladder) {*/
 
-
         // Pass the monster to our GameView, as we don't actually care about it.
         GameView gameView = findViewById(R.id.game_play_view);
-        gameView.setMonster((Monster) intent.getSerializableExtra(MONSTER_EXTRA));
+        mMon = (Monster) intent.getSerializableExtra(MONSTER_EXTRA);
+        gameView.setMonster(mMon);
+
+        button_misc = findViewById((R.id.button_misc));
+        button_misc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                int shBreed = mMon.getBreed();
+                Float shHealth = mMon.getHealthPerc();
+                Float shStamina = mMon.getStaminaPerc();
+                Float shHunger = mMon.getHungerPerc();
+                Float shBladder = mMon.getBladderPerc();
+                Float shFun = mMon.getFunPerc();
+                Float shDirty = mMon.getDirtyPerc();
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shBreed);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shHealth);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shStamina);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shHunger);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shBladder);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shFun);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shDirty);
+                startActivity(Intent.createChooser(shareIntent, "Share using:"));
+            }
+        });
     }
 
     @Override
