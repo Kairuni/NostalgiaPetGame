@@ -13,7 +13,7 @@ import android.graphics.Canvas;
  */
 public class GameThread extends Thread {
     /** The number of animation/logic frames to do every second. */
-    private static final int FPS = 600;
+    private static final int FPS = 60;
     /**
      * The GameView that we're tied to.
      */
@@ -63,7 +63,8 @@ public class GameThread extends Thread {
             mGameView.update();
             try {
                 // Super naive sleep, as the previous actions took some time, but that's fine for now.
-                sleep(1000 / FPS);
+                //sleep(1000 / FPS);
+                sleep(1);
             } catch (InterruptedException e) {
 
             }

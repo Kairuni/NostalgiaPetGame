@@ -11,7 +11,9 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,6 +36,8 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
  */
 public class GameView extends SurfaceView {
     private static final String GAME_VIEW_LOG = "GAME_VIEW";
+
+    private final static String MONSTER_UPDATE_URL = "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
 
     /**
      * The sprite sheet for pets and icons. Loaded asynchronously.
@@ -203,15 +207,15 @@ public class GameView extends SurfaceView {
     }
 
     public void doToilet() {
-        mNextScene.set(1);
-    }
-
-    public void doShower() {
         mNextScene.set(2);
     }
 
+    public void doShower() {
+        mNextScene.set(1);
+    }
+
     public void doHatch() {
-        if (mMonster != null && mMonster.getHatched() == false) {
+        if (mMonster != null && !mMonster.getHatched()) {
             Log.d(GAME_VIEW_LOG, "Hatching!");
             mMonster.setHatched();
         }
@@ -250,18 +254,21 @@ public class GameView extends SurfaceView {
         if (mAssetsDone.get()) {
 
             // Draw the background and the monster.
-            mBackground.draw(canvas, 0, 0, 0);
+            mBackground.draw(canvas, (int) (80 * mScalar), (int) (45f * mScalar), 0);
 
             // And draw the monster in (roughly) the center of the screen, biased towards the top a bit.
             // Offset so we can draw from the middle, as we are using positioning relative to the center of the game.
             int offset = (int) (16 * mScalar);
+
+            int cX = mDeviceWidth / 2;
+            int cY = mDeviceHeight / 2 - offset;
 
             // TODO: POOPS
             if (mMonster != null) {
                 // TODO: DRAW HUNGRY/ETC BUBBLES VIA MONSTER SPRITE SHEET
                 if (!mMonster.getHatched()) {
                     Log.d(GAME_VIEW_LOG, "Monster not hatched yet?");
-                    mUnits.draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset, mMonster.getBreed() * 16 + 4);
+                    mUnits.draw(canvas, cX, cY, mMonster.getBreed() * 16 + 4);
                 } else {
 
                     if (mCurScene != -1 && mSceneList.size() > mCurScene) {
@@ -277,7 +284,11 @@ public class GameView extends SurfaceView {
                     // Draw the monster idling:
                     if (mCurScene == -1) {
                         // Draws the monster, offset from the middle of the screen.
-                        mAnimations.get(0).draw(canvas, mDeviceWidth / 2 + mMonster.getX() - offset, mDeviceHeight / 3 + mMonster.getY() - offset);
+                        mAnimations.get(0).draw(canvas, cX + mMonster.getX(), cY + mMonster.getY());
+                        // Draw all the poops
+                        for (Monster.Poop p : mMonster.getPoops()) {
+                            mAnimations.get(3).draw(canvas, cX + p.x, cY + p.y, p.scale);
+                        }
                     }
                 }
             }
@@ -327,5 +338,47 @@ public class GameView extends SurfaceView {
             Log.d(GAME_VIEW_LOG, "Asset loader done");
             mAssetsDone.set(true);
         }
+    }
+
+
+    public String buildMonsterURL() {
+        StringBuilder sb = new StringBuilder(MONSTER_UPDATE_URL.length() + 128);
+        sb.append(MONSTER_UPDATE_URL);
+        try {
+            sb.append("uid=");
+            sb.append(URLEncoder.encode(mMonster.getUID(), "UTF-8"));
+            sb.append("&breed=");
+            sb.append(URLEncoder.encode(Integer.toString(mMonster.getBreed()), "UTF-8"));
+            sb.append("&hatched=");
+            sb.append(URLEncoder.encode(Boolean.toString(mMonster.getHatched()), "UTF-8"));
+            sb.append("&mhealth=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getMaxHealth()), "UTF-8"));
+            sb.append("&health=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getHealth()), "UTF-8"));
+            sb.append("&mstamina=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getMaxStamina()), "UTF-8"));
+            sb.append("&stamina=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getStamina()), "UTF-8"));
+            sb.append("&mhunger=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getMaxHunger()), "UTF-8"));
+            sb.append("&hunger=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getHunger()), "UTF-8"));
+            sb.append("&mbladder=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getMaxBladder()), "UTF-8"));
+            sb.append("&bladder=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getBladder()), "UTF-8"));
+            sb.append("&fun=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getFun()), "UTF-8"));
+            sb.append("&dirty=");
+            sb.append(URLEncoder.encode(Float.toString(mMonster.getDirty()), "UTF-8"));
+            sb.append("&lastaccess=");
+            sb.append(URLEncoder.encode(Long.toString(System.currentTimeMillis()), "UTF-8"));
+
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Something wrong with the url" + e.getMessage(), Toast.LENGTH_LONG)
+                    .show();
+        }
+
+        return sb.toString();
     }
 }

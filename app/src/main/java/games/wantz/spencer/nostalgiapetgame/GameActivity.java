@@ -3,6 +3,7 @@ package games.wantz.spencer.nostalgiapetgame;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
 import games.wantz.spencer.nostalgiapetgame.gameplay.GameView;
@@ -95,6 +106,20 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.button_shower).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameView.doShower();
+            }
+        });
+
+        findViewById(R.id.button_bathroom).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameView.doToilet();
+            }
+        });
+
         gameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,6 +140,7 @@ public class GameActivity extends AppCompatActivity {
         if (gameView != null) {
             // TODO: Make this save the monster to the databases.
             gameView.gameViewPause();
+            new UpdateMonsterAsyncTask().execute(gameView.buildMonsterURL());
         }
 
         // And now, actually go back to the
@@ -138,5 +164,68 @@ public class GameActivity extends AppCompatActivity {
 
         startActivity(intent);
         finish();
+    }
+
+    /**
+     *
+     */
+    public class UpdateMonsterAsyncTask extends AsyncTask<String, Void, String> {
+        private final String UPDATE_TASK_LOG = "UPDATE_TASK";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String response = "";
+            HttpURLConnection urlConnection = null;
+            for (String url : urls) {
+                try {
+                    URL urlObject = new URL(url);
+                    urlConnection = (HttpURLConnection) urlObject.openConnection();
+
+                    InputStream content = urlConnection.getInputStream();
+
+                    BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+                    String s = "";
+                    while ((s = buffer.readLine()) != null) {
+                        response += s;
+                    }
+
+                } catch (Exception e) {
+                    response = "Unable to update monster, reason: "
+                            + e.getMessage();
+                } finally {
+                    if (urlConnection != null)
+                        urlConnection.disconnect();
+                }
+            }
+            return response;
+        }
+
+
+        /**
+         * Check
+         *
+         * @param result
+         */
+        @Override
+        protected void onPostExecute(String result) {
+            // Something wrong with the network or the URL.
+            Log.d(UPDATE_TASK_LOG, result);
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                String status = (String) jsonObject.get("result");
+                if (status.equals("success")) {
+                    Log.d(UPDATE_TASK_LOG, "Successfully updated.");
+                } else {
+                    Log.d(UPDATE_TASK_LOG, "Failed to update: " + jsonObject.get("error"));
+                }
+            } catch (JSONException e) {
+                Log.d(UPDATE_TASK_LOG, "Something wrong with the data: " + e.getMessage());
+            }
+        }
     }
 }

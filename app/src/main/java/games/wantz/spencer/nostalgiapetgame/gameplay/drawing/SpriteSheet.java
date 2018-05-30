@@ -97,7 +97,7 @@ public class SpriteSheet {
         Rect source = new Rect(sourceX, sourceY, sourceX + mFrameWidth, sourceY + mFrameHeight);
         // Destination
         // Casting back to int for scale reasons.
-        Rect destination = new Rect(dX, dY, dX + (int) (mFrameWidth * scale), dY + (int) (mFrameHeight * scale));
+        Rect destination = new Rect(dX - (int) (mFrameWidth * scale) / 2, dY - (int) (mFrameHeight * scale) / 2, dX + (int) (mFrameWidth * scale) / 2, dY + (int) (mFrameHeight * scale) / 2);
 
         // Disable filtering of scaled bitmaps. We want the blocky pixels.
         canvas.drawBitmap(mBitmap, source, destination, new Paint(0));

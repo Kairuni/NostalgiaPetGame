@@ -121,15 +121,17 @@ public class Monster implements Serializable {
         if (mIsHatched) {
             // Currently ticks at a FIXED RATE
             if (mWanderFlag == 0) {
-                mX += 2;
+                mX += 5;
             } else if (mWanderFlag == 1) {
-                mX -= 2;
+                mX -= 5;
             }
             mWanderTimer++;
 
             if (mWanderTimer > WANDER_RESET) {
                 mWanderFlag = mRandom.nextInt(3);
                 mWanderTimer = 0;
+
+                createPoop();
             }
 
             // If we're too far left or right, walk back towards the center of the screen.
@@ -139,7 +141,7 @@ public class Monster implements Serializable {
                 mWanderFlag = 1;
             }
         }
-
+        pauseTime = System.currentTimeMillis();
     }
 
     public void doFeed() {
@@ -164,12 +166,17 @@ public class Monster implements Serializable {
         mBladder = mMaxBladder;
         setFun(mFun - 20);
 
-
+        // Make a new poop with a random X value.
+        mPoops.add(new Poop(mX - 400 + (int) (800 * mRandom.nextFloat()),
+                mY + (int) (400 * mRandom.nextFloat()),
+                .75f + .75f * mRandom.nextFloat()));
     }
 
     public void doShower() {
         mDirty = mMaxDirty;
         setFun(mFun+5);
+
+        mPoops.clear();
     }
 
     public void onPause() {
@@ -329,5 +336,11 @@ public class Monster implements Serializable {
         public int x;
         public int y;
         public float scale;
+
+        public Poop(int x, int y, float scale) {
+            this.x = x;
+            this.y = y;
+            this.scale = scale;
+        }
     }
 }

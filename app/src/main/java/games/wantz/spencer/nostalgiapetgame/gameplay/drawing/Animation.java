@@ -46,7 +46,12 @@ public class Animation {
         }
     }
 
+    // Scale relative to the existing scale of the sheet, so:
+    public void draw(Canvas canvas, int dX, int dY, float scale) {
+        mSpriteSheet.draw(canvas, dX, dY, mFrames.get(mCurFrame), mSpriteSheet.getScale() * scale);
+    }
+
     public void draw(Canvas canvas, int dX, int dY) {
-        mSpriteSheet.draw(canvas, dX, dY, mFrames.get(mCurFrame));
+        this.draw(canvas, dX, dY, 1f);
     }
 }

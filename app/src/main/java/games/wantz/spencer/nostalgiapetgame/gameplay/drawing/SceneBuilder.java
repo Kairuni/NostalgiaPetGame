@@ -75,10 +75,10 @@ public class SceneBuilder {
         float scalar = phoneWidth / 160.0f;
         int offset = (int) (16 * scalar);
 
-        Point monsterPoint = new Point(phoneWidth / 2 + (int) (16 * scalar) - offset, phoneHeight / 3 - offset);
+        Point monsterPoint = new Point(phoneWidth / 2 + (int) (16 * scalar), phoneHeight / 2 - offset);
         feedPoints.add(monsterPoint);
         feedPoints.add(monsterPoint);
-        Point meatPoint = new Point(phoneWidth / 2 - (int) (16 * scalar) - offset, phoneHeight / 3 - offset);
+        Point meatPoint = new Point(phoneWidth / 2 - (int) (16 * scalar), phoneHeight / 2 - offset);
         meatPoints.add(meatPoint);
         meatPoints.add(meatPoint);
 
@@ -100,8 +100,8 @@ public class SceneBuilder {
     public static AnimationScene buildShowerScene(Animation idleAnimation, Animation tubAnimation, int phoneWidth, int phoneHeight) {
         float scalar = phoneWidth / 160.0f;
         int offset = (int) (16 * scalar);
-        int cX = phoneWidth / 2 - offset;
-        int cY = phoneHeight / 3 - offset;
+        int cX = phoneWidth / 2;
+        int cY = phoneHeight / 2 - offset;
 
         List<Animation> showerAnimations = new ArrayList<>();
         showerAnimations.add(idleAnimation);
@@ -119,7 +119,7 @@ public class SceneBuilder {
                 new Point(cX - (int) (16 * scalar), cY),
                 new Point(cX + (int) (16 * scalar), cY),
                 new Point(cX, cY)};
-        Point tubPoints[] = {new Point(cX - (int) (10 * scalar), cY - (int) (20 * scalar)), new Point(cX - (int) (10 * scalar), cY - (int) (20 * scalar))};
+        Point tubPoints[] = {new Point(cX - (int) (2 * scalar), cY - (int) (5 * scalar)), new Point(cX - (int) (2 * scalar), cY - (int) (5 * scalar))};
         List<List<Point>> pList = new ArrayList<>();
         pList.add(Arrays.asList(monsterPoints));
         pList.add(Arrays.asList(tubPoints));
