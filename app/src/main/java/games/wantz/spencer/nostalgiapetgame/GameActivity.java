@@ -120,10 +120,27 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+
+        findViewById(R.id.button_play).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameView.doGame();
+            }
+        });
+
+
+        findViewById(R.id.button_stats).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameView.toggleStats();
+            }
+        });
+
+
         gameView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gameView.doHatch();
+                gameView.doClick();
             }
         });
 
@@ -138,7 +155,6 @@ public class GameActivity extends AppCompatActivity {
 
         GameView gameView = findViewById(R.id.game_play_view);
         if (gameView != null) {
-            // TODO: Make this save the monster to the databases.
             gameView.gameViewPause();
             new UpdateMonsterAsyncTask().execute(gameView.buildMonsterURL());
         }

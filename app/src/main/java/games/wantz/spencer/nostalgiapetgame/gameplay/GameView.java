@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,7 +40,9 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
 public class GameView extends SurfaceView {
     private static final String GAME_VIEW_LOG = "GAME_VIEW";
 
-    private final static String MONSTER_UPDATE_URL = "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
+    private static final String MONSTER_UPDATE_URL = "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
+
+    private static final float BALL_GRAVITY = 100f;
 
     /**
      * The sprite sheet for pets and icons. Loaded asynchronously.
@@ -85,6 +90,11 @@ public class GameView extends SurfaceView {
      * List of pregenerated animations for fixtures.
      */
     List<Animation> mFixtureAnimations;
+
+    PointF mBallPoint;
+    PointF mBallVelocity;
+
+    Random mRandom;
 
     private MonsterDB mMonsterDB;
 
@@ -161,6 +171,10 @@ public class GameView extends SurfaceView {
         mAnimations = null;
         mFixtureAnimations = null;
 
+        mBallPoint = null;
+
+        mRandom = new Random();
+
         mNextScene = new AtomicInteger();
         mNextScene.set(-1);
         mCurScene = -1;
@@ -187,6 +201,7 @@ public class GameView extends SurfaceView {
 
         // Save the monster into our local db as well
         if (mMonsterDB == null) {
+            mMonster.onPause();
             mMonsterDB = new MonsterDB(getContext().getApplicationContext());
             mMonsterDB.insertMonster(mMonster);
         }
@@ -199,6 +214,7 @@ public class GameView extends SurfaceView {
             Log.d(GAME_VIEW_LOG, "Resumed, recreating thread.");
             mGameThread = new GameThread(this);
             mGameThread.setActive(true);
+            mMonster.onResume();
         }
     }
 
@@ -214,10 +230,65 @@ public class GameView extends SurfaceView {
         mNextScene.set(1);
     }
 
-    public void doHatch() {
+    public void doGame() {
+        int offset = (int) (16 * mScalar);
+        int cX = mDeviceWidth / 2;
+        int cY = mDeviceHeight / 2 - offset;
+        // Should probably have some atomic flag here rather than directly making the new point
+        mBallPoint = new PointF(cX, cY);
+        mBallVelocity = null;
+    }
+
+    public void toggleStats() {
+
+    }
+
+    // Consider pulling this into its own class
+    private void handleBallGame() {
+        int offset = (int) (16 * mScalar);
+        int cX = mDeviceWidth / 2;
+        int cY = mDeviceHeight / 2 - offset;
+
+        if (mBallVelocity == null) {
+            mBallVelocity = new PointF(-200 + mRandom.nextInt(400), -1800);
+        } else if (mBallPoint.y < cY) {
+            if (mBallVelocity.y > 200) {
+                mMonster.setFun(mMonster.getFun() + 5);
+                mBallVelocity.x = -2000 + mRandom.nextInt(4000);
+                mBallVelocity.y = -1800 + mRandom.nextInt(200);
+            }
+        } else {
+            mMonster.setFun(mMonster.getFun() - 5);
+            mBallVelocity.x = -200 + mRandom.nextInt(400);
+            mBallVelocity.y = 1000 + mRandom.nextInt(300);
+        }
+    }
+
+    private void updateBallGame(Long tickMillis) {
+        if (mBallPoint != null && mBallVelocity != null) {
+            mBallPoint.x += mBallVelocity.x * tickMillis / 1000f;
+            mBallPoint.y += mBallVelocity.y * tickMillis / 1000f;
+
+            mBallVelocity.y += BALL_GRAVITY * tickMillis / 1000f;
+
+            if ((mBallPoint.x < 0 && mBallVelocity.x < 0) || (mBallPoint.x > mDeviceWidth && mBallVelocity.x > 0)) {
+                mBallVelocity.x = -mBallVelocity.x;
+            }
+            if (mBallPoint.y > mDeviceHeight * 1.5) {
+                mBallPoint = null;
+                mBallVelocity = null;
+            } else if (mBallPoint.y < -30 && mBallVelocity.y < 0) {
+                mBallVelocity.y = -mBallVelocity.y;
+            }
+        }
+    }
+
+    public void doClick() {
         if (mMonster != null && !mMonster.getHatched()) {
             Log.d(GAME_VIEW_LOG, "Hatching!");
             mMonster.setHatched();
+        } else if (mMonster != null && mBallPoint != null) {
+            handleBallGame();
         }
     }
 
@@ -228,9 +299,12 @@ public class GameView extends SurfaceView {
     /**
      * Updates the monster, allowing it to walk back and forth and in the future become hungry.
      */
-    public void update() {
-        if (mMonster != null) {
-            mMonster.update(16);
+    public void update(Long tickMillis) {
+        if (mMonster != null && mAssetsDone.get()) {
+            mMonster.update(tickMillis);
+
+            mAnimations.get(0).update(tickMillis);
+            mAnimations.get(3).update(tickMillis);
 
             if (mCurScene == -1) {
                 mCurScene = mNextScene.getAndSet(-1);
@@ -240,6 +314,19 @@ public class GameView extends SurfaceView {
             } else if (mMonster.getHatched()) {
                 mSceneList.get(mCurScene).update(16);
             }
+
+            updateBallGame(tickMillis);
+        }
+    }
+
+    void completedScene(int sceneID) {
+        // FEED
+        if (sceneID == 0) {
+            mMonster.doFeed();
+        } else if (sceneID == 1) {
+            mMonster.doShower();
+        } else if (sceneID == 2) {
+            mMonster.doToilet();
         }
     }
 
@@ -263,32 +350,41 @@ public class GameView extends SurfaceView {
             int cX = mDeviceWidth / 2;
             int cY = mDeviceHeight / 2 - offset;
 
-            // TODO: POOPS
             if (mMonster != null) {
-                // TODO: DRAW HUNGRY/ETC BUBBLES VIA MONSTER SPRITE SHEET
                 if (!mMonster.getHatched()) {
-                    Log.d(GAME_VIEW_LOG, "Monster not hatched yet?");
+                    // Log.d(GAME_VIEW_LOG, "Monster not hatched yet?");
                     mUnits.draw(canvas, cX, cY, mMonster.getBreed() * 16 + 4);
                 } else {
 
                     if (mCurScene != -1 && mSceneList.size() > mCurScene) {
                         mSceneList.get(mCurScene).draw(canvas);
                         if (mSceneList.get(mCurScene).getIsComplete()) {
-                            // TODO: HANDLE SCENE COMPLETION
-
                             mSceneList.get(mCurScene).reset();
+                            completedScene(mCurScene);
                             mCurScene = -1;
                         }
-                    }
-                    // Not an else if because we may have just stopped the scene above ^
-                    // Draw the monster idling:
-                    if (mCurScene == -1) {
+                    } else if (mCurScene == -1) {
                         // Draws the monster, offset from the middle of the screen.
                         mAnimations.get(0).draw(canvas, cX + mMonster.getX(), cY + mMonster.getY());
                         // Draw all the poops
                         for (Monster.Poop p : mMonster.getPoops()) {
                             mAnimations.get(3).draw(canvas, cX + p.x, cY + p.y, p.scale);
                         }
+
+                        // Draw the bubbles:
+                        if (mMonster.getHungerPercent() < 30) {
+                            mUnits.draw(canvas, cX + mMonster.getX() + offset, cY + mMonster.getY() - offset, 6);
+                        } else if (mMonster.getBladderPercent() < 30) {
+                            mUnits.draw(canvas, cX + mMonster.getX() + offset, cY + mMonster.getY() - offset, 22);
+                        } else if (mMonster.getDirty() < 30) {
+                            mUnits.draw(canvas, cX + mMonster.getX() + offset, cY + mMonster.getY() - offset, 38);
+                        } else if (mMonster.getFun() < 30) {
+                            mUnits.draw(canvas, cX + mMonster.getX() + offset, cY + mMonster.getY() - offset, 54);
+                        }
+                    }
+
+                    if (mBallPoint != null) {
+                        mUnits.draw(canvas, (int) mBallPoint.x, (int) mBallPoint.y, 5);
                     }
                 }
             }
@@ -302,8 +398,7 @@ public class GameView extends SurfaceView {
         /* Next, build the scenes. */
         mSceneList.add(SceneBuilder.buildFeedScene(mAnimations.get(1), mAnimations.get(2), phoneWidth, phoneHeight));
         mSceneList.add(SceneBuilder.buildShowerScene(mAnimations.get(0), mFixtureAnimations.get(0), phoneWidth, phoneHeight));
-        // TODO: REMOVE THIS AFTER TESTING THAT FEED SCENE PLAYS
-        mCurScene = -1;
+        mSceneList.add(SceneBuilder.buildToiletScene(mAnimations.get(0), mFixtureAnimations.get(1), phoneWidth, phoneHeight));
     }
 
     private class AssetLoader extends AsyncTask<Void, Void, Void> {

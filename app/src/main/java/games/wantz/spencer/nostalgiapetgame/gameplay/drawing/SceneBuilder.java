@@ -113,7 +113,7 @@ public class SceneBuilder {
         Point monsterPoints[] = {
                 new Point(cX - (int) (64 * scalar), cY),
                 // Hop into the tub
-                new Point(cX - (int) (32 * scalar), cY - (int) (10 * scalar)),
+                new Point(cX - (int) (32 * scalar), cY - (int) (20 * scalar)),
                 // Land in the middle of the tub
                 new Point(cX, cY),
                 new Point(cX - (int) (16 * scalar), cY),
@@ -135,9 +135,35 @@ public class SceneBuilder {
         return new AnimationScene(showerAnimations, pList, tList);
     }
 
-    public static AnimationScene buildToiletScene() {
+    public static AnimationScene buildToiletScene(Animation idleAnimation, Animation tubAnimation, int phoneWidth, int phoneHeight) {
+        float scalar = phoneWidth / 160.0f;
+        int offset = (int) (16 * scalar);
+        int cX = phoneWidth / 2;
+        int cY = phoneHeight / 2 - offset;
+
+        List<Animation> toiletAnimations = new ArrayList<>();
+        toiletAnimations.add(idleAnimation);
+        toiletAnimations.add(tubAnimation);
+
+        // Same as the above method
+        Point monsterPoints[] = {
+                new Point(cX - (int) (64 * scalar), cY + (int) (40 * scalar)),
+                // Walk into the outhouse
+                new Point(cX, cY),
+                new Point(cX, cY)};
+        Point outhousePoints[] = {new Point(cX - (int) (2 * scalar), cY - (int) (5 * scalar)), new Point(cX - (int) (2 * scalar), cY - (int) (5 * scalar))};
+        List<List<Point>> pList = new ArrayList<>();
+        pList.add(Arrays.asList(monsterPoints));
+        pList.add(Arrays.asList(outhousePoints));
+
+        // And the timers.
+        Long monsterTimes[] = {0L, 200L, 1800L};
+        Long outhouseTimes[] = {1L, 1L};
+        List<List<Long>> tList = new ArrayList<>();
+        tList.add(Arrays.asList(monsterTimes));
+        tList.add(Arrays.asList(outhouseTimes));
 
 
-        return null;
+        return new AnimationScene(toiletAnimations, pList, tList);
     }
 }

@@ -332,11 +332,13 @@ public class LoginActivity
                     // Push all the retrieved pet's data to the 
                     Intent intent = new Intent(getBaseContext(), GameActivity.class);
 
+                    Log.d(DEBUG_TAG, "Why are we resetting hatched and nothing else? " + (String) jsonObject.get(HATCHED));
+
                     // Grab all the monster's stats
                     Monster loadMonster = new Monster(
                             (String) jsonObject.get(UID),
                             Integer.valueOf((String) jsonObject.get(BREED)),
-                            Boolean.valueOf((String) jsonObject.get(HATCHED)),
+                            jsonObject.get(HATCHED).equals("1"),
                             Float.valueOf((String) jsonObject.get(MAX_HEALTH)),
                             Float.valueOf((String) jsonObject.get(HEALTH)),
                             Float.valueOf((String) jsonObject.get(MAX_STAMINA)),

@@ -13,7 +13,7 @@ import android.graphics.Canvas;
  */
 public class GameThread extends Thread {
     /** The number of animation/logic frames to do every second. */
-    private static final int FPS = 60;
+    private static final int FPS = 30;
     /**
      * The GameView that we're tied to.
      */
@@ -60,11 +60,11 @@ public class GameThread extends Thread {
             }
             // Have the GameView update its contents, including the monster..
             // TODO: Do the update logic here, instead of in the game view?
-            mGameView.update();
+            mGameView.update(1000L / FPS);
             try {
                 // Super naive sleep, as the previous actions took some time, but that's fine for now.
-                //sleep(1000 / FPS);
-                sleep(1);
+                sleep(1000 / FPS);
+                //sleep(1);
             } catch (InterruptedException e) {
 
             }
