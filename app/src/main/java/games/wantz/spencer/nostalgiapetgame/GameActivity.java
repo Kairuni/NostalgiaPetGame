@@ -32,10 +32,15 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.GameView;
  * @version 0.1, 11 May 2018
  */
 public class GameActivity extends AppCompatActivity {
-    private static final String GAME_ACTIVITY_LOG = "GAME_ACTIVITY";
 
+    //Final Field Variables
+    /**  */
+    private static final String GAME_ACTIVITY_LOG = "GAME_ACTIVITY";
+    /**  */
     public static final String MONSTER_EXTRA = "MONSTER_EXTRA";
 
+    //Non-Final Field Variables
+    /**  */
     public Button button_misc;
 
     /**
@@ -47,7 +52,6 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         Intent intent = getIntent();
@@ -57,7 +61,6 @@ public class GameActivity extends AppCompatActivity {
                 float mStamina, float mMaxHunger, float mHunger, float mMaxBladder, float mBladder) {*/
 
         final GameView gameView = findViewById(R.id.game_play_view);
-
 
         final Monster monster;
         ImageButton buttonShare;
@@ -78,10 +81,8 @@ public class GameActivity extends AppCompatActivity {
                                 (100.0f - monster.getBladderPercent()) + "% in need of using the bathroom!"
 
                 );
-
                 shareIntent.setType("text/plain");
                 startActivityForResult(Intent.createChooser(shareIntent, "Share using:"), 0);
-
             }
         });
 
@@ -144,7 +145,6 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-
         // Pass the monster to our GameView, as we don't actually care about it.
         gameView.setMonster(monster);
     }
@@ -152,20 +152,16 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         GameView gameView = findViewById(R.id.game_play_view);
         if (gameView != null) {
             gameView.gameViewPause();
             new UpdateMonsterAsyncTask().execute(gameView.buildMonsterURL());
         }
-
-        // And now, actually go back to the
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         GameView gameView = findViewById(R.id.game_play_view);
         if (gameView != null) {
             gameView.gameViewResume();
@@ -177,13 +173,12 @@ public class GameActivity extends AppCompatActivity {
         super.onRestart();
         Log.d(GAME_ACTIVITY_LOG, "Restarting, transition back to LoginActivity to reset everything.");
         Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-
         startActivity(intent);
         finish();
     }
 
     /**
-     *
+     * UpdateMonsterAsyncTask
      */
     public class UpdateMonsterAsyncTask extends AsyncTask<String, Void, String> {
         private final String UPDATE_TASK_LOG = "UPDATE_TASK";
@@ -209,7 +204,6 @@ public class GameActivity extends AppCompatActivity {
                     while ((s = buffer.readLine()) != null) {
                         response += s;
                     }
-
                 } catch (Exception e) {
                     response = "Unable to update monster, reason: "
                             + e.getMessage();
@@ -220,7 +214,6 @@ public class GameActivity extends AppCompatActivity {
             }
             return response;
         }
-
 
         /**
          * Check

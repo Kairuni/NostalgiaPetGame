@@ -14,9 +14,17 @@ import games.wantz.spencer.nostalgiapetgame.R;
 import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
 
 public class MonsterDB {
-    public static final int DB_VERSION = 1;
+
+    //Final Field Variables
+    /**  */
     public static final String DB_NAME = "Monster.db";
+    /**  */
+    public static final int DB_VERSION = 1;
+
+    //Non-Final Field Variables
+    /**  */
     private MonsterDBHelper mMonsterDBHelper;
+    /**  */
     private SQLiteDatabase mSQLiteDatabase;
 
     public MonsterDB(Context context) {
@@ -62,7 +70,6 @@ public class MonsterDB {
                 c.getFloat(12),
                 c.getLong(13)
         );
-
         return mon;
     }
 

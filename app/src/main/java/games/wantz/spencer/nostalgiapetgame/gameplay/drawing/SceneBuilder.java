@@ -9,12 +9,17 @@ import java.util.List;
 import android.util.Log;
 
 public class SceneBuilder {
+    /**  */
     public static int IDLE_IDX = 0;
+    /**  */
     public static int FEED_IDX = 1;
+    /**  */
     public static int MEAT_IDX = 2;
+    /**  */
     public static int POOP_IDX = 3;
-
+    /**  */
     public static int TUB_IDX = 0;
+    /**  */
     public static int TOILET_IDX = 1;
 
     private SceneBuilder() {
@@ -131,7 +136,6 @@ public class SceneBuilder {
         tList.add(Arrays.asList(monsterTimes));
         tList.add(Arrays.asList(tubTimes));
 
-
         return new AnimationScene(showerAnimations, pList, tList);
     }
 
@@ -162,7 +166,6 @@ public class SceneBuilder {
         List<List<Long>> tList = new ArrayList<>();
         tList.add(Arrays.asList(monsterTimes));
         tList.add(Arrays.asList(outhouseTimes));
-
 
         return new AnimationScene(toiletAnimations, pList, tList);
     }

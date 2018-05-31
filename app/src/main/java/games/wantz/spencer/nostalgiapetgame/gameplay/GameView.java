@@ -38,57 +38,31 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
  * @version B.1, 28 May 2018
  */
 public class GameView extends SurfaceView {
+    /**  */
     private static final String GAME_VIEW_LOG = "GAME_VIEW";
 
     private static final String MONSTER_UPDATE_URL = "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
 
     private static final float BALL_GRAVITY = 100f;
 
-    /**
-     * The sprite sheet for pets and icons. Loaded asynchronously.
-     */
+    /** AtomicInteger value used to control what the next scene should be. */
+    private AtomicInteger mNextScene;
+    /** AtomicBoolean value used to determine when assets have finished loading. */
+    private AtomicBoolean mAssetsDone;
+    /** The thread that handles all game logic. */
+    private GameThread mGameThread;
+    /** The player's monster. */
+    private Monster mMonster;
+    /**  */
+    private MonsterDB mMonsterDB;
+    /** The sprite sheet for pets and icons. Loaded asynchronously. */
     private SpriteSheet mUnits;
     /** The sprite sheet for background images. Loaded asynchronously. */
     private SpriteSheet mBackground;
     private SpriteSheet mFixtures;
-    /** The thread that handles all game logic. */
-    private GameThread mGameThread;
-
-    /** The player's monster. */
-    private Monster mMonster;
-    /** The value to scale our sprite sheets by to fit the device screen. */
-    private float mScalar;
-    /** The device's width and height. */
-    private int mDeviceWidth, mDeviceHeight;
-
-    /**
-     * AtomicInteger value used to control what the next scene should be.
-     */
-    private AtomicInteger mNextScene;
-
-    /**
-     * The currently playing scene.
-     */
-    private int mCurScene;
-
-    /**
-     * AtomicBoolean value used to determine when assets have finished loading.
-     */
-    private AtomicBoolean mAssetsDone;
-
-    /**
-     * Scenes
-     */
-    List<AnimationScene> mSceneList;
-
-    /**
-     * List of pregenerated animations.
-     */
+    /** List of pregenerated animations. */
     List<Animation> mAnimations;
-
-    /**
-     * List of pregenerated animations for fixtures.
-     */
+    /** List of pregenerated animations for fixtures. */
     List<Animation> mFixtureAnimations;
 
     PointF mBallPoint;
@@ -96,10 +70,20 @@ public class GameView extends SurfaceView {
 
     Random mRandom;
 
-    private MonsterDB mMonsterDB;
+    /** Scenes */
+    List<AnimationScene> mSceneList;
+    /** The currently playing scene. */
+    private int mCurScene;
+    /** The device's width and height. */
+    private int mDeviceWidth, mDeviceHeight;
+    /** The value to scale our sprite sheets by to fit the device screen. */
+    private float mScalar;
 
-
-    /** Necessary constructor, calls the other constructor. */
+    /**
+     * Necessary constructor, calls the other constructor.
+     *
+     * @param context passes in which this View is made.
+     */
     public GameView(Context context) {
         this(context, null);
     }
@@ -107,6 +91,7 @@ public class GameView extends SurfaceView {
     /**
      * Creates the GameView, calculates scaling, the device's dimensions, prepares the sprite sheets,
      *  and creates callback methods for the SurfaceHolder for asynchronous updates.
+     *
      * @param context The context in which this View is made.
      */
     public GameView(Context context, AttributeSet set) {
@@ -184,10 +169,7 @@ public class GameView extends SurfaceView {
         assetLoader = new AssetLoader();
         assetLoader.execute();
         Log.d(GAME_VIEW_LOG, "Asset loader running.");
-
     }
-
-
 
     public void gameViewPause() {
         Log.d(GAME_VIEW_LOG, "Pausing and killing thread.");
@@ -290,10 +272,6 @@ public class GameView extends SurfaceView {
         } else if (mMonster != null && mBallPoint != null) {
             handleBallGame();
         }
-    }
-
-    public void setMonster(Monster monster) {
-        mMonster = monster;
     }
 
     /**
@@ -412,7 +390,6 @@ public class GameView extends SurfaceView {
             mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pets_and_icons));
             mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.fixtures));
 
-
             mBackground = new SpriteSheet(mLoadedBmps.get(0), 160, 90, mScalar);
             mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
             mFixtures = new SpriteSheet(mLoadedBmps.get(2), 64, 64, mScalar);
@@ -476,4 +453,9 @@ public class GameView extends SurfaceView {
 
         return sb.toString();
     }
+
+    public void setMonster(Monster monster) {
+        mMonster = monster;
+    }
+
 }

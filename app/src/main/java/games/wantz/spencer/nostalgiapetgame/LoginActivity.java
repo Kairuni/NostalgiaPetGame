@@ -45,84 +45,50 @@ public class LoginActivity
                     SignInFragment.signInListener,
                     LoginMenuFragment.registerButtonListener,
                     LoginMenuFragment.loginButtonListener {
-    /**
-     * Debug tag for Logging.
-     */
-    private static String DEBUG_TAG = "LOGIN_ACTIVITY";
-    /**
-     * Value of the JSON return for UID.
-     */
+
+    //Final Field Variables
+    /** Debug tag for Logging. */
+    private final static String DEBUG_TAG = "LOGIN_ACTIVITY";
+    /** Value of the JSON return for UID. */
     public final static String UID = "UID";
-    /**
-     * Value of the JSON return for Breed.
-     */
+    /** Value of the JSON return for Breed. */
     public final static String BREED = "Breed";
-    /**
-     * Value of the JSON return for Breed.
-     */
+    /** Value of the JSON return for Breed. */
     public final static String HATCHED = "Hatched";
-    /**
-     * Value of the JSON return for MaxHealth.
-     */
+    /** Value of the JSON return for MaxHealth. */
     public final static String MAX_HEALTH = "MaxHealth";
-    /**
-     * Value of the JSON return for Health.
-     */
+    /** Value of the JSON return for Health. */
     public final static String HEALTH = "Health";
-    /**
-     * Value of the JSON return for MaxStamina.
-     */
+    /** Value of the JSON return for MaxStamina. */
     public final static String MAX_STAMINA = "MaxStamina";
-    /**
-     * Value of the JSON return for Stamina.
-     */
+    /** Value of the JSON return for Stamina. */
     public final static String STAMINA = "Stamina";
-    /**
-     * Value of the JSON return for MaxHunger.
-     */
+    /** Value of the JSON return for MaxHunger. */
     public final static String MAX_HUNGER = "MaxHunger";
-    /**
-     * Value of the JSON return for Hunger.
-     */
+    /** Value of the JSON return for Hunger. */
     public final static String HUNGER = "Hunger";
-    /**
-     * Value of the JSON return for MaxBladder.
-     */
+    /** Value of the JSON return for MaxBladder. */
     public final static String MAX_BLADDER = "MaxBladder";
-    /**
-     * Value of the JSON return for Bladder.
-     */
+    /** Value of the JSON return for Bladder. */
     public final static String BLADDER = "Bladder";
     /** Value of the JSON return for Fun. */
     public final static String FUN = "Fun";
     /** Value of the JSON return for Dirty. */
     public final static String DIRTY = "Dirty";
-    /**
-     * Value of the JSON return for last access.
-     */
+    /** Value of the JSON return for last access. */
     public final static String LAST_ACCESS = "LAST_ACCESS";
 
-
-    /**
-     * Shared preferences for saving logged in state.
-     */
-    private SharedPreferences mSharedPreferences;
-
-    /**
-     * Async Task for logging in.
-     */
+    //Non-Final Field Variables
+    /** Async Task for logging in. */
     private LoginTask mLoginTask;
-    /**
-     * Async Task for registering.
-     */
+    /**  */
+    private MonsterDB mMonsterDB;
+    /** Shared preferences for saving logged in state. */
+    private SharedPreferences mSharedPreferences;
+    /** Async Task for registering. */
     private RegisterTask mRegisterTask;
 
-
-    private MonsterDB mMonsterDB;
-
-    /**
-     * Constructor that initializes fields.
-     */
+    /** Constructor that initializes fields. */
     public LoginActivity() {
         mLoginTask = null;
         mRegisterTask = null;
@@ -142,7 +108,6 @@ public class LoginActivity
 
         LoginMenuFragment loginMenuFragment = new LoginMenuFragment();
 
-
         mSharedPreferences = getSharedPreferences(getString(R.string.LOGIN_PREFS)
                 , Context.MODE_PRIVATE);
         if (!mSharedPreferences.getBoolean(getString(R.string.LOGGEDIN), false)) {
@@ -155,7 +120,6 @@ public class LoginActivity
             if (mMonsterDB == null) {
                 mMonsterDB = new MonsterDB(getApplicationContext());
             }
-
             Monster loadMonster = mMonsterDB.getMonster();
 
             intent.putExtra(GameActivity.MONSTER_EXTRA, loadMonster);
@@ -287,14 +251,12 @@ public class LoginActivity
                     Toast.makeText(getApplicationContext(), "Registration Completed!"
                             , Toast.LENGTH_LONG)
                             .show();
-
                 } else {
                     Log.d(DEBUG_TAG, "Fail");
                     Toast.makeText(getApplicationContext(), "Email and/or Password incorrect: "
                                     + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
                             .show();
-
                 }
             } catch (JSONException e) {
                 Log.d(DEBUG_TAG, "JSON exception");
@@ -328,11 +290,8 @@ public class LoginActivity
                     Toast.makeText(getApplicationContext(), "Login Accepted!"
                             , Toast.LENGTH_LONG)
                             .show();
-
                     // Push all the retrieved pet's data to the 
                     Intent intent = new Intent(getBaseContext(), GameActivity.class);
-
-                    Log.d(DEBUG_TAG, "Why are we resetting hatched and nothing else? " + (String) jsonObject.get(HATCHED));
 
                     // Grab all the monster's stats
                     Monster loadMonster = new Monster(
@@ -365,14 +324,12 @@ public class LoginActivity
 
                     startActivity(intent);
                     finish();
-
                 } else {
                     Log.d(DEBUG_TAG, "Fail 2");
                     Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
                                     + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
                             .show();
-
                 }
             } catch (JSONException e) {
                 Log.d(DEBUG_TAG, "Fail 4");
