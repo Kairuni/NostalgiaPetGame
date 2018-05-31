@@ -234,7 +234,7 @@ public class GameView extends SurfaceView {
         if (mBallVelocity == null) {
             mBallVelocity = new PointF(-200 + mRandom.nextInt(400), -1800);
         } else if (mBallPoint.y < cY) {
-            if (mBallVelocity.y > 200) {
+            if (mBallVelocity.y > 600) {
                 mMonster.setFun(mMonster.getFun() + 5);
                 mBallVelocity.x = -2000 + mRandom.nextInt(4000);
                 mBallVelocity.y = -1800 + mRandom.nextInt(200);
@@ -268,7 +268,7 @@ public class GameView extends SurfaceView {
     public void doClick() {
         if (mMonster != null && !mMonster.getHatched()) {
             Log.d(GAME_VIEW_LOG, "Hatching!");
-            mMonster.setHatched();
+            mMonster.doHatched();
         } else if (mMonster != null && mBallPoint != null) {
             handleBallGame();
         }

@@ -123,8 +123,6 @@ public class Monster implements Serializable {
             if (mWanderTimer > WANDER_RESET) {
                 mWanderFlag = mRandom.nextInt(3);
                 mWanderTimer = 0;
-
-                createPoop();
             }
 
             // If we're too far left or right, walk back towards the center of the screen.
@@ -133,6 +131,19 @@ public class Monster implements Serializable {
             } else if (mX > 500) {
                 mWanderFlag = 1;
             }
+
+            // Handle biological functions
+            float ch = CHANGE_PER_MILLI * tickMillis;
+            setHealth(mHealth + ch);
+            setHunger(mHunger - ch);
+            mBladder -= ch;
+            while (mBladder < 0) {
+                createPoop();
+            }
+            setFun(mFun - ch);
+            setDirty(mDirty - ch);
+            for (int i = 0; i < mPoops.size(); i++)
+                setDirty(mDirty - ch / 4);
         }
         pauseTime = System.currentTimeMillis();
     }
@@ -156,7 +167,7 @@ public class Monster implements Serializable {
      * This does relieve bladder, however.
      */
     private void createPoop() {
-        mBladder = mMaxBladder;
+        mBladder += mMaxBladder;
         setFun(mFun - 20);
 
         // Make a new poop with a random X value.
@@ -325,7 +336,8 @@ public class Monster implements Serializable {
         return new ArrayList<Poop>(mPoops);
     }
 
-    public class Poop {
+    public class Poop implements Serializable {
+        private static final long serialVersionUID = 0xe05c26dfe04e72b9L;
         public int x;
         public int y;
         public float scale;
