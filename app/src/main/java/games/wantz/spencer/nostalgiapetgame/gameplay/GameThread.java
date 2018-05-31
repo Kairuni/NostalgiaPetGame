@@ -12,6 +12,8 @@ import android.graphics.Canvas;
  * @version 0.1, 11 May 2018
  */
 public class GameThread extends Thread {
+
+    //Final Field Variables
     /** The number of animation/logic frames to do every second. */
     private static final int FPS = 60;
     /** The GameView that we're tied to. */

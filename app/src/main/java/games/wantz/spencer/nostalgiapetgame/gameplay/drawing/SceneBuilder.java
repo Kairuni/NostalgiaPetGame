@@ -9,17 +9,17 @@ import java.util.List;
 import android.util.Log;
 
 public class SceneBuilder {
-    /**  */
+    /** For reference.  Should be used when possible. */
     public static int IDLE_IDX = 0;
-    /**  */
+    /** For reference.  Should be used when possible. */
     public static int FEED_IDX = 1;
-    /**  */
+    /** For reference.  Should be used when possible. */
     public static int MEAT_IDX = 2;
-    /**  */
+    /** For reference.  Should be used when possible. */
     public static int POOP_IDX = 3;
-    /**  */
+    /** For reference.  Should be used when possible. */
     public static int TUB_IDX = 0;
-    /**  */
+    /** For reference.  Should be used when possible. */
     public static int TOILET_IDX = 1;
 
     private SceneBuilder() {

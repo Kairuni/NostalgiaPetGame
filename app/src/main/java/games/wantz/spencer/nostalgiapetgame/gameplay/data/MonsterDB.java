@@ -19,6 +19,8 @@ public class MonsterDB {
     /**  */
     public static final String DB_NAME = "Monster.db";
     /**  */
+    private static final String MONSTER_TABLE = "Monsters";
+    /**  */
     public static final int DB_VERSION = 1;
 
     //Non-Final Field Variables
@@ -32,7 +34,39 @@ public class MonsterDB {
         mSQLiteDatabase = mMonsterDBHelper.getWritableDatabase();
     }
 
-    private static final String MONSTER_TABLE = "Monsters";
+    /**
+     * Delete all the data from the MONSTER_TABLE
+     */
+    public void deleteMonsters() {
+        mSQLiteDatabase.delete(MONSTER_TABLE, null, null);
+    }
+
+    /**
+     * Inserts the monster into the sqlite table, returns true on success.
+     *
+     * @param theMonster the monster to insert into the database.
+     */
+    public boolean insertMonster(Monster theMonster) {
+        // First, delete all the existing bits. We only want one monster in the table for now.
+        deleteMonsters();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("UID", theMonster.getUID());
+        contentValues.put("Breed", theMonster.getBreed());
+        contentValues.put("Hatched", theMonster.getHatched());
+        contentValues.put("MaxHealth", theMonster.getMaxHealth());
+        contentValues.put("Health", theMonster.getHealth());
+        contentValues.put("MaxStamina", theMonster.getMaxStamina());
+        contentValues.put("Stamina", theMonster.getStamina());
+        contentValues.put("MaxHunger", theMonster.getMaxHunger());
+        contentValues.put("Hunger", theMonster.getHunger());
+        contentValues.put("MaxBladder", theMonster.getMaxBladder());
+        contentValues.put("Bladder", theMonster.getBladder());
+        contentValues.put("Fun", theMonster.getFun());
+        contentValues.put("Dirty", theMonster.getDirty());
+        contentValues.put("LAST_ACCESS", System.currentTimeMillis());
+        long rowId = mSQLiteDatabase.insert(MONSTER_TABLE, null, contentValues);
+        return rowId != -1;
+    }
 
     /**
      * Returns the stored monster, may return more than one monster in the future.
@@ -73,44 +107,11 @@ public class MonsterDB {
         return mon;
     }
 
-
-    /**
-     * Delete all the data from the MONSTER_TABLE
-     */
-    public void deleteMonsters() {
-        mSQLiteDatabase.delete(MONSTER_TABLE, null, null);
-    }
-
-    /**
-     * Inserts the monster into the sqlite table, returns true on success.
-     *
-     * @param theMonster the monster to insert into the database.
-     */
-    public boolean insertMonster(Monster theMonster) {
-        // First, delete all the existing bits. We only want one monster in the table for now.
-        deleteMonsters();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("UID", theMonster.getUID());
-        contentValues.put("Breed", theMonster.getBreed());
-        contentValues.put("Hatched", theMonster.getHatched());
-        contentValues.put("MaxHealth", theMonster.getMaxHealth());
-        contentValues.put("Health", theMonster.getHealth());
-        contentValues.put("MaxStamina", theMonster.getMaxStamina());
-        contentValues.put("Stamina", theMonster.getStamina());
-        contentValues.put("MaxHunger", theMonster.getMaxHunger());
-        contentValues.put("Hunger", theMonster.getHunger());
-        contentValues.put("MaxBladder", theMonster.getMaxBladder());
-        contentValues.put("Bladder", theMonster.getBladder());
-        contentValues.put("Fun", theMonster.getFun());
-        contentValues.put("Dirty", theMonster.getDirty());
-        contentValues.put("LAST_ACCESS", System.currentTimeMillis());
-        long rowId = mSQLiteDatabase.insert(MONSTER_TABLE, null, contentValues);
-        return rowId != -1;
-    }
-
-
     class MonsterDBHelper extends SQLiteOpenHelper {
+
+        /**  */
         private final String CREATE_COURSE_SQL;
+        /**  */
         private final String DROP_COURSE_SQL;
 
         public MonsterDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,

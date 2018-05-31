@@ -39,44 +39,46 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
  * @version B.1, 28 May 2018
  */
 public class GameView extends SurfaceView {
+
+    //Final field Variables
     /**  */
     private static final String GAME_VIEW_LOG = "GAME_VIEW";
-
+    /**  */
     private static final String MONSTER_UPDATE_URL = "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
-
+    /**  */
     private static final float BALL_GRAVITY = 100f;
 
+    //Non-Final field Variables
     /** AtomicInteger value used to control what the next scene should be. */
     private AtomicInteger mNextScene;
     /** AtomicBoolean value used to determine when assets have finished loading. */
     private AtomicBoolean mAssetsDone;
-
+    /**  */
     private AtomicBoolean mDrawBars;
-
     /** The thread that handles all game logic. */
     private GameThread mGameThread;
     /** The player's monster. */
     private Monster mMonster;
     /**  */
     private MonsterDB mMonsterDB;
+    /**  */
+    private PointF mBallPoint;
+    /**  */
+    private PointF mBallVelocity;
+    /**  */
+    private Random mRandom;
     /** The sprite sheet for pets and icons. Loaded asynchronously. */
     private SpriteSheet mUnits;
     /** The sprite sheet for background images. Loaded asynchronously. */
     private SpriteSheet mBackground;
+    /**  */
     private SpriteSheet mFixtures;
     /** List of pregenerated animations. */
-    List<Animation> mAnimations;
+    private List<Animation> mAnimations;
     /** List of pregenerated animations for fixtures. */
-    List<Animation> mFixtureAnimations;
-
-    PointF mBallPoint;
-    PointF mBallVelocity;
-
-    Random mRandom;
-
-
+    private List<Animation> mFixtureAnimations;
     /** Scenes */
-    List<AnimationScene> mSceneList;
+    private List<AnimationScene> mSceneList;
     /** The currently playing scene. */
     private int mCurScene;
     /** The device's width and height. */
@@ -302,7 +304,7 @@ public class GameView extends SurfaceView {
         }
     }
 
-    void completedScene(int sceneID) {
+    public void completedScene(int sceneID) {
         // FEED
         if (sceneID == 0) {
             mMonster.doFeed();
@@ -426,40 +428,6 @@ public class GameView extends SurfaceView {
         mSceneList.add(SceneBuilder.buildToiletScene(mAnimations.get(0), mFixtureAnimations.get(1), phoneWidth, phoneHeight));
     }
 
-    private class AssetLoader extends AsyncTask<Void, Void, Void> {
-        List<Bitmap> mLoadedBmps;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            mLoadedBmps = new ArrayList<Bitmap>();
-            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.main_background));
-            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pets_and_icons));
-            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.fixtures));
-
-            mBackground = new SpriteSheet(mLoadedBmps.get(0), 160, 90, mScalar);
-            mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
-            mFixtures = new SpriteSheet(mLoadedBmps.get(2), 64, 64, mScalar);
-
-            Log.d(GAME_VIEW_LOG, "Waiting for monster");
-            while (mMonster == null) {
-                // Wait.
-            }
-
-            Log.d(GAME_VIEW_LOG, "Monster received.");
-            buildAnimations(mUnits, mFixtures, mDeviceWidth, mDeviceHeight);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            Log.d(GAME_VIEW_LOG, "Asset loader done");
-            mAssetsDone.set(true);
-        }
-    }
-
-
     public String buildMonsterURL() {
         StringBuilder sb = new StringBuilder(MONSTER_UPDATE_URL.length() + 128);
         sb.append(MONSTER_UPDATE_URL);
@@ -505,4 +473,38 @@ public class GameView extends SurfaceView {
         mMonster = monster;
     }
 
+    private class AssetLoader extends AsyncTask<Void, Void, Void> {
+
+        /**  */
+        private List<Bitmap> mLoadedBmps;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            mLoadedBmps = new ArrayList<Bitmap>();
+            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.main_background));
+            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pets_and_icons));
+            mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.fixtures));
+
+            mBackground = new SpriteSheet(mLoadedBmps.get(0), 160, 90, mScalar);
+            mUnits = new SpriteSheet(mLoadedBmps.get(1), 32, 32, mScalar);
+            mFixtures = new SpriteSheet(mLoadedBmps.get(2), 64, 64, mScalar);
+
+            Log.d(GAME_VIEW_LOG, "Waiting for monster");
+            while (mMonster == null) {
+                // Wait.
+            }
+
+            Log.d(GAME_VIEW_LOG, "Monster received.");
+            buildAnimations(mUnits, mFixtures, mDeviceWidth, mDeviceHeight);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            Log.d(GAME_VIEW_LOG, "Asset loader done");
+            mAssetsDone.set(true);
+        }
+    }
 }

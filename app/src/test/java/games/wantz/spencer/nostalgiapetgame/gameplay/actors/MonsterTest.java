@@ -91,7 +91,7 @@ public class MonsterTest {
         assertEquals(55.0f, testMonster.getFun(), DELTA);
         assertNotEquals(50.0f, testMonster.getDirty(), DELTA);
         assertNotEquals(50.0f, testMonster.getFun(), DELTA);
-        //Need to check the poop list to verify its empty.
+
     }
 
     @Test
