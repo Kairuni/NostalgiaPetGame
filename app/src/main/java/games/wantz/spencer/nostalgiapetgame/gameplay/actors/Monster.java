@@ -12,24 +12,31 @@ import java.util.Random;
  * @version 0.1, 11 May 2018
  */
 public class Monster implements Serializable {
-    private static final long serialVersionUID = 0xe05c26dfe03e72b9L;
 
+    //Final Field Variables
+    /**  */
+    private static final long serialVersionUID = 0xe05c26dfe03e72b9L;
     // Change direction every 4 seconds.
-    /**
-     * How often to change wander state (in frames).
-     */
+    /** How often to change wander state (in frames). */
     private final int WANDER_RESET = 120;
-    /**
-     * Statistic change per millisecond.
-     */
+    /** Statistic change per millisecond. */
     private final float CHANGE_PER_MILLI = 1.0f / 1000.0f;
 
+    //Non-Final Field Variables
     /** The Unique ID for this monster. */
     private String mUID;
+    /** Random for random movement. */
+    private Random mRandom;
+    /** A list of poop objects to draw on the screen as well as the monster. */
+    private List<Poop> mPoops;
     /** The breed of this monster. */
     private int mBreed;
-    /** Has this monster been hatched? */
-    private boolean mIsHatched;
+    /** The current X and Y coordinates for this montster. */
+    private int mX, mY;
+    /** What direction is the pet currently wandering? 0 right, 1 left, other values are standing still. */
+    private int mWanderFlag;
+    /** The current timer for wandering, in frames. */
+    private int mWanderTimer;
     /** Health statistics for this monster. */
     private float mMaxHealth, mHealth;
     /** Stamina statistics for this monster. */
@@ -42,24 +49,10 @@ public class Monster implements Serializable {
     private float mMaxFun, mFun;
     /** Dirty statistics for this monster. */
     private float mMaxDirty, mDirty;
-
-    /** The current X and Y coordinates for this montster. */
-    private int mX, mY;
-
-
-    /** What direction is the pet currently wandering? 0 right, 1 left, other values are standing still. */
-    private int mWanderFlag;
-    /** The current timer for wandering, in frames. */
-    private int mWanderTimer;
-
-    /** Random for random movement. */
-    private Random mRandom;
-
     /** The epoch time we paused the monster at. */
     private long pauseTime;
-
-    /** A list of poop objects to draw on the screen as well as the monster. */
-    private List<Poop> mPoops;
+    /** Has this monster been hatched? */
+    private boolean mIsHatched;
 
     /**
      * Construct a monster with the given parameters.
@@ -179,6 +172,10 @@ public class Monster implements Serializable {
         mPoops.clear();
     }
 
+    public void doHatched() {
+        mIsHatched = true;
+    }
+
     public void onPause() {
         pauseTime = System.currentTimeMillis();
     }
@@ -191,49 +188,13 @@ public class Monster implements Serializable {
 
     /* GETTERS AND SETTERS */
     /* Of note, the setters will not go below 0 or above the respective max. */
-    public float getHealth() {
-        return mHealth;
+
+    public void setX(int mX) {
+        this.mX = mX;
     }
 
-    public float getStamina() {
-        return mStamina;
-    }
-
-    public float getHunger() {
-        return mHunger;
-    }
-
-    public float getBladder() {
-        return mBladder;
-    }
-
-    public float getFun() {
-        return mFun;
-    }
-
-    public float getDirty() {
-        return mDirty;
-    }
-
-    public int getX() {
-        return mX;
-    }
-
-    public int getY() {
-        return mY;
-    }
-
-    public int getBreed() {
-        return mBreed;
-    }
-
-    public boolean getHatched() {
-        return mIsHatched; }
-
-
-
-    public List<Poop> getPoops() {
-        return new ArrayList<Poop>(mPoops);
+    public void setY(int mY) {
+        this.mY = mY;
     }
 
     public void setHealth(float health) {
@@ -276,10 +237,6 @@ public class Monster implements Serializable {
             mFun = mMaxFun;
     }
 
-    public void setHatched() {
-        mIsHatched = true;
-    }
-
     public void setDirty(float dirty) {
         mDirty = dirty;
         if (mDirty < 0)
@@ -288,28 +245,48 @@ public class Monster implements Serializable {
             mDirty = mMaxDirty;
     }
 
-    public void setX(int mX) {
-        this.mX = mX;
-    }
-
-    public void setY(int mY) {
-        this.mY = mY;
-    }
-
-    public float getHealthPercent() {
-        return 100 * mHealth / mMaxHealth;
-    }
-
-    public float getStaminaPercent() {
-        return 100 * mStamina / mMaxStamina;
-    }
-
-    public float getHungerPercent() {
-        return 100 * mHunger / mMaxHunger;
-    }
-
     public String getUID() {
         return mUID;
+    }
+
+    public int getX() {
+        return mX;
+    }
+
+    public int getY() {
+        return mY;
+    }
+
+    public int getBreed() {
+        return mBreed;
+    }
+
+    public boolean getHatched() {
+        return mIsHatched;
+    }
+
+    public float getHealth() {
+        return mHealth;
+    }
+
+    public float getStamina() {
+        return mStamina;
+    }
+
+    public float getHunger() {
+        return mHunger;
+    }
+
+    public float getBladder() {
+        return mBladder;
+    }
+
+    public float getFun() {
+        return mFun;
+    }
+
+    public float getDirty() {
+        return mDirty;
     }
 
     public float getMaxHealth() {
@@ -328,8 +305,24 @@ public class Monster implements Serializable {
         return mMaxBladder;
     }
 
+    public float getHealthPercent() {
+        return 100 * mHealth / mMaxHealth;
+    }
+
+    public float getStaminaPercent() {
+        return 100 * mStamina / mMaxStamina;
+    }
+
+    public float getHungerPercent() {
+        return 100 * mHunger / mMaxHunger;
+    }
+
     public float getBladderPercent() {
         return 100 * mBladder / mMaxBladder;
+    }
+
+    public List<Poop> getPoops() {
+        return new ArrayList<Poop>(mPoops);
     }
 
     public class Poop {

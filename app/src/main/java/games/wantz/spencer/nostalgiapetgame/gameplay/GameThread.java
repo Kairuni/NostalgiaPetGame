@@ -12,26 +12,21 @@ import android.graphics.Canvas;
  * @version 0.1, 11 May 2018
  */
 public class GameThread extends Thread {
+
+    //Final Field Variables
     /** The number of animation/logic frames to do every second. */
     private static final int FPS = 60;
-    /**
-     * The GameView that we're tied to.
-     */
+    /** The GameView that we're tied to. */
     private final GameView mGameView;
-    /**
-     * Is this thread active?
-     */
+
+    //Non-Final Field Variables
+    /** Is this thread active? */
     private boolean mActive;
 
     /**
-     * Sets if the thread is active or not.
-     */
-    public void setActive(boolean active) {
-        mActive = active;
-    }
-
-    /**
      * Constructs the thread with the provided GameView.
+     *
+     * @param gameView passes the current game view.
      */
     public GameThread(GameView gameView) {
         mGameView = gameView;
@@ -69,6 +64,10 @@ public class GameThread extends Thread {
 
             }
         }
+    }
 
+    /** Sets if the thread is active or not. */
+    public void setActive(boolean active) {
+        mActive = active;
     }
 }

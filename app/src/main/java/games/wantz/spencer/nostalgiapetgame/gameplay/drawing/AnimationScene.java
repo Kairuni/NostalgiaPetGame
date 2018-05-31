@@ -11,22 +11,21 @@ import java.util.List;
  * @version B.1, 28 May 2018
  */
 public class AnimationScene {
+
+    /**  */
     private List<Animation> mAnimations;
+    /**  */
     private List<List<Point>> mLocations;
-    // In milliseconds
-    private List<List<Long>> mTimeToLocations;
+    /**  */
     private List<Integer> mFrames;
-    // In milliseconds
+    /**  */// In milliseconds
     private List<Long> mFrameTimers;
-    // Is a given set complete?
+    /**  */// In milliseconds
+    private List<List<Long>> mTimeToLocations;
+    /**  */// Is a given set complete?
     private List<Boolean> mIsComplete;
-
-    // has the entire scene completed its animation?
+    /**  */// has the entire scene completed its animation?
     private boolean mSceneAnimationComplete;
-
-    public boolean getIsComplete() {
-        return mSceneAnimationComplete;
-    }
 
     public AnimationScene(List<Animation> animations, List<List<Point>> animationPoints, List<List<Long>> timeToLocations) {
         if (animations.size() != animationPoints.size() || animations.size() != timeToLocations.size()) {
@@ -117,9 +116,11 @@ public class AnimationScene {
             Animation curAnim = mAnimations.get(i);
             curAnim.draw(canvas, drawPoint.x, drawPoint.y);
         }
-
         if (done)
             mSceneAnimationComplete = true;
     }
 
+    public boolean getIsComplete() {
+        return mSceneAnimationComplete;
+    }
 }

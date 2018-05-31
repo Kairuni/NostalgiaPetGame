@@ -6,16 +6,18 @@ import java.util.List;
 
 public class Animation {
 
+    /**  */
     private SpriteSheet mSpriteSheet;
-
+    /**  */
     private List<Integer> mFrames;
-
+    /**  */
     private List<Long> mFrameTimes;
-
-    private boolean mLoop;
-
+    /**  */
     private int mCurFrame;
+    /**  */
     private long mCurTime;
+    /**  */
+    private boolean mLoop;
 
     public Animation(SpriteSheet theSpriteSheet, List<Integer> theFrame, List<Long> theFrameTimes, boolean loop) {
         mSpriteSheet = theSpriteSheet;

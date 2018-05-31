@@ -12,40 +12,20 @@ import android.graphics.Rect;
  * @version 0.1, 11 May 2018
  */
 public class SpriteSheet {
-    /**
-     * The dimensions of the bitmap.
-     */
+
+    //Final Field Variables
+    /** The dimensions of the bitmap. */
     private final int mWidth, mHeight;
-    /**
-     * The width and height of the frames.
-     */
+    /** The width and height of the frames. */
     private final int mFrameWidth, mFrameHeight;
-    /**
-     * A calculated value that stores the number of frames in a row.
-     */
+    /** A calculated value that stores the number of frames in a row. */
     private final int mFramesPerRow;
 
-    /**
-     * Gets the scale of the sprite sheet.
-     * @return the scale.
-     */
-    public float getScale() {
-        return mScale;
-    }
-
-    /**
-     * Sets the scale of the sprite sheet.
-     * @param scale The scale to set the sheet to.
-     */
-    public void setScale(float scale) {
-        mScale = scale;
-    }
-
-    /** The multiplier to scale this sprite sheet. */
-    private float mScale;
-
+    //Non-Final Field Variables
     /** The bitmap that this spritesheet is based upon. */
     private Bitmap mBitmap;
+    /** The multiplier to scale this sprite sheet. */
+    private float mScale;
 
     /**
      * Creates a new spritesheet with the provided bitmap, frame dimensions, and scale.
@@ -62,7 +42,6 @@ public class SpriteSheet {
         mFrameWidth = frameWidth;
         mFrameHeight = frameHeight;
         mScale = scale;
-
         mFramesPerRow = mWidth / mFrameWidth;
     }
 
@@ -89,7 +68,6 @@ public class SpriteSheet {
     public void draw(Canvas canvas, int dX, int dY, int frame, float scale) {
         int frameX = frame % mFramesPerRow;
         int frameY = frame / mFramesPerRow;
-
         int sourceX = frameX * mFrameWidth;
         int sourceY = frameY * mFrameHeight;
 
@@ -101,5 +79,21 @@ public class SpriteSheet {
 
         // Disable filtering of scaled bitmaps. We want the blocky pixels.
         canvas.drawBitmap(mBitmap, source, destination, new Paint(0));
+    }
+
+    /**
+     * Sets the scale of the sprite sheet.
+     * @param scale The scale to set the sheet to.
+     */
+    public void setScale(float scale) {
+        mScale = scale;
+    }
+
+    /**
+     * Gets the scale of the sprite sheet.
+     * @return the scale.
+     */
+    public float getScale() {
+        return mScale;
     }
 }

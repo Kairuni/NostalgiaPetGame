@@ -25,41 +25,28 @@ import android.widget.Button;
  */
 public class LoginMenuFragment extends Fragment {
 
+    /** mRButton is a member var that opens the register fragment. */
+    private Button mRButton;
+    /** mSButton is a member var that opens the sign in fragment. */
+    private Button mSButton;
+    /** mSListener is a member var that listens for the selection of the "SignIn" button.*/
+    private loginButtonListener mSListener;
     /** mRListener is a member var that listens for the selection of the "Create Acct" button.*/
     private registerButtonListener mRListener;
 
-    /** mSListener is a member var that listens for the selection of the "SignIn" button.*/
-    private loginButtonListener mSListener;
-
-    /**
-     * mRButton is a member var that opens the register fragment.
-     */
-    private Button mRButton;
-    /**
-     * mSButton is a member var that opens the sign in fragment.
-     */
-    private Button mSButton;
-
-
-    /**
-     * LoginMenuFragment is an empty, required constructor.
-     */
+    /** LoginMenuFragment is an empty, required constructor. */
     public LoginMenuFragment() {
     }
 
-    /**
-     * registerButtonListener is an interface to execute openRegisterFragment.
-     */
+    /** registerButtonListener is an interface to execute openRegisterFragment. */
     public interface registerButtonListener {
         void openRegisterFragment();
     }
-
 
     /** loginButtonListener is an interface to execute openLoginFragment. */
     public interface loginButtonListener {
         void openLoginFragment();
     }
-
 
     /**
      * onAttach ensures that the parent implemented the required registerButtonListener

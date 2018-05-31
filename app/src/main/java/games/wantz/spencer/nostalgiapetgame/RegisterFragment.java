@@ -26,33 +26,23 @@ import java.net.URLEncoder;
  */
 public class RegisterFragment extends Fragment {
 
-    /**
-     * TAG is a constant used to identify log events into the Logcat.
-     */
+    //Final Field Variables
+    /** TAG is a constant used to identify log events into the Logcat. */
     private static final String TAG = "RegisterFragment";
-
-    /**
-     * REGISTER_URL is a constant to store the url for the database that stores the login info.
-     */
+    /** REGISTER_URL is a constant to store the url for the database that stores the login info. */
     private static final String REGISTER_URL = "http://www.kairuni.com/NostalgiaPet/addUser.php?";
 
-    /**
-     * Allows the fragment to use the Activity when the button is pushed.
-     */
-    private registerListener mListener;
-
-    /** EditText for retrieving the user's email. */
-    private EditText mRUserEmail;
-
-    /** EditText for retrieving the user's password. */
-    private EditText mRUserPassword;
-
+    //Non-Final Field Variables
     /** Button used for registration. */
     private Button mRegisterButton;
+    /** EditText for retrieving the user's email. */
+    private EditText mRUserEmail;
+    /** EditText for retrieving the user's password. */
+    private EditText mRUserPassword;
+    /** Allows the fragment to use the Activity when the button is pushed. */
+    private registerListener mListener;
 
-    /**
-     * RegisterFragment is an empty, required constructor.
-     */
+    /** RegisterFragment is an empty, required constructor. */
     public RegisterFragment() {
     }
 
@@ -65,9 +55,7 @@ public class RegisterFragment extends Fragment {
         return null;
     }
 
-    /**
-     * registerListener is an interface to execute registerUser.
-     */
+    /** registerListener is an interface to execute registerUser. */
     public interface registerListener {
         void registerUser(String url);
     }
@@ -97,7 +85,6 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_register, container, false);
-
         mRUserEmail = (EditText) v.findViewById(R.id.fillable_register_email_id);
         mRUserPassword = (EditText) v.findViewById(R.id.fillable_register_password);
         mRegisterButton = v.findViewById(R.id.btn_user_register);
@@ -124,11 +111,9 @@ public class RegisterFragment extends Fragment {
             String email = mRUserEmail.getText().toString();
             sb.append("email=");
             sb.append(URLEncoder.encode(email, "UTF-8"));
-
             String password = mRUserPassword.getText().toString();
             sb.append("&password=");
             sb.append(URLEncoder.encode(password, "UTF-8"));
-
             Log.i(TAG, sb.toString());
         }
         catch(Exception e) {

@@ -30,29 +30,21 @@ import java.net.URLEncoder;
  */
 public class SignInFragment extends Fragment {
 
+    //Final Field Variables
     /** TAG is a constant used to identify log events into the Logcat.*/
     private static final String TAG = "SignInFragment";
-
     /** SIGN_IN_URL is a constant to store the url for the database that stores the login info.*/
     private static final String SIGN_IN_URL = "http://www.kairuni.com/NostalgiaPet/login.php?";
 
-    /**
-     * mListener is a var that allows us to use the activity for callbacks.
-     */
-    private signInListener mListener;
-
-    /**
-     * mSIUserEmail is a var that stores a reference to the EditText for getting the email.
-     */
-    private EditText mSIUserEmail;
-
-    /**
-     * mSIUserPassword is a var that stores a reference to the EditText for getting the password.
-     */
-    private EditText mSIUserPassword;
-
+    //Non-Final Field Variables
     /** mSignInButton is a var that stores a reference to the button for callbacks. */
     private Button mSignInButton;
+    /** mSIUserEmail is a var that stores a reference to the EditText for getting the email. */
+    private EditText mSIUserEmail;
+    /** mSIUserPassword is a var that stores a reference to the EditText for getting the password. */
+    private EditText mSIUserPassword;
+    /** mListener is a var that allows us to use the activity for callbacks. */
+    private signInListener mListener;
 
     /** SignInFragment is an empty, required constructor*/
     public SignInFragment() {
