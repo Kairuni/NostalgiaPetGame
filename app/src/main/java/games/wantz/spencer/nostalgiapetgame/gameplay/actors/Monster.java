@@ -9,18 +9,24 @@ import java.util.Random;
  * A class that represents the player's pet monster.
  *
  * @author Keegan Wantz wantzkt@uw.edu
- * @version 0.1, 11 May 2018
+ * @version 1.B, 11 May 2018
  */
 public class Monster implements Serializable {
 
     //Final Field Variables
-    /**  */
+    /**
+     * UID for serialization.
+     */
     private static final long serialVersionUID = 0xe05c26dfe03e72b9L;
     // Change direction every 4 seconds.
     /** How often to change wander state (in frames). */
-    private final int WANDER_RESET = 120;
+    private static final int WANDER_RESET = 120;
     /** Statistic change per millisecond. */
-    private final float CHANGE_PER_MILLI = 1.0f / 1000.0f;
+    private static final float CHANGE_PER_MILLI = 1.0f / 1000.0f;
+    /**
+     * The multiplier for reducing health while starving.
+     */
+    private static final float DYING_MULTIPLIER = 5.0f;
 
     //Non-Final Field Variables
     /** The Unique ID for this monster. */
@@ -134,7 +140,11 @@ public class Monster implements Serializable {
 
             // Handle biological functions
             float ch = CHANGE_PER_MILLI * tickMillis;
-            setHealth(mHealth + ch);
+            if (mHunger > 50) {
+                setHealth(mHealth + ch);
+            } else if (mHunger == 0) {
+                setHealth(mHealth - ch * DYING_MULTIPLIER);
+            }
             setHunger(mHunger - ch);
             mBladder -= ch;
             while (mBladder < 0) {
@@ -148,12 +158,18 @@ public class Monster implements Serializable {
         pauseTime = System.currentTimeMillis();
     }
 
+    /**
+     * Change the monster's statistics as if it had eaten - decreases bladder and fun, refills hunger gauge.
+     */
     public void doFeed() {
         mHunger = mMaxHunger;
         setBladder(mBladder - 20);
         setFun(mFun - 10);
     }
 
+    /**
+     * Change the monster's statistics as if it had used the bathroom, decreases fun, refills bladder gauge.
+     */
     public void doToilet() {
         mBladder = mMaxBladder;
         setFun(mFun - 10);
@@ -176,6 +192,9 @@ public class Monster implements Serializable {
                 .75f + .75f * mRandom.nextFloat()));
     }
 
+    /**
+     * Change the monster's statistics as if it had taken a shower, increases fun gauge, maxes dirty gauge, and clears all poops.
+     */
     public void doShower() {
         mDirty = mMaxDirty;
         setFun(mFun+5);

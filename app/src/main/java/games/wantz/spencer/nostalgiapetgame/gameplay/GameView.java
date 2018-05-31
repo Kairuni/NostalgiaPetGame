@@ -44,39 +44,52 @@ public class GameView extends SurfaceView {
 
     private static final String MONSTER_UPDATE_URL = "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
 
-    private static final float BALL_GRAVITY = 100f;
+    private static final float BALL_GRAVITY = 300f;
 
     /** AtomicInteger value used to control what the next scene should be. */
     private AtomicInteger mNextScene;
     /** AtomicBoolean value used to determine when assets have finished loading. */
     private AtomicBoolean mAssetsDone;
-
+    /**
+     * Should I draw my status bars?
+     */
     private AtomicBoolean mDrawBars;
 
     /** The thread that handles all game logic. */
     private GameThread mGameThread;
     /** The player's monster. */
     private Monster mMonster;
-    /**  */
+    /** The SQLite database to save monsters in. */
     private MonsterDB mMonsterDB;
     /** The sprite sheet for pets and icons. Loaded asynchronously. */
     private SpriteSheet mUnits;
     /** The sprite sheet for background images. Loaded asynchronously. */
     private SpriteSheet mBackground;
     private SpriteSheet mFixtures;
-    /** List of pregenerated animations. */
-    List<Animation> mAnimations;
-    /** List of pregenerated animations for fixtures. */
-    List<Animation> mFixtureAnimations;
-
-    PointF mBallPoint;
-    PointF mBallVelocity;
-
-    Random mRandom;
+    /**
+     * List of animations to use for gameplay.
+     */
+    private List<Animation> mAnimations;
+    /**
+     * List of animations for fixtures.
+     */
+    private List<Animation> mFixtureAnimations;
+    /**
+     * The ball game's point.
+     */
+    private PointF mBallPoint;
+    /**
+     * The ball's velocity for the ball game.
+     */
+    private PointF mBallVelocity;
+    /**
+     * Random number generator for various uses.
+     */
+    private Random mRandom;
 
 
     /** Scenes */
-    List<AnimationScene> mSceneList;
+    private List<AnimationScene> mSceneList;
     /** The currently playing scene. */
     private int mCurScene;
     /** The device's width and height. */
@@ -206,15 +219,15 @@ public class GameView extends SurfaceView {
     }
 
     public void doFeed() {
-        mNextScene.set(0);
+        mNextScene.set(SceneBuilder.FEED_IDX);
     }
 
     public void doToilet() {
-        mNextScene.set(2);
+        mNextScene.set(SceneBuilder.TOILET_IDX);
     }
 
     public void doShower() {
-        mNextScene.set(1);
+        mNextScene.set(SceneBuilder.TUB_IDX);
     }
 
     public void doGame() {
@@ -247,7 +260,7 @@ public class GameView extends SurfaceView {
         } else {
             mMonster.setFun(mMonster.getFun() - 5);
             mBallVelocity.x = -200 + mRandom.nextInt(400);
-            mBallVelocity.y = 1000 + mRandom.nextInt(300);
+            mBallVelocity.y = 3000 + mRandom.nextInt(300);
         }
     }
 
@@ -286,8 +299,24 @@ public class GameView extends SurfaceView {
         if (mMonster != null && mAssetsDone.get()) {
             mMonster.update(tickMillis);
 
-            mAnimations.get(0).update(tickMillis);
-            mAnimations.get(3).update(tickMillis);
+            // If their monster is dead, well, kill it by making a new monster.
+            if (mMonster.getHealth() == 0) {
+                mMonster = new Monster(mMonster.getUID(),
+                        mRandom.nextInt(3) * 3, false,
+                        80 + mRandom.nextInt(40), 10,
+                        80 + mRandom.nextInt(40), 10,
+                        80 + mRandom.nextInt(40), 10,
+                        80 + mRandom.nextInt(40), 10,
+                        100, 100, System.currentTimeMillis()
+                );
+                // Rebuild our animations
+                buildAnimations(mUnits, mFixtures, mDeviceWidth, mDeviceHeight);
+                // Reset the current scene to -1.
+                mCurScene = -1;
+            }
+
+            mAnimations.get(SceneBuilder.IDLE_IDX).update(tickMillis);
+            mAnimations.get(SceneBuilder.POOP_IDX).update(tickMillis);
 
             if (mCurScene == -1) {
                 mCurScene = mNextScene.getAndSet(-1);
@@ -400,7 +429,7 @@ public class GameView extends SurfaceView {
         canvas.drawRect(barLeft, barTop + barOffset, barLeft + barWidth * mMonster.getStaminaPercent() / 100, barTop + barHeight + barOffset, barPaint);
 
         canvas.drawRect(barLeft, barTop + barOffset * 2, barLeft + barWidth, barTop + barHeight + barOffset * 2, bgPaint);
-        canvas.drawText("Hunger", barLeft + barWidth, barTop + barHeight + barOffset * 2, bgPaint);
+        canvas.drawText("Stomach", barLeft + barWidth, barTop + barHeight + barOffset * 2, bgPaint);
         canvas.drawRect(barLeft, barTop + barOffset * 2, barLeft + barWidth * mMonster.getHungerPercent() / 100, barTop + barHeight + barOffset * 2, barPaint);
 
         canvas.drawRect(barLeft, barTop + barOffset * 3, barLeft + barWidth, barTop + barHeight + barOffset * 3, bgPaint);
@@ -412,7 +441,7 @@ public class GameView extends SurfaceView {
         canvas.drawRect(barLeft, barTop + barOffset * 4, barLeft + barWidth * mMonster.getFun() / 100, barTop + barHeight + barOffset * 4, barPaint);
 
         canvas.drawRect(barLeft, barTop + barOffset * 5, barLeft + barWidth, barTop + barHeight + barOffset * 5, bgPaint);
-        canvas.drawText("Dirty", barLeft + barWidth, barTop + barHeight + barOffset * 5, bgPaint);
+        canvas.drawText("Clean", barLeft + barWidth, barTop + barHeight + barOffset * 5, bgPaint);
         canvas.drawRect(barLeft, barTop + barOffset * 5, barLeft + barWidth * mMonster.getDirty() / 100, barTop + barHeight + barOffset * 5, barPaint);
     }
 
@@ -421,9 +450,12 @@ public class GameView extends SurfaceView {
         mFixtureAnimations = SceneBuilder.buildFixtureAnimations(fixturesSheet);
 
         /* Next, build the scenes. */
-        mSceneList.add(SceneBuilder.buildFeedScene(mAnimations.get(1), mAnimations.get(2), phoneWidth, phoneHeight));
-        mSceneList.add(SceneBuilder.buildShowerScene(mAnimations.get(0), mFixtureAnimations.get(0), phoneWidth, phoneHeight));
-        mSceneList.add(SceneBuilder.buildToiletScene(mAnimations.get(0), mFixtureAnimations.get(1), phoneWidth, phoneHeight));
+        mSceneList.add(SceneBuilder.buildFeedScene(mAnimations.get(SceneBuilder.FEED_IDX),
+                mAnimations.get(SceneBuilder.MEAT_IDX), phoneWidth, phoneHeight));
+        mSceneList.add(SceneBuilder.buildShowerScene(mAnimations.get(SceneBuilder.IDLE_IDX),
+                mFixtureAnimations.get(SceneBuilder.TUB_IDX), phoneWidth, phoneHeight));
+        mSceneList.add(SceneBuilder.buildToiletScene(mAnimations.get(SceneBuilder.IDLE_IDX),
+                mFixtureAnimations.get(SceneBuilder.TOILET_IDX), phoneWidth, phoneHeight));
     }
 
     private class AssetLoader extends AsyncTask<Void, Void, Void> {
@@ -432,7 +464,7 @@ public class GameView extends SurfaceView {
         @Override
         protected Void doInBackground(Void... params) {
 
-            mLoadedBmps = new ArrayList<Bitmap>();
+            mLoadedBmps = new ArrayList<>();
             mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.main_background));
             mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.pets_and_icons));
             mLoadedBmps.add(BitmapFactory.decodeResource(getResources(), R.drawable.fixtures));

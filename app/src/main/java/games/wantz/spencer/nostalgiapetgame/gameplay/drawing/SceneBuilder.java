@@ -8,25 +8,37 @@ import java.util.List;
 
 import android.util.Log;
 
+/**
+ *
+ */
 public class SceneBuilder {
     /**  */
-    public static int IDLE_IDX = 0;
+    public static final int IDLE_IDX = 0;
     /**  */
-    public static int FEED_IDX = 1;
+    public static final int FEED_IDX = 1;
     /**  */
-    public static int MEAT_IDX = 2;
+    public static final int MEAT_IDX = 2;
     /**  */
-    public static int POOP_IDX = 3;
+    public static final int POOP_IDX = 3;
     /**  */
-    public static int TUB_IDX = 0;
+    public static final int TUB_IDX = 0;
     /**  */
-    public static int TOILET_IDX = 1;
+    public static final int TOILET_IDX = 1;
 
+    /**
+     * Private ctor to help prevent instantiation.
+     */
     private SceneBuilder() {
         throw new IllegalStateException("Should never be able to instantiate this class.");
     }
 
-    // Returns 0 -- idle, 1 -- feed, 2 -- meat.
+    /**
+     * Creates a list of animations for use in the game.
+     *
+     * @param monsterSheet The sprite sheet to use for the monster and other icons.
+     * @param breed        The breed of the monster to make animations for.
+     * @return A list of animations where IDLE_IDX is the idle animation, FEED_IDX is the feed animation, MEAT_IDX is the meat animation, POOP_IDX is the poop animation.
+     */
     public static List<Animation> buildMonsterAnimations(SpriteSheet monsterSheet, int breed) {
         List<Animation> outList = new ArrayList<>();
 
@@ -54,7 +66,12 @@ public class SceneBuilder {
         return outList;
     }
 
-    // 0 -- tub, 1 -- outhouse
+
+    /**
+     *
+     * @param fixturesSheet
+     * @return
+     */
     public static List<Animation> buildFixtureAnimations(SpriteSheet fixturesSheet) {
         List<Animation> outList = new ArrayList<>();
 
@@ -70,6 +87,14 @@ public class SceneBuilder {
         return outList;
     }
 
+    /**
+     *
+     * @param feedAnimation
+     * @param meatAnimation
+     * @param phoneWidth
+     * @param phoneHeight
+     * @return
+     */
     public static AnimationScene buildFeedScene(Animation feedAnimation, Animation meatAnimation, int phoneWidth, int phoneHeight) {
         List<Animation> feedAnimations = new ArrayList<>();
         feedAnimations.add(feedAnimation);
@@ -102,6 +127,14 @@ public class SceneBuilder {
         return new AnimationScene(feedAnimations, animationPoints, timeToLocations);
     }
 
+    /**
+     *
+     * @param idleAnimation
+     * @param tubAnimation
+     * @param phoneWidth
+     * @param phoneHeight
+     * @return
+     */
     public static AnimationScene buildShowerScene(Animation idleAnimation, Animation tubAnimation, int phoneWidth, int phoneHeight) {
         float scalar = phoneWidth / 160.0f;
         int offset = (int) (16 * scalar);
@@ -139,7 +172,16 @@ public class SceneBuilder {
         return new AnimationScene(showerAnimations, pList, tList);
     }
 
-    public static AnimationScene buildToiletScene(Animation idleAnimation, Animation tubAnimation, int phoneWidth, int phoneHeight) {
+    /**
+     * Builds a scene where the provided monster walks into the outhouse.
+     *
+     * @param idleAnimation     The monster to use in this scene.
+     * @param outhouseAnimation The outhouse's animation.
+     * @param phoneWidth        Phone's width.
+     * @param phoneHeight       Phone's height.
+     * @return An animation scene where the provided monster walks into the outhouse.
+     */
+    public static AnimationScene buildToiletScene(Animation idleAnimation, Animation outhouseAnimation, int phoneWidth, int phoneHeight) {
         float scalar = phoneWidth / 160.0f;
         int offset = (int) (16 * scalar);
         int cX = phoneWidth / 2;
@@ -147,7 +189,7 @@ public class SceneBuilder {
 
         List<Animation> toiletAnimations = new ArrayList<>();
         toiletAnimations.add(idleAnimation);
-        toiletAnimations.add(tubAnimation);
+        toiletAnimations.add(outhouseAnimation);
 
         // Same as the above method
         Point monsterPoints[] = {
@@ -161,7 +203,7 @@ public class SceneBuilder {
         pList.add(Arrays.asList(outhousePoints));
 
         // And the timers.
-        Long monsterTimes[] = {0L, 200L, 1800L};
+        Long monsterTimes[] = {0L, 200L, 800L};
         Long outhouseTimes[] = {1L, 1L};
         List<List<Long>> tList = new ArrayList<>();
         tList.add(Arrays.asList(monsterTimes));
