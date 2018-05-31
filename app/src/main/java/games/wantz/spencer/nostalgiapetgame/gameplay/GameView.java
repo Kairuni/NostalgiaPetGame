@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.AsyncTask;
@@ -49,6 +50,9 @@ public class GameView extends SurfaceView {
     private AtomicInteger mNextScene;
     /** AtomicBoolean value used to determine when assets have finished loading. */
     private AtomicBoolean mAssetsDone;
+
+    private AtomicBoolean mDrawBars;
+
     /** The thread that handles all game logic. */
     private GameThread mGameThread;
     /** The player's monster. */
@@ -69,6 +73,7 @@ public class GameView extends SurfaceView {
     PointF mBallVelocity;
 
     Random mRandom;
+
 
     /** Scenes */
     List<AnimationScene> mSceneList;
@@ -151,8 +156,8 @@ public class GameView extends SurfaceView {
         });
 
         mSceneList = new ArrayList<AnimationScene>();
-        mAssetsDone = new AtomicBoolean();
-        mAssetsDone.set(false);
+        mAssetsDone = new AtomicBoolean(false);
+        mDrawBars = new AtomicBoolean(false);
         mAnimations = null;
         mFixtureAnimations = null;
 
@@ -222,7 +227,7 @@ public class GameView extends SurfaceView {
     }
 
     public void toggleStats() {
-
+        mDrawBars.set(!mDrawBars.get());
     }
 
     // Consider pulling this into its own class
@@ -234,8 +239,8 @@ public class GameView extends SurfaceView {
         if (mBallVelocity == null) {
             mBallVelocity = new PointF(-200 + mRandom.nextInt(400), -1800);
         } else if (mBallPoint.y < cY) {
-            if (mBallVelocity.y > 600) {
-                mMonster.setFun(mMonster.getFun() + 5);
+            if (mBallVelocity.y > 1500) {
+                mMonster.setFun(mMonster.getFun() + 7);
                 mBallVelocity.x = -2000 + mRandom.nextInt(4000);
                 mBallVelocity.y = -1800 + mRandom.nextInt(200);
             }
@@ -365,8 +370,50 @@ public class GameView extends SurfaceView {
                         mUnits.draw(canvas, (int) mBallPoint.x, (int) mBallPoint.y, 5);
                     }
                 }
+                if (mDrawBars.get()) {
+                    drawStatBars(canvas);
+                }
             }
         }
+    }
+
+    public void drawStatBars(Canvas canvas) {
+        // So, size: left + 100,
+        float barLeft = 200;
+        float barWidth = mDeviceWidth / 1.5f;
+        float barTop = mDeviceHeight / 6;
+        float barHeight = mDeviceHeight / 16;
+        float barOffset = barHeight + barHeight / 4;
+
+        Paint bgPaint = new Paint();
+        Paint barPaint = new Paint();
+        bgPaint.setARGB(255, 0, 0, 0);
+        bgPaint.setTextSize(barHeight);
+        barPaint.setARGB(255, 0, 255, 0);
+
+        canvas.drawRect(barLeft, barTop, barLeft + barWidth, barTop + barHeight, bgPaint);
+        canvas.drawText("Health", barLeft + barWidth, barTop + barHeight, bgPaint);
+        canvas.drawRect(barLeft, barTop, barLeft + barWidth * mMonster.getHealthPercent() / 100, barTop + barHeight, barPaint);
+
+        canvas.drawRect(barLeft, barTop + barOffset, barLeft + barWidth, barTop + barHeight + barOffset, bgPaint);
+        canvas.drawText("Stamina", barLeft + barWidth, barTop + barHeight + barOffset, bgPaint);
+        canvas.drawRect(barLeft, barTop + barOffset, barLeft + barWidth * mMonster.getStaminaPercent() / 100, barTop + barHeight + barOffset, barPaint);
+
+        canvas.drawRect(barLeft, barTop + barOffset * 2, barLeft + barWidth, barTop + barHeight + barOffset * 2, bgPaint);
+        canvas.drawText("Hunger", barLeft + barWidth, barTop + barHeight + barOffset * 2, bgPaint);
+        canvas.drawRect(barLeft, barTop + barOffset * 2, barLeft + barWidth * mMonster.getHungerPercent() / 100, barTop + barHeight + barOffset * 2, barPaint);
+
+        canvas.drawRect(barLeft, barTop + barOffset * 3, barLeft + barWidth, barTop + barHeight + barOffset * 3, bgPaint);
+        canvas.drawText("Bladder", barLeft + barWidth, barTop + barHeight + barOffset * 3, bgPaint);
+        canvas.drawRect(barLeft, barTop + barOffset * 3, barLeft + barWidth * mMonster.getBladderPercent() / 100, barTop + barHeight + barOffset * 3, barPaint);
+
+        canvas.drawRect(barLeft, barTop + barOffset * 4, barLeft + barWidth, barTop + barHeight + barOffset * 4, bgPaint);
+        canvas.drawText("Fun", barLeft + barWidth, barTop + barHeight + barOffset * 4, bgPaint);
+        canvas.drawRect(barLeft, barTop + barOffset * 4, barLeft + barWidth * mMonster.getFun() / 100, barTop + barHeight + barOffset * 4, barPaint);
+
+        canvas.drawRect(barLeft, barTop + barOffset * 5, barLeft + barWidth, barTop + barHeight + barOffset * 5, bgPaint);
+        canvas.drawText("Dirty", barLeft + barWidth, barTop + barHeight + barOffset * 5, bgPaint);
+        canvas.drawRect(barLeft, barTop + barOffset * 5, barLeft + barWidth * mMonster.getDirty() / 100, barTop + barHeight + barOffset * 5, barPaint);
     }
 
     public void buildAnimations(SpriteSheet monsterSheet, SpriteSheet fixturesSheet, int phoneWidth, int phoneHeight) {
