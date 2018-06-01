@@ -71,6 +71,12 @@ public class RegisterFragmentTest {
         onView(withId(R.id.fillable_register_password))
                 .perform(new TypeTextAction("123")).perform(closeSoftKeyboard());
 
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail("Sleep got interrupted.");
+        }
+
         onView(withId(R.id.btn_user_register))
                 .perform(click());
 
@@ -88,6 +94,12 @@ public class RegisterFragmentTest {
 
         onView(withId(R.id.fillable_register_password))
                 .perform(new TypeTextAction("12345678")).perform(closeSoftKeyboard());
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail("Sleep got interrupted.");
+        }
 
         onView(withId(R.id.btn_user_register))
                 .perform(click());
@@ -113,6 +125,13 @@ public class RegisterFragmentTest {
                 .perform(typeText(email)).perform(closeSoftKeyboard());
         onView(withId(R.id.fillable_register_password))
                 .perform(typeText("test1@#")).perform(closeSoftKeyboard());
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail("Sleep got interrupted.");
+        }
+
         onView(withId(R.id.btn_user_register))
                 .perform(click());
 
@@ -134,6 +153,12 @@ public class RegisterFragmentTest {
 
         onView(withId(R.id.fillable_register_password))
                 .perform(new TypeTextAction("12345678")).perform(closeSoftKeyboard());
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail("Sleep got interrupted.");
+        }
 
         onView(withId(R.id.btn_user_register))
                 .perform(click());

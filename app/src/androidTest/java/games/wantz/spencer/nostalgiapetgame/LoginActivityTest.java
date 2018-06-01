@@ -66,6 +66,11 @@ public class LoginActivityTest {
 
         onView(withId(R.id.fillable_login_password))
                 .perform(new TypeTextAction("")).perform(closeSoftKeyboard());
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail("Sleep got interrupted.");
+        }
 
         onView(withId(R.id.btn_user_login))
                 .perform(click());
@@ -84,6 +89,11 @@ public class LoginActivityTest {
 
         onView(withId(R.id.fillable_login_password))
                 .perform(new TypeTextAction("12345678")).perform(closeSoftKeyboard());
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail("Sleep got interrupted.");
+        }
 
         onView(withId(R.id.btn_user_login))
                 .perform(click());
@@ -102,6 +112,11 @@ public class LoginActivityTest {
 
         onView(withId(R.id.fillable_login_password))
                 .perform(new TypeTextAction("12345678")).perform(closeSoftKeyboard());
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail("Sleep got interrupted.");
+        }
 
         onView(withId(R.id.btn_user_login))
                 .perform(click());

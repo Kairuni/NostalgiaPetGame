@@ -117,7 +117,7 @@ public class LoginActivity
                     .add(R.id.login_fragment_container, loginMenuFragment)
                     .commit();
         } else {
-            // Start the game, loading monster from database.
+            // Start the game, loading monster from database. We don't need to retrieve it from online.
             Intent intent = new Intent(this, GameActivity.class);
             if (mMonsterDB == null) {
                 mMonsterDB = new MonsterDB(getApplicationContext());
