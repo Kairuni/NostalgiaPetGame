@@ -26,14 +26,29 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.*;
 
+/**
+ *  Tests to verify the program rejects or accepts the registration of a user as appropriate.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class RegisterFragmentTest {
 
+    /**
+     * A JUnit {@link Rule @Rule} to launch your activity under test.
+     * Rules are interceptors which are executed for each test method and will run before
+     * any of your setup code in the {@link @Before} method.
+     * <p>
+     * {@link ActivityTestRule} will create and launch of the activity for you and also expose
+     * the activity under test. To get a reference to the activity you can use
+     * the {@link ActivityTestRule#getActivity()} method.
+     */
     @Rule
     public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<> (
             LoginActivity.class);
 
+    /**
+     *  Tests to verify the program opens the RegisterFragment.
+     */
     @Before
     public void testLaunchSignInFragment() {
         try {
@@ -45,6 +60,9 @@ public class RegisterFragmentTest {
         onView(withId(R.id.btn_sign_up)).perform(click());
     }
 
+    /**
+     *  Tests to verify the program will reject an invalid password.
+     */
     @Test
     public void testRegisterFragmentPassShort() {
         onView(withId(R.id.fillable_register_email_id))
@@ -60,6 +78,9 @@ public class RegisterFragmentTest {
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
+    /**
+     *  Tests to verify the program will reject an invalid email format.
+     */
     @Test
     public void testRegisterFragmentInvalidEmail() {
         onView(withId(R.id.fillable_register_email_id))
@@ -75,6 +96,9 @@ public class RegisterFragmentTest {
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
+    /**
+     *  Tests to verify the program will accept a new email that is randomly generated.
+     */
     @Test
     public void testRegisterFragmentRandomEmailGeneration() {
         Random random = new Random();
@@ -100,6 +124,9 @@ public class RegisterFragmentTest {
                 .check(matches(isDisplayed()));
     }
 
+    /**
+     *  Tests to verify the program will reject an already existing email.
+     */
     @Test
     public void testRegistrationFragmentAlreadyExistEmail() {
         onView(withId(R.id.fillable_register_email_id))

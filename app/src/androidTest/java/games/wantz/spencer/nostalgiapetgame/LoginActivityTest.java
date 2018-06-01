@@ -22,14 +22,29 @@ import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.fail;
 
+/**
+ *  Tests to verify the program rejects or accepts the login of a user as appropriate.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class LoginActivityTest {
 
+    /**
+     * A JUnit {@link Rule @Rule} to launch your activity under test.
+     * Rules are interceptors which are executed for each test method and will run before
+     * any of your setup code in the {@link @Before} method.
+     * <p>
+     * {@link ActivityTestRule} will create and launch of the activity for you and also expose
+     * the activity under test. To get a reference to the activity you can use
+     * the {@link ActivityTestRule#getActivity()} method.
+     */
     @Rule
     public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<> (
             LoginActivity.class);
 
+    /**
+     *  Tests to verify the program opens the LoginMenuFragment.
+     */
     @Before
     public void testLaunchSignInFragment() {
         try {
@@ -41,6 +56,9 @@ public class LoginActivityTest {
         onView(withId(R.id.btn_login)).perform(click());
     }
 
+    /**
+     *  Tests to verify the program rejects an invalid password.
+     */
     @Test
     public void testSignInFragmentInvalidPass() {
         onView(withId(R.id.fillable_login_email_id))
@@ -56,6 +74,9 @@ public class LoginActivityTest {
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
+    /**
+     *  Tests to verify the program rejects an invalid email format.
+     */
     @Test
     public void testSignInFragmentInvalidEmailFormat() {
         onView(withId(R.id.fillable_login_email_id))
@@ -71,6 +92,9 @@ public class LoginActivityTest {
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
+    /**
+     *  Tests to verify the program rejects a non-existent email.
+     */
     @Test
     public void testSignInFragmentInvalidEmailNonExistent() {
         onView(withId(R.id.fillable_login_email_id))
@@ -86,6 +110,9 @@ public class LoginActivityTest {
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
+    /**
+     *  Tests to verify the program accepts a valid email and password.
+     */
     @Test
     public void testSignInFragmentValid() {
         onView(withId(R.id.fillable_login_email_id))
