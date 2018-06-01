@@ -29,7 +29,6 @@ import java.net.URLEncoder;
  * A simple {@link Fragment} subclass.
  */
 public class SignInFragment extends Fragment {
-
     //Final Field Variables
     /** TAG is a constant used to identify log events into the Logcat.*/
     private static final String TAG = "SignInFragment";

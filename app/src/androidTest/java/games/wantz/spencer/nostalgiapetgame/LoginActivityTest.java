@@ -92,19 +92,4 @@ public class LoginActivityTest {
         onView(withId(R.id.button_logout))
                 .perform(click());
     }
-
-    @Ignore
-    @Test
-    public void registerUser() {
-    }
-
-    @Ignore
-    @Test
-    public void openRegisterFragment() {
-    }
-
-    @Ignore
-    @Test
-    public void openLoginFragment() {
-    }
 }

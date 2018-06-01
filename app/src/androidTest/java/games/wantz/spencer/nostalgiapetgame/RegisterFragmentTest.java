@@ -47,7 +47,7 @@ public class RegisterFragmentTest {
         onView(withId(R.id.btn_user_register))
                 .perform(click());
 
-        onView(withText("Email and/or Password incorrect: Please enter a valid password (longer than 5 characters)."))
+        onView(withText("Email and/or Password incorrect: Please enter a valid password (longer than five characters)."))
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
@@ -64,25 +64,5 @@ public class RegisterFragmentTest {
 
         onView(withText("Email and/or Password incorrect: Please enter a valid email."))
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-    }
-
-    @Ignore
-    @Test
-    public void newInstance() {
-    }
-
-    @Ignore
-    @Test
-    public void onCreate() {
-    }
-
-    @Ignore
-    @Test
-    public void onCreateView() {
-    }
-
-    @Ignore
-    @Test
-    public void onAttach() {
     }
 }
