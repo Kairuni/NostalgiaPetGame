@@ -1,5 +1,6 @@
 package games.wantz.spencer.nostalgiapetgame;
 
+import android.support.test.espresso.action.TypeTextAction;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.rule.ActivityTestRule;
@@ -37,23 +38,45 @@ public class LoginActivityTest {
 
     @Test
     public void testSignInFragmentInvalid() {
-        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         onView(withId(R.id.fillable_login_email_id))
-                .perform(typeText("w@w.w"));
+                .perform(new TypeTextAction("w@w.w")).perform(closeSoftKeyboard());
+
         onView(withId(R.id.fillable_login_password))
-                .perform(typeText("")).perform(closeSoftKeyboard());
+                .perform(new TypeTextAction("")).perform(closeSoftKeyboard());
 
         onView(withId(R.id.btn_user_login))
                 .perform(click());
 
-        /*try {
+        onView(withText("Email and/or Password incorrect."))
+                .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testSignInFragmentValid() {
+        onView(withId(R.id.fillable_login_email_id))
+                .perform(new TypeTextAction("w@w.w")).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.fillable_login_password))
+                .perform(new TypeTextAction("123456")).perform(closeSoftKeyboard());
+
+        //onView(withId(R.id.fillable_login_password)).perform(closeSoftKeyboard());
+
+        try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             fail("Sleep got interrupted.");
-        }*/
+        }
 
-        onView(withText("Email and/or Password incorrect."))
-                .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        onView(withId(R.id.btn_user_login))
+                .perform(click());
+
+        onView(allOf(withId(R.id.button_logout)
+                , withText("LOGOUT")))
+                .check(matches(isDisplayed()));
+
+
+        onView(withId(R.id.button_logout))
+                .perform(click());
     }
 
     @Ignore

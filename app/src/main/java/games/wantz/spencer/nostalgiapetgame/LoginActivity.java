@@ -249,19 +249,19 @@ public class LoginActivity
                 String status = (String) jsonObject.get("result");
                 if (status.equals("success")) {
                     Toast.makeText(getApplicationContext(), "Registration Completed!"
-                            , Toast.LENGTH_LONG)
+                            , Toast.LENGTH_SHORT)
                             .show();
                 } else {
                     Log.d(DEBUG_TAG, "Fail");
                     Toast.makeText(getApplicationContext(), "Email and/or Password incorrect: "
                                     + jsonObject.get("error")
-                            , Toast.LENGTH_LONG)
+                            , Toast.LENGTH_SHORT)
                             .show();
                 }
             } catch (JSONException e) {
                 Log.d(DEBUG_TAG, "JSON exception");
                 Toast.makeText(getApplicationContext(), "Something wrong with the data" +
-                        e.getMessage(), Toast.LENGTH_LONG).show();
+                        e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -288,7 +288,7 @@ public class LoginActivity
                 String status = (String) jsonObject.get("result");
                 if (status.equals("success")) {
                     Toast.makeText(getApplicationContext(), "Login Accepted!"
-                            , Toast.LENGTH_LONG)
+                            , Toast.LENGTH_SHORT)
                             .show();
                     // Push all the retrieved pet's data to the 
                     Intent intent = new Intent(getBaseContext(), GameActivity.class);
@@ -325,12 +325,13 @@ public class LoginActivity
                     startActivity(intent);
                     finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
-                            , Toast.LENGTH_LONG)
+                    Toast.makeText(getApplicationContext(),
+                            "Email and/or Password incorrect."
+                            , Toast.LENGTH_SHORT)
                             .show();
                 }
             } catch (JSONException e) {
-                Toast.makeText(getApplicationContext(), "Something wrong with the data", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Something wrong with the data", Toast.LENGTH_SHORT).show();
             }
         }
     }
