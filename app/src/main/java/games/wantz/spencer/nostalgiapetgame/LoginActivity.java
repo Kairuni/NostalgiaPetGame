@@ -325,16 +325,12 @@ public class LoginActivity
                     startActivity(intent);
                     finish();
                 } else {
-                    Log.d(DEBUG_TAG, "Fail 2");
                     Toast.makeText(getApplicationContext(), "Email and/or Password incorrect."
-                                    + jsonObject.get("error")
                             , Toast.LENGTH_LONG)
                             .show();
                 }
             } catch (JSONException e) {
-                Log.d(DEBUG_TAG, "Fail 4");
-                Toast.makeText(getApplicationContext(), "Something wrong with the data" +
-                        e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Something wrong with the data", Toast.LENGTH_LONG).show();
             }
         }
     }

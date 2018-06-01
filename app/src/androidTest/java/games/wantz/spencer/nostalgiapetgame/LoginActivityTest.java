@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -19,6 +20,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
@@ -35,15 +37,22 @@ public class LoginActivityTest {
 
     @Test
     public void testSignInFragmentInvalid() {
-        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        //this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         onView(withId(R.id.fillable_login_email_id))
                 .perform(typeText("w@w.w"));
         onView(withId(R.id.fillable_login_password))
-                .perform(typeText(""));
+                .perform(typeText("")).perform(closeSoftKeyboard());
+
         onView(withId(R.id.btn_user_login))
                 .perform(click());
 
-        onView(withText("Unable to login: Invalid password"))
+        /*try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            fail("Sleep got interrupted.");
+        }*/
+
+        onView(withText("Email and/or Password incorrect."))
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
