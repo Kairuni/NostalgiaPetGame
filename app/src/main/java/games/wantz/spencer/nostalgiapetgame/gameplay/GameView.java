@@ -39,7 +39,6 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
  * @version 1.B, 31 May 2018
  */
 public class GameView extends SurfaceView {
-
     //Final field Variables
     /** Tag for logging. */
     private static final String GAME_VIEW_LOG = "GAME_VIEW";

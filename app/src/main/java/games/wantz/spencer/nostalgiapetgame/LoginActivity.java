@@ -81,7 +81,9 @@ public class LoginActivity
     //Non-Final Field Variables
     /** Async Task for logging in. */
     private LoginTask mLoginTask;
-    /**  */
+    /**
+     * The monster database.
+     */
     private MonsterDB mMonsterDB;
     /** Shared preferences for saving logged in state. */
     private SharedPreferences mSharedPreferences;

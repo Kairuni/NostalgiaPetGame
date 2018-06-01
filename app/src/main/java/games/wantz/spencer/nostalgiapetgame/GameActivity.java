@@ -32,7 +32,6 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.GameView;
  * @version 1.B, 31 May 2018
  */
 public class GameActivity extends AppCompatActivity {
-
     //Final Field Variables
     /** Tag used for logging. */
     private static final String GAME_ACTIVITY_LOG = "GAME_ACTIVITY";
