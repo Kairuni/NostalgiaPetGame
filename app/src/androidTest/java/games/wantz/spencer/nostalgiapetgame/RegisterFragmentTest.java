@@ -33,11 +33,17 @@ public class RegisterFragmentTest {
 
     @Before
     public void testLaunchSignInFragment() {
+        try {
+            onView(withId(R.id.button_logout))
+                    .perform(click());
+        } catch (Exception e) {
+            // Not worried about this
+        }
         onView(withId(R.id.btn_sign_up)).perform(click());
     }
 
     @Test
-    public void testSignInFragmentPassShort() {
+    public void testRegisterFragmentPassShort() {
         onView(withId(R.id.fillable_register_email_id))
                 .perform(new TypeTextAction("w@w.w")).perform(closeSoftKeyboard());
 
@@ -52,7 +58,7 @@ public class RegisterFragmentTest {
     }
 
     @Test
-    public void testSignInFragmentInvalidEmail() {
+    public void testRegisterFragmentInvalidEmail() {
         onView(withId(R.id.fillable_register_email_id))
                 .perform(new TypeTextAction("w.w.w")).perform(closeSoftKeyboard());
 

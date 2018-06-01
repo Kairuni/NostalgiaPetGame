@@ -27,19 +27,5 @@ public class SignInFragmentTest {
     public ActivityTestRule<LoginActivity> mActivityRule = new ActivityTestRule<>(
             LoginActivity.class);
 
-    @Test
-    public void newInstance() {
-    }
 
-    @Test
-    public void onCreate() {
-    }
-
-    @Test
-    public void onCreateView() {
-    }
-
-    @Test
-    public void onAttach() {
-    }
 }

@@ -32,6 +32,12 @@ public class LoginActivityTest {
 
     @Before
     public void testLaunchSignInFragment() {
+        try {
+            onView(withId(R.id.button_logout))
+                    .perform(click());
+        } catch (Exception e) {
+            // Not worried about this
+        }
         onView(withId(R.id.btn_login)).perform(click());
     }
 
