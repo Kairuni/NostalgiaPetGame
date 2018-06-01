@@ -20,7 +20,7 @@ import java.net.URLEncoder;
  * @author Norris Spencer nisj@uw.edu
  * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version 0.1, 11 May 2018
+ * @version 1.B, 11 May 2018
  *
  * A simple {@link Fragment} subclass.
  */

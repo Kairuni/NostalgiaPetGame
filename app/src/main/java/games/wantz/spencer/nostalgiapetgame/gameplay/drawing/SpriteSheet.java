@@ -9,10 +9,9 @@ import android.graphics.Rect;
  * A class that holds sprite sheets that are divided into fixed sized cells (see drawable/pets_and_icons.png)
  *
  * @author Keegan Wantz wantzkt@uw.edu
- * @version 0.1, 11 May 2018
+ * @version 1.B, 31 May 2018
  */
 public class SpriteSheet {
-
     //Final Field Variables
     /** The dimensions of the bitmap. */
     private final int mWidth, mHeight;

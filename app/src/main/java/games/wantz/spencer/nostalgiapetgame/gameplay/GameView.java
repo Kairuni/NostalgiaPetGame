@@ -36,17 +36,22 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
  *
  * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version B.1, 28 May 2018
+ * @version 1.B, 31 May 2018
  */
 public class GameView extends SurfaceView {
-
     //Final field Variables
-    /**  */
+    /**
+     * Tag for logging.
+     */
     private static final String GAME_VIEW_LOG = "GAME_VIEW";
-    /**  */
+    /**
+     * The URL to use for updating the monster.
+     */
     private static final String MONSTER_UPDATE_URL = "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
-    /**  */
-    private static final float BALL_GRAVITY = 300f;
+    /**
+     * How much gravity the ball should have while playing the ball game.
+     */
+    private static final float BALL_GRAVITY = 1000f;
 
     //Non-Final field Variables
     /** AtomicInteger value used to control what the next scene should be. */
@@ -180,6 +185,9 @@ public class GameView extends SurfaceView {
         Log.d(GAME_VIEW_LOG, "Asset loader running.");
     }
 
+    /**
+     * Called when the activity pauses, updates the monster on the remote server and joins the thread.
+     */
     public void gameViewPause() {
         Log.d(GAME_VIEW_LOG, "Pausing and killing thread.");
         mGameThread.setActive(false);
@@ -200,6 +208,9 @@ public class GameView extends SurfaceView {
         mGameThread = null;
     }
 
+    /**
+     * Restarts the thread and has the monster catch up with lost time.
+     */
     public void gameViewResume() {
         if (mGameThread == null) {
             Log.d(GAME_VIEW_LOG, "Resumed, recreating thread.");
@@ -209,41 +220,56 @@ public class GameView extends SurfaceView {
         }
     }
 
+    /**
+     * Called when the user pushes the feed button, sets the next scene to the feed scene.
+     */
     public void doFeed() {
-        mNextScene.set(SceneBuilder.FEED_IDX);
+        mNextScene.set(0);
     }
 
-    public void doToilet() {
-        mNextScene.set(SceneBuilder.TOILET_IDX);
-    }
-
+    /**
+     * Called when the user pushes the shower button, sets the next scene to the shower scene.
+     */
     public void doShower() {
-        mNextScene.set(SceneBuilder.TUB_IDX);
+        mNextScene.set(1);
     }
 
+    /**
+     * Called when the user pushes the toilet button, sets the next scene to the toilet scene.
+     */
+    public void doToilet() {
+        mNextScene.set(2);
+    }
+
+    /**
+     * Creates a ball for the ball game.
+     */
     public void doGame() {
-        int offset = (int) (16 * mScalar);
         int cX = mDeviceWidth / 2;
-        int cY = mDeviceHeight / 2 - offset;
-        // Should probably have some atomic flag here rather than directly making the new point
+        int cY = mDeviceHeight / 2;
+
         mBallPoint = new PointF(cX, cY);
         mBallVelocity = null;
     }
 
+    /**
+     * Toggles the drawing of the pet statistics.
+     */
     public void toggleStats() {
         mDrawBars.set(!mDrawBars.get());
     }
 
-    // Consider pulling this into its own class
+    /**
+     * Handles the ball game.
+     */
     private void handleBallGame() {
-        int offset = (int) (16 * mScalar);
         int cX = mDeviceWidth / 2;
-        int cY = mDeviceHeight / 2 - offset;
+        int cY = mDeviceHeight / 2 ;
 
         if (mBallVelocity == null) {
             mBallVelocity = new PointF(-200 + mRandom.nextInt(400), -1800);
         } else if (mBallPoint.y < cY) {
-            if (mBallVelocity.y > 1500) {
+            if (mBallVelocity.y > 1000) {
                 mMonster.setFun(mMonster.getFun() + 7);
                 mBallVelocity.x = -2000 + mRandom.nextInt(4000);
                 mBallVelocity.y = -1800 + mRandom.nextInt(200);
@@ -255,6 +281,10 @@ public class GameView extends SurfaceView {
         }
     }
 
+    /**
+     * Updates the ball game, effectively applying gravity to the ball.
+     * @param tickMillis The number of milliseconds that have elapsed.
+     */
     private void updateBallGame(Long tickMillis) {
         if (mBallPoint != null && mBallVelocity != null) {
             mBallPoint.x += mBallVelocity.x * tickMillis / 1000f;
@@ -274,6 +304,9 @@ public class GameView extends SurfaceView {
         }
     }
 
+    /**
+     * When the user clicks the game view itself, do this. This hatches unhatched mons, or bumps the ball into the air.
+     */
     public void doClick() {
         if (mMonster != null && !mMonster.getHatched()) {
             Log.d(GAME_VIEW_LOG, "Hatching!");
@@ -284,7 +317,7 @@ public class GameView extends SurfaceView {
     }
 
     /**
-     * Updates the monster, allowing it to walk back and forth and in the future become hungry.
+     * Updates the monster and any running scene.
      */
     public void update(Long tickMillis) {
         if (mMonster != null && mAssetsDone.get()) {
@@ -322,13 +355,17 @@ public class GameView extends SurfaceView {
         }
     }
 
+    /**
+     * Called when a scene is completed, to change the monster's statistics.
+     *
+     * @param sceneID The scene that finished.
+     */
     private void completedScene(int sceneID) {
-        // FEED
-        if (sceneID == SceneBuilder.FEED_IDX) {
+        if (sceneID == 0) {
             mMonster.doFeed();
-        } else if (sceneID == SceneBuilder.SHOWER_IDX) {
+        } else if (sceneID == 1) {
             mMonster.doShower();
-        } else if (sceneID == SceneBuilder.OUTHOUSE_IDX) {
+        } else if (sceneID == 2) {
             mMonster.doToilet();
         }
     }
@@ -397,6 +434,11 @@ public class GameView extends SurfaceView {
         }
     }
 
+    /**
+     * Draws the stat bars to the screen.
+     *
+     * @param canvas The canvas to draw to.
+     */
     public void drawStatBars(Canvas canvas) {
         // So, size: left + 100,
         float barLeft = 200;
@@ -436,6 +478,14 @@ public class GameView extends SurfaceView {
         canvas.drawRect(barLeft, barTop + barOffset * 5, barLeft + barWidth * mMonster.getDirty() / 100, barTop + barHeight + barOffset * 5, barPaint);
     }
 
+    /**
+     * Builds the monster animations and scenes for the current monster.
+     *
+     * @param monsterSheet The sprite sheet to use.
+     * @param fixturesSheet The fixtures to use.
+     * @param phoneWidth The phone's width.
+     * @param phoneHeight The phone's height.
+     */
     public void buildAnimations(SpriteSheet monsterSheet, SpriteSheet fixturesSheet, int phoneWidth, int phoneHeight) {
         mAnimations = SceneBuilder.buildMonsterAnimations(monsterSheet, mMonster.getBreed());
         mFixtureAnimations = SceneBuilder.buildFixtureAnimations(fixturesSheet);
@@ -449,6 +499,11 @@ public class GameView extends SurfaceView {
                 mFixtureAnimations.get(SceneBuilder.TOILET_IDX), phoneWidth, phoneHeight));
     }
 
+    /**
+     * Builds a URL for updating the monster remotely.
+     *
+     * @return The URL to access.
+     */
     public String buildMonsterURL() {
         StringBuilder sb = new StringBuilder(MONSTER_UPDATE_URL.length() + 128);
         sb.append(MONSTER_UPDATE_URL);
@@ -494,11 +549,21 @@ public class GameView extends SurfaceView {
         mMonster = monster;
     }
 
+    /**
+     * Loads all assets needed for the game in the background.
+     */
     private class AssetLoader extends AsyncTask<Void, Void, Void> {
-
-        /**  */
+        /**
+         * The bitmaps that we've loaded.
+         */
         private List<Bitmap> mLoadedBmps;
 
+        /**
+         * Loads all bitmaps, then builds all animations.
+         *
+         * @param params Unused.
+         * @return Unused.
+         */
         @Override
         protected Void doInBackground(Void... params) {
 
@@ -522,6 +587,11 @@ public class GameView extends SurfaceView {
             return null;
         }
 
+        /**
+         * Sets the mAssetsDone AtomicBoolean to true.
+         *
+         * @param aVoid Unused.
+         */
         @Override
         protected void onPostExecute(Void aVoid) {
             Log.d(GAME_VIEW_LOG, "Asset loader done");

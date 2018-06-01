@@ -9,20 +9,27 @@ import java.util.List;
 import android.util.Log;
 
 /**
+ * Builds animations and scenes for use in the GameView.
  *
+ * @author Keegan Wantz wantzkt@uw.edu
+ * @version 1.B, 31 May 2018
  */
 public class SceneBuilder {
-    /**  */
+    /**
+     * The index of the idle animation in the returned list.
+     */
     public static final int IDLE_IDX = 0;
-    /**  */
+    /**
+     * The index of the feed animation in the returned list.
+     */
     public static final int FEED_IDX = 1;
-    /**  */
+    /** The index of the meat animation in the returned list. */
     public static final int MEAT_IDX = 2;
-    /**  */
+    /** The index of the poop animation in the returned list. */
     public static final int POOP_IDX = 3;
-    /**  */
+    /** The index of the tub animation in the returned list. */
     public static final int TUB_IDX = 0;
-    /**  */
+    /** The index of the toilet animation in the returned list. */
     public static final int TOILET_IDX = 1;
 
     /**
@@ -68,9 +75,10 @@ public class SceneBuilder {
 
 
     /**
+     * Creates a list of fixture animations to use for the gameplay.
      *
-     * @param fixturesSheet
-     * @return
+     * @param fixturesSheet The sprite sheet containing the fixtures.
+     * @return A list where index TUB_IDX is the bathtub, and TOILET_IDX is the outhouse.
      */
     public static List<Animation> buildFixtureAnimations(SpriteSheet fixturesSheet) {
         List<Animation> outList = new ArrayList<>();
@@ -88,12 +96,13 @@ public class SceneBuilder {
     }
 
     /**
+     * Builds the scene for feeding the creature.
      *
-     * @param feedAnimation
-     * @param meatAnimation
-     * @param phoneWidth
-     * @param phoneHeight
-     * @return
+     * @param feedAnimation The animation to use while feeding.
+     * @param meatAnimation The animation to use for the meat.
+     * @param phoneWidth How wide the phone's screen is.
+     * @param phoneHeight How tall the phone's screen is.
+     * @return The feeding scene.
      */
     public static AnimationScene buildFeedScene(Animation feedAnimation, Animation meatAnimation, int phoneWidth, int phoneHeight) {
         List<Animation> feedAnimations = new ArrayList<>();
@@ -128,12 +137,13 @@ public class SceneBuilder {
     }
 
     /**
+     * Builds a scene where the provided monster hops into the tub.
      *
-     * @param idleAnimation
-     * @param tubAnimation
-     * @param phoneWidth
-     * @param phoneHeight
-     * @return
+     * @param idleAnimation     The monster to use in this scene.
+     * @param tubAnimation      The bathtub's animation.
+     * @param phoneWidth        Phone's width.
+     * @param phoneHeight       Phone's height.
+     * @return An animation scene where the provided monster hops into the tub.
      */
     public static AnimationScene buildShowerScene(Animation idleAnimation, Animation tubAnimation, int phoneWidth, int phoneHeight) {
         float scalar = phoneWidth / 160.0f;

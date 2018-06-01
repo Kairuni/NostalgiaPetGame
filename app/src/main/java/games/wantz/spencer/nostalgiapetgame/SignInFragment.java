@@ -24,12 +24,11 @@ import java.net.URLEncoder;
  * @author Norris Spencer nisj@uw.edu
  * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version 0.1, 11 May 2018
+ * @version 1.B, 31 May 2018
  *
  * A simple {@link Fragment} subclass.
  */
 public class SignInFragment extends Fragment {
-
     //Final Field Variables
     /** TAG is a constant used to identify log events into the Logcat.*/
     private static final String TAG = "SignInFragment";

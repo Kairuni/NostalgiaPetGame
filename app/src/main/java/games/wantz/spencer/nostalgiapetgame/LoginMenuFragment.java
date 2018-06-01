@@ -19,16 +19,11 @@ import android.widget.Button;
  * @author Norris Spencer nisj@uw.edu
  * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version 0.1, 11 May 2018
+ * @version 1.B, 31 May 2018
  *
  * A simple {@link Fragment} subclass.
  */
 public class LoginMenuFragment extends Fragment {
-
-    /** mRButton is a member var that opens the register fragment. */
-    private Button mRButton;
-    /** mSButton is a member var that opens the sign in fragment. */
-    private Button mSButton;
     /** mSListener is a member var that listens for the selection of the "SignIn" button.*/
     private loginButtonListener mSListener;
     /** mRListener is a member var that listens for the selection of the "Create Acct" button.*/
@@ -84,8 +79,8 @@ public class LoginMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_menu_login, container, false);
-        mRButton = v.findViewById(R.id.btn_sign_up);
-        mSButton = v.findViewById(R.id.btn_login);
+        Button mRButton = v.findViewById(R.id.btn_sign_up);
+        Button mSButton = v.findViewById(R.id.btn_login);
 
         mRButton.setOnClickListener(new View.OnClickListener() {
             @Override

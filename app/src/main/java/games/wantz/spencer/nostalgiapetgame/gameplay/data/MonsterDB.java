@@ -13,22 +13,41 @@ import java.util.ArrayList;
 import games.wantz.spencer.nostalgiapetgame.R;
 import games.wantz.spencer.nostalgiapetgame.gameplay.actors.Monster;
 
+/**
+ * A class to interface with a SQLite database for storing a monster on this device.
+ *
+ * @author Keegan Wantz wantzkt@uw.edu
+ * @version 1.B, 31 May 2018
+ */
 public class MonsterDB {
 
-    //Final Field Variables
-    /**  */
-    public static final String DB_NAME = "Monster.db";
-    /**  */
+    // Constants
+    /**
+     * The database's name.
+     */
+    private static final String DB_NAME = "Monster.db";
+    /**
+     * The table's name.
+     */
     private static final String MONSTER_TABLE = "Monsters";
-    /**  */
-    public static final int DB_VERSION = 1;
+    /**
+     * The version of the database.
+     */
+    private static final int DB_VERSION = 1;
 
     //Non-Final Field Variables
-    /**  */
+    /**
+     * A helper used to ensure the db exists, and to get the writable form of the db.
+     */
     private MonsterDBHelper mMonsterDBHelper;
-    /**  */
+    /** The actual SQLite db.  */
     private SQLiteDatabase mSQLiteDatabase;
 
+    /**
+     * Creates a new MonsterDB.
+     *
+     * @param context The application context.
+     */
     public MonsterDB(Context context) {
         mMonsterDBHelper = new MonsterDBHelper(context, DB_NAME, null, DB_VERSION);
         mSQLiteDatabase = mMonsterDBHelper.getWritableDatabase();
@@ -37,7 +56,7 @@ public class MonsterDB {
     /**
      * Delete all the data from the MONSTER_TABLE
      */
-    public void deleteMonsters() {
+    private void deleteMonsters() {
         mSQLiteDatabase.delete(MONSTER_TABLE, null, null);
     }
 
@@ -107,29 +126,36 @@ public class MonsterDB {
         return mon;
     }
 
+    /**
+     * Helper class for making sure the database exists.
+     */
     class MonsterDBHelper extends SQLiteOpenHelper {
 
-        /**  */
-        private final String CREATE_COURSE_SQL;
-        /**  */
-        private final String DROP_COURSE_SQL;
+        /**
+         * The SQL to use if we need to create the monster db.
+         */
+        private final String CREATE_MONSTER_SQL;
+        /**
+         * The SQL to use to drop the monster DB.
+         */
+        private final String DROP_MONSTER_SQL;
 
         public MonsterDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory,
                                int version) {
             super(context, name, factory, version);
 
-            CREATE_COURSE_SQL = context.getString(R.string.CREATE_MONSTER_SQL);
-            DROP_COURSE_SQL = context.getString(R.string.DROP_MONSTER_SQL);
+            CREATE_MONSTER_SQL = context.getString(R.string.CREATE_MONSTER_SQL);
+            DROP_MONSTER_SQL = context.getString(R.string.DROP_MONSTER_SQL);
         }
 
         @Override
         public void onCreate(SQLiteDatabase sqLiteDatabase) {
-            sqLiteDatabase.execSQL(CREATE_COURSE_SQL);
+            sqLiteDatabase.execSQL(CREATE_MONSTER_SQL);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-            sqLiteDatabase.execSQL(DROP_COURSE_SQL);
+            sqLiteDatabase.execSQL(DROP_MONSTER_SQL);
             onCreate(sqLiteDatabase);
         }
     }

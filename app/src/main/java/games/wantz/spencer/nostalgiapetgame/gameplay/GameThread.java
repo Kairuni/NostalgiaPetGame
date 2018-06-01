@@ -9,7 +9,7 @@ import android.graphics.Canvas;
  *
  * @author Keegan Wantz wantzkt@uw.edu
  *
- * @version 0.1, 11 May 2018
+ * @version 1.B, 31 May 2018
  */
 public class GameThread extends Thread {
 
@@ -53,8 +53,7 @@ public class GameThread extends Thread {
                     mGameView.getHolder().unlockCanvasAndPost(canvas);
                 }
             }
-            // Have the GameView update its contents, including the monster..
-            // TODO: Do the update logic here, instead of in the game view?
+            // Have the GameView update its contents, including the monster.
             mGameView.update(1000L / FPS);
             try {
                 // Super naive sleep, as the previous actions took some time, but that's fine for now.

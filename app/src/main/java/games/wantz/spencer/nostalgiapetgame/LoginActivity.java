@@ -37,7 +37,7 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.data.MonsterDB;
  * A simple {@link LoginMenuFragment.registerButtonListener} subclass.
  * A simple {@link LoginMenuFragment.loginButtonListener} subclass.
  *
- * @version 0.1, 11 May 2018
+ * @version 1.B, 31 May 2018
  */
 public class LoginActivity
         extends AppCompatActivity

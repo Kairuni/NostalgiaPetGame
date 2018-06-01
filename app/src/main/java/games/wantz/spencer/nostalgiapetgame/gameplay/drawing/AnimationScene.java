@@ -7,26 +7,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Scenes that move animations around the screen.
+ *
  * @author Keegan Wantz wantzkt@uw.edu
- * @version B.1, 28 May 2018
+ * @version 1.B, 31 May 2018
  */
 public class AnimationScene {
-
-    /**  */
+    /**
+     * A list of animations that this scene uses.
+     */
     private List<Animation> mAnimations;
-    /**  */// Is a given set complete?
+    /**
+     * A list of booleans that tell if an individual frame has completed its movements.
+     */
     private List<Boolean> mIsComplete;
-    /**  */
+    /**
+     * A list of Integers that is used to determine what location to move to next.
+     */
     private List<Integer> mFrames;
-    /**  */// In milliseconds
+    /** How long the current frame has been running, in milliseconds. */
     private List<Long> mFrameTimers;
-    /**  */// In milliseconds
+    /** How long a given frame should take, in milliseconds. */
     private List<List<Long>> mTimeToLocations;
-    /**  */
+    /**
+     * Where a given animation should move to.
+     */
     private List<List<Point>> mLocations;
-    /**  */// has the entire scene completed its animation?
+    /** Denotes if the entire scene has completed its movements. */
     private boolean mSceneAnimationComplete;
 
+    /**
+     * Create an animation scene with the given animations, points to move those animations to,
+     *   and a list of times it should take to complete those movements.
+     *
+     * @param animations The animations to use in this scene.
+     * @param animationPoints The points to move these animations to.
+     * @param timeToLocations The amount of time it should take to move to those points.
+     */
     public AnimationScene(List<Animation> animations, List<List<Point>> animationPoints, List<List<Long>> timeToLocations) {
         if (animations.size() != animationPoints.size() || animations.size() != timeToLocations.size()) {
             throw new IllegalArgumentException("All arguments for AnimationScene must be the same length.");
@@ -48,6 +65,11 @@ public class AnimationScene {
         mSceneAnimationComplete = false;
     }
 
+    /**
+     * Update the scene, moving all animations as needed.
+     *
+     * @param timeUpdateInMillis How long has elapsed, in milliseconds.
+     */
     public void update(long timeUpdateInMillis) {
         for (int i = 0; i < mAnimations.size(); i++) {
             mAnimations.get(i).update(timeUpdateInMillis);
@@ -75,6 +97,9 @@ public class AnimationScene {
         }
     }
 
+    /**
+     * Reset this scene to its initial state.
+     */
     public void reset() {
         for (Animation anim : mAnimations) {
             anim.reset();
@@ -88,6 +113,11 @@ public class AnimationScene {
         mSceneAnimationComplete = false;
     }
 
+    /**
+     * Draws this scene to the provided canvas.
+     *
+     * @param canvas The canvas to draw to.
+     */
     public void draw(Canvas canvas) {
         boolean done = true;
         for (int i = 0; i < mAnimations.size(); i++) {
@@ -120,6 +150,11 @@ public class AnimationScene {
             mSceneAnimationComplete = true;
     }
 
+    /**
+     * Has this scene completed?
+     *
+     * @return True if it has, false otherwise.
+     */
     public boolean getIsComplete() {
         return mSceneAnimationComplete;
     }

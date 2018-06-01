@@ -9,7 +9,7 @@ import java.util.Random;
  * A class that represents the player's pet monster.
  *
  * @author Keegan Wantz wantzkt@uw.edu
- * @version 1.B, 11 May 2018
+ * @version 1.B, 31 May 2018
  */
 public class Monster implements Serializable {
 
@@ -27,6 +27,10 @@ public class Monster implements Serializable {
      * The multiplier for reducing health while starving.
      */
     private static final float DYING_MULTIPLIER = 5.0f;
+    /**
+     * The maximum number of poops.
+     */
+    private static final int MAX_POOPS = 30;
 
     //Non-Final Field Variables
     /** The Unique ID for this monster. */
@@ -186,10 +190,12 @@ public class Monster implements Serializable {
         mBladder += mMaxBladder;
         setFun(mFun - 20);
 
-        // Make a new poop with a random X value.
-        mPoops.add(new Poop(mX - 400 + (int) (800 * mRandom.nextFloat()),
-                mY + (int) (400 * mRandom.nextFloat()),
-                .75f + .75f * mRandom.nextFloat()));
+        if (mPoops.size() < MAX_POOPS) {
+            // Make a new poop with a random X value.
+            mPoops.add(new Poop(mX - 400 + (int) (800 * mRandom.nextFloat()),
+                    mY + (int) (400 * mRandom.nextFloat()),
+                    .75f + .75f * mRandom.nextFloat()));
+        }
     }
 
     /**
@@ -202,14 +208,23 @@ public class Monster implements Serializable {
         mPoops.clear();
     }
 
+    /**
+     * Hatches the monster.
+     */
     public void doHatched() {
         mIsHatched = true;
     }
 
+    /**
+     * Called when the game pauses, stores a time so that the monster can catch up when the application is resumed.
+     */
     public void onPause() {
         mPauseTime = System.currentTimeMillis();
     }
 
+    /**
+     * Using the current time, catch the monster up.
+     */
     public void onResume() {
         long unpauseTime = System.currentTimeMillis();
         update(unpauseTime - mPauseTime);
@@ -218,7 +233,6 @@ public class Monster implements Serializable {
 
     /* GETTERS AND SETTERS */
     /* Of note, the setters will not go below 0 or above the respective max. */
-
     public void setX(int mX) {
         this.mX = mX;
     }
@@ -355,20 +369,22 @@ public class Monster implements Serializable {
         return new ArrayList<Poop>(mPoops);
     }
 
+    /**
+     * A list of 'poop' objects that show up on the screen when the pet has soiled itself.
+     */
     public class Poop implements Serializable {
-
-        /**  */
+        /** UID for serialization. */
         private static final long serialVersionUID = 0xe05c26dfe04e72b9L;
 
 
-        /**  */
+        /** The poop's x coordinate. */
         public int x;
-        /**  */
+        /** The poop's y coordinate.  */
         public int y;
-        /**  */
+        /** The poop's scale, for variety. */
         public float scale;
 
-        /**  */
+        /** Constructor to make poops. */
         public Poop(int x, int y, float scale) {
             this.x = x;
             this.y = y;

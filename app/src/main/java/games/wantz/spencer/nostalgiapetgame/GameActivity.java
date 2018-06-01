@@ -29,14 +29,17 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.GameView;
  * The activity used for actually playing the game.
  *
  * @author Keegan Wantz wantzkt@uw.edu
- * @version 0.1, 11 May 2018
+ * @version 1.B, 31 May 2018
  */
 public class GameActivity extends AppCompatActivity {
-
     //Final Field Variables
-    /**  */
+    /**
+     * Tag used for logging.
+     */
     private static final String GAME_ACTIVITY_LOG = "GAME_ACTIVITY";
-    /**  */
+    /**
+     * Used to pass in the monster data via intent.
+     */
     public static final String MONSTER_EXTRA = "MONSTER_EXTRA";
 
     /**
@@ -61,12 +64,14 @@ public class GameActivity extends AppCompatActivity {
         final Monster monster;
         ImageButton buttonShare;
 
+        /* Retrieve the monster from the intent. */
         monster = (Monster) intent.getSerializableExtra(MONSTER_EXTRA);
 
         buttonShare = findViewById(R.id.button_share);
         buttonShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /* Builds the intent to share the status of our creature, then calls that intent. */
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_TEXT,
@@ -145,6 +150,9 @@ public class GameActivity extends AppCompatActivity {
         gameView.setMonster(monster);
     }
 
+    /**
+     * Called when the app pauses, calls gameView.gameViewPause().
+     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -155,6 +163,9 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when the app resumes, calls gameView.gameViewResume().
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -164,6 +175,9 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * On restart, transitions back to LoginActivity to prevent assets from breaking.
+     */
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -174,16 +188,24 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * UpdateMonsterAsyncTask
+     * UpdateMonsterAsyncTask updates the remote server via the provided URL.
      */
     public class UpdateMonsterAsyncTask extends AsyncTask<String, Void, String> {
         private final String UPDATE_TASK_LOG = "UPDATE_TASK";
 
+        /**
+         * Pre-Execute, simply calls super.onPreExecute().
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
+        /**
+         * Accesses the provided URLs and retrieves the response.
+         * @param urls The URLs to access.
+         * @return The response from those URLs.
+         */
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -212,9 +234,9 @@ public class GameActivity extends AppCompatActivity {
         }
 
         /**
-         * Check
+         * Tests if the request succeeds via JSON objects.
          *
-         * @param result
+         * @param result The result from the HTTP query.
          */
         @Override
         protected void onPostExecute(String result) {
