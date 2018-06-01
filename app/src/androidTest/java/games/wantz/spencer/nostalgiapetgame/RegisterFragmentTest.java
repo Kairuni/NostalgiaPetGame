@@ -11,9 +11,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Random;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -69,6 +72,46 @@ public class RegisterFragmentTest {
                 .perform(click());
 
         onView(withText("Email and/or Password incorrect: Please enter a valid email."))
+                .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testRegisterFragmentRandomEmailGeneration() {
+        Random random = new Random();
+        //Generate an email address
+        String email = "email" + (random.nextInt(10000) + 1)
+                + (random.nextInt(900) + 1) + (random.nextInt(700) + 1)
+                + (random.nextInt(400) + 1) + (random.nextInt(100) + 1)
+                + "@uw.edu";
+
+        // Type text and then press the button.
+        onView(withId(R.id.fillable_register_email_id))
+                .perform(typeText(email)).perform(closeSoftKeyboard());
+        onView(withId(R.id.fillable_register_password))
+                .perform(typeText("test1@#")).perform(closeSoftKeyboard());
+        onView(withId(R.id.btn_user_register))
+                .perform(click());
+
+        onView(withText("Registration Completed!"))
+                .inRoot(withDecorView(not(is(
+                        mActivityRule.getActivity()
+                                .getWindow()
+                                .getDecorView()))))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testRegistrationFragmentAlreadyExistEmail() {
+        onView(withId(R.id.fillable_register_email_id))
+                .perform(new TypeTextAction("w@w.w")).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.fillable_register_password))
+                .perform(new TypeTextAction("12345678")).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.btn_user_register))
+                .perform(click());
+
+        onView(withText("Email and/or Password incorrect: Failed to add the user."))
                 .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 }
