@@ -39,18 +39,14 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.drawing.SpriteSheet;
  * @version 1.B, 31 May 2018
  */
 public class GameView extends SurfaceView {
+
     //Final field Variables
-    /**
-     * Tag for logging.
-     */
+    /** Tag for logging. */
     private static final String GAME_VIEW_LOG = "GAME_VIEW";
-    /**
-     * The URL to use for updating the monster.
-     */
-    private static final String MONSTER_UPDATE_URL = "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
-    /**
-     * How much gravity the ball should have while playing the ball game.
-     */
+    /** The URL to use for updating the monster. */
+    private static final String MONSTER_UPDATE_URL =
+            "http://www.kairuni.com/NostalgiaPet/updateMonster.php?";
+    /** How much gravity the ball should have while playing the ball game. */
     private static final float BALL_GRAVITY = 1000f;
 
     //Non-Final field Variables
@@ -553,9 +549,8 @@ public class GameView extends SurfaceView {
      * Loads all assets needed for the game in the background.
      */
     private class AssetLoader extends AsyncTask<Void, Void, Void> {
-        /**
-         * The bitmaps that we've loaded.
-         */
+
+        /** The bitmaps that we've loaded. */
         private List<Bitmap> mLoadedBmps;
 
         /**

@@ -32,14 +32,11 @@ import games.wantz.spencer.nostalgiapetgame.gameplay.GameView;
  * @version 1.B, 31 May 2018
  */
 public class GameActivity extends AppCompatActivity {
+
     //Final Field Variables
-    /**
-     * Tag used for logging.
-     */
+    /** Tag used for logging. */
     private static final String GAME_ACTIVITY_LOG = "GAME_ACTIVITY";
-    /**
-     * Used to pass in the monster data via intent.
-     */
+    /** Used to pass in the monster data via intent. */
     public static final String MONSTER_EXTRA = "MONSTER_EXTRA";
 
     /**
@@ -191,11 +188,11 @@ public class GameActivity extends AppCompatActivity {
      * UpdateMonsterAsyncTask updates the remote server via the provided URL.
      */
     public class UpdateMonsterAsyncTask extends AsyncTask<String, Void, String> {
+
+        /** Tag for logging. */
         private final String UPDATE_TASK_LOG = "UPDATE_TASK";
 
-        /**
-         * Pre-Execute, simply calls super.onPreExecute().
-         */
+        /** Pre-Execute, simply calls super.onPreExecute(). */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -203,6 +200,7 @@ public class GameActivity extends AppCompatActivity {
 
         /**
          * Accesses the provided URLs and retrieves the response.
+         *
          * @param urls The URLs to access.
          * @return The response from those URLs.
          */
