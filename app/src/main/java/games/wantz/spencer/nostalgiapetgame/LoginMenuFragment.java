@@ -24,6 +24,7 @@ import android.widget.Button;
  * A simple {@link Fragment} subclass.
  */
 public class LoginMenuFragment extends Fragment {
+
     /** mSListener is a member var that listens for the selection of the "SignIn" button.*/
     private loginButtonListener mSListener;
     /** mRListener is a member var that listens for the selection of the "Create Acct" button.*/
