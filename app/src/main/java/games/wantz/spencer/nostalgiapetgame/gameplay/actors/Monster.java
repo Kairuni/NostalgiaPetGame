@@ -56,7 +56,7 @@ public class Monster implements Serializable {
     /** Dirty statistics for this monster. */
     private float mMaxDirty, mDirty;
     /** The epoch time we paused the monster at. */
-    private long pauseTime;
+    private long mPauseTime;
     /** Has this monster been hatched? */
     private boolean mIsHatched;
 
@@ -103,7 +103,7 @@ public class Monster implements Serializable {
         mWanderFlag = mRandom.nextInt(3);
         mWanderTimer = 0;
 
-        pauseTime = lastAccess;
+        mPauseTime = lastAccess;
 
         mPoops = new ArrayList<>();
 
@@ -155,7 +155,7 @@ public class Monster implements Serializable {
             for (int i = 0; i < mPoops.size(); i++)
                 setDirty(mDirty - ch / 4);
         }
-        pauseTime = System.currentTimeMillis();
+        mPauseTime = System.currentTimeMillis();
     }
 
     /**
@@ -207,13 +207,13 @@ public class Monster implements Serializable {
     }
 
     public void onPause() {
-        pauseTime = System.currentTimeMillis();
+        mPauseTime = System.currentTimeMillis();
     }
 
     public void onResume() {
         long unpauseTime = System.currentTimeMillis();
-        update(unpauseTime - pauseTime);
-        pauseTime = unpauseTime;
+        update(unpauseTime - mPauseTime);
+        mPauseTime = unpauseTime;
     }
 
     /* GETTERS AND SETTERS */
@@ -356,11 +356,19 @@ public class Monster implements Serializable {
     }
 
     public class Poop implements Serializable {
+
+        /**  */
         private static final long serialVersionUID = 0xe05c26dfe04e72b9L;
+
+
+        /**  */
         public int x;
+        /**  */
         public int y;
+        /**  */
         public float scale;
 
+        /**  */
         public Poop(int x, int y, float scale) {
             this.x = x;
             this.y = y;

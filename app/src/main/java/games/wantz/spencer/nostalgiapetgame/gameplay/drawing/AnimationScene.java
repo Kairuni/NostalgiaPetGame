@@ -14,16 +14,16 @@ public class AnimationScene {
 
     /**  */
     private List<Animation> mAnimations;
-    /**  */
-    private List<List<Point>> mLocations;
+    /**  */// Is a given set complete?
+    private List<Boolean> mIsComplete;
     /**  */
     private List<Integer> mFrames;
     /**  */// In milliseconds
     private List<Long> mFrameTimers;
     /**  */// In milliseconds
     private List<List<Long>> mTimeToLocations;
-    /**  */// Is a given set complete?
-    private List<Boolean> mIsComplete;
+    /**  */
+    private List<List<Point>> mLocations;
     /**  */// has the entire scene completed its animation?
     private boolean mSceneAnimationComplete;
 

@@ -39,10 +39,6 @@ public class GameActivity extends AppCompatActivity {
     /**  */
     public static final String MONSTER_EXTRA = "MONSTER_EXTRA";
 
-    //Non-Final Field Variables
-    /**  */
-    public Button button_misc;
-
     /**
      * Makes a new monster using the provided intent.
      *
