@@ -57,9 +57,24 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void testSignInFragmentInvalidEmail() {
+    public void testSignInFragmentInvalidEmailFormat() {
         onView(withId(R.id.fillable_login_email_id))
                 .perform(new TypeTextAction("w.w.w")).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.fillable_login_password))
+                .perform(new TypeTextAction("12345678")).perform(closeSoftKeyboard());
+
+        onView(withId(R.id.btn_user_login))
+                .perform(click());
+
+        onView(withText("Email and/or Password incorrect."))
+                .inRoot(withDecorView(not(is(mActivityRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testSignInFragmentInvalidEmailNonExistent() {
+        onView(withId(R.id.fillable_login_email_id))
+                .perform(new TypeTextAction("4569841984735wont75work@w.w")).perform(closeSoftKeyboard());
 
         onView(withId(R.id.fillable_login_password))
                 .perform(new TypeTextAction("12345678")).perform(closeSoftKeyboard());
